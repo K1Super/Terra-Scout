@@ -1,0 +1,50 @@
+/* CSS 重置 —— 单色编辑部风格基线 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: var(--font-base);
+  line-height: var(--lh-base);
+  color: var(--gray-800);
+  /* 画布用最浅灰，白底只留给卡片——建立"灰画布 / 白纸面"的层次 */
+  background: var(--gray-50);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-ui);
+  font-weight: var(--weight-semibold);
+  color: var(--gray-900);
+}
+
+/* 链接统一深灰（tokens 里 --color-primary 已是灰-800），杜绝默认蓝 */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}

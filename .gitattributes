@@ -1,0 +1,54 @@
+# Terra Scout · Git 属性规范
+# 统一 LF 换行，防止 Windows 提交 CRLF 产生全量 diff；脚本与批处理按平台原生约定。
+
+* text=auto
+
+# ---- 文本文件强制 LF（Java 后端 / 前端 / 配置 / 文档统一）----
+*.java   text eol=lf
+*.xml    text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.properties text eol=lf
+*.sql    text eol=lf
+*.gradle text eol=lf
+*.js     text eol=lf
+*.mjs    text eol=lf
+*.cjs    text eol=lf
+*.ts     text eol=lf
+*.tsx    text eol=lf
+*.jsx    text eol=lf
+*.json   text eol=lf
+*.css    text eol=lf
+*.scss   text eol=lf
+*.html   text eol=lf
+*.md     text eol=lf
+*.txt    text eol=lf
+*.sh     text eol=lf
+*.editorconfig text eol=lf
+.gitignore     text eol=lf
+.gitattributes text eol=lf
+
+# ---- 无扩展名文本文件显式声明 LF ----
+LICENSE  text eol=lf
+Makefile text eol=lf
+
+# ---- Windows 脚本保持 CRLF ----
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# ---- 二进制（不参与换行转换 / diff）----
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.jar  binary
+*.zip  binary
+*.gz   binary
+*.exe  binary
+*.dll  binary
+*.docx binary
+*.class binary
+*.pdb  binary

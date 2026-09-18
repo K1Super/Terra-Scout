@@ -1,0 +1,24 @@
+/* 骨架屏（加载态，只动画 opacity；页头大标题已移除，不再需要 title 骨架） */
+.skeletonStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-layout-2);
+  padding-top: var(--space-layout-3);
+}
+
+.skeleton {
+  background: var(--gray-200);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 1.5s var(--ease-in-out) infinite;
+}
+
+.line {
+  height: 16px;
+  width: 38%;
+}
+
+.card {
+  height: 104px;
+  width: 100%;
+  border-radius: var(--radius-card);
+}

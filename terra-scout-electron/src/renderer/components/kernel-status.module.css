@@ -1,0 +1,77 @@
+/*
+ * 内核状态浮动胶囊（右下角）。
+ * 占位极小：34px 高、圆角全胶囊、轻阴影；就绪 4 秒后整体淡出。
+ */
+.pill {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: var(--z-status-pill);
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  height: 34px;
+  padding: 0 14px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 16px rgba(24, 24, 27, 0.08);
+  font-size: var(--font-xs);
+  color: var(--gray-600);
+  white-space: nowrap;
+  /* 淡出用复合曲线：明显的减速收尾，符合编辑部式克制动效 */
+  transition:
+    opacity 280ms var(--ease-emphasized),
+    transform 280ms var(--ease-emphasized);
+}
+
+/* 就绪淡出：不销毁 DOM（保留无障碍上下文），只做视觉退场 */
+.pillFaded {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+}
+
+/* 状态点：7px 小圆点，语义色仅在此类小面积出现 */
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* 启动中：中性灰点（不制造紧迫感） */
+.dotBooting {
+  background: var(--gray-400);
+}
+
+/* 就绪：深灰点（单色体系里的"正常"即最深灰） */
+.dotReady {
+  background: var(--gray-800);
+}
+
+/* 崩溃/重启中：唯一允许的克制暖色警示（--color-warning #b45309 档） */
+.dotError {
+  background: var(--color-warning);
+}
+
+.label {
+  line-height: 1;
+}
+
+/* 手动重启入口：暖色文字按钮，仅在 GIVEUP 场景出现 */
+.restart {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 2px;
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-warning);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.restart:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 后端门禁：Checkstyle + 全量测试 + JaCoCo 覆盖率 ≥ 80%
+  backend:
+    name: backend · Maven verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 配置 JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Maven 构建（含质量门禁）
+        run: mvn -B -ntp verify
+
+  # 前端门禁：类型检查 + Vitest + tsc/vite 构建
+  frontend:
+    name: frontend · typecheck / test / build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terra-scout-electron
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 配置 Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: terra-scout-electron/package-lock.json
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 类型检查
+        run: npm run typecheck
+
+      - name: 单元测试
+        run: npm test
+
+      - name: 构建
+        run: npm run build

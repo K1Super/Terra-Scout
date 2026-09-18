@@ -1,0 +1,82 @@
+/* 空 / 错误状态样式 —— 单色编辑部语言：图标收小、文字分级、按钮灰阶 */
+.empty,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-layout-6) var(--space-layout-3);
+}
+
+/* 图标刻意收小（44px/1.5 线宽），空态是"留白"而不是插画 */
+.emptyIcon {
+  color: var(--gray-300);
+  margin-bottom: var(--space-layout-2);
+}
+
+.emptyTitle {
+  font-size: var(--font-base);
+  font-weight: var(--weight-medium);
+  color: var(--gray-800);
+  margin-bottom: var(--space-comp-1);
+}
+
+.emptyHint {
+  font-size: var(--font-sm);
+  color: var(--gray-500);
+  max-width: 320px;
+  margin-bottom: var(--space-layout-2);
+}
+
+.emptyAction {
+  margin-top: var(--space-layout-2);
+}
+
+/* 错误态图标：语义红仅此一处点缀 */
+.errorIcon {
+  color: var(--color-error);
+  margin-bottom: var(--space-layout-2);
+}
+
+.errorTitle {
+  font-size: var(--font-base);
+  font-weight: var(--weight-semibold);
+  color: var(--gray-900);
+  margin-bottom: var(--space-comp-1);
+}
+
+.errorDesc {
+  font-size: var(--font-sm);
+  color: var(--gray-600);
+  margin-bottom: var(--space-comp-1);
+}
+
+.errorCode {
+  font-size: var(--font-xs);
+  font-family: var(--font-mono);
+  color: var(--gray-500);
+}
+
+.actionBtn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition:
+    background var(--duration-snap) var(--ease-in-out),
+    border-color var(--duration-snap) var(--ease-in-out);
+}
+
+.actionBtn {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  color: var(--gray-700);
+}
+
+.actionBtn:hover {
+  border-color: var(--gray-400);
+  color: var(--gray-900);
+}

@@ -1,0 +1,148 @@
+/*
+ * 项目卡片 —— 白纸面卡片语言。
+ * hover：边框 gray-200 → gray-400 + translateY(-1px)，180ms 复合曲线；
+ * 阴影只 hover 时出现且极轻（0 6px 20px rgba(24,24,27,.06) 引自 tokens）。
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-card);
+  padding: var(--space-layout-3);
+  transition:
+    border-color var(--duration-snap) var(--ease-in-out),
+    transform var(--duration-snap) var(--ease-emphasized),
+    box-shadow var(--duration-snap) var(--ease-in-out);
+}
+
+.card:hover {
+  border-color: var(--gray-400);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-comp-2);
+  margin-bottom: var(--space-comp-2);
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  min-width: 0;
+  font-weight: var(--weight-semibold);
+  font-size: var(--font-sm);
+  color: var(--gray-900);
+  /* 项目名过长时省略，保持卡片行高稳定 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleIcon {
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.path {
+  font-family: var(--font-mono);
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+  word-break: break-all;
+  margin-bottom: var(--space-comp-1);
+  /* 路径两行封顶，避免超长路径撑爆卡片 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+  margin-bottom: var(--space-layout-2);
+}
+
+/* 装配状态胶囊：点 + 文字；已装配=绿点，未装配=浅灰点 */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: var(--radius-full);
+  background: var(--gray-100);
+  font-size: 11px;
+  color: var(--gray-500);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pillDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--gray-400);
+}
+
+.pillOk {
+  color: var(--gray-800);
+}
+
+.pillOk .pillDot {
+  background: var(--color-success);
+}
+
+/* 卡片操作行：推到底部对齐，让网格里卡片高度一致 */
+.actions {
+  display: flex;
+  gap: var(--space-comp-2);
+  margin-top: auto;
+  padding-top: var(--space-comp-3);
+}
+
+.btn,
+.btnDelete {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition:
+    background var(--duration-snap) var(--ease-in-out),
+    border-color var(--duration-snap) var(--ease-in-out),
+    color var(--duration-snap) var(--ease-in-out);
+}
+
+/* 次级：白底发丝线 */
+.btn {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  color: var(--gray-700);
+}
+
+.btn:hover {
+  border-color: var(--gray-400);
+  color: var(--gray-900);
+}
+
+/* 删除：语义红仅作文字点缀，hover 才反白 */
+.btnDelete {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  color: var(--gray-500);
+}
+
+.btnDelete:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}

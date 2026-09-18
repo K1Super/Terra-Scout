@@ -1,0 +1,61 @@
+# ============================================================
+# Terra Scout · Git 忽略规则
+# 覆盖：Maven / Node / Electron 打包产物 / IDE / OS / 运行时数据
+# ============================================================
+
+# ---- Maven / Java ----
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*.log
+replay_pid*.log
+
+# ---- Node / 前端 ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+coverage/
+*.tsbuildinfo
+
+# ---- Electron 运行时内嵌产物（由打包脚本从外部注入，不入库）----
+terra-scout-electron/resources/terrascout.jar
+terra-scout-electron/resources/jre/
+terra-scout-electron/build/win-unpacked/
+
+# ---- 运行时数据与临时文件 ----
+*.log
+logs/
+*.part
+*.tmp
+*.bak
+db.properties
+.terrascout/
+.devenv/cache/
+
+# ---- 测试与混沌临时目录 ----
+e2e-tmp/
+chaos-tmp/
+
+# ---- IDE ----
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+*.swp
+
+# ---- OS ----
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# ---- AI 辅助工具内部目录 ----
+.trae/
+
+# ---- 个人文件（不随项目开源）----
+Java后端开发工程师面试备战问答手册.docx

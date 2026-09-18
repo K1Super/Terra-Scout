@@ -1,0 +1,80 @@
+{
+  "name": "terra-scout-electron",
+  "productName": "Terra Scout",
+  "version": "0.1.0",
+  "description": "Terra Scout 环境感知编排平台 · 桌面端",
+  "author": "Terra Scout",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:web": "vite build",
+    "build:renderer": "vite build",
+    "watch:main": "tsc -p tsconfig.main.json --watch",
+    "start": "electron .",
+    "dev": "concurrently -k \"npm:watch:main\" \"npm:dev:renderer\"",
+    "dev:renderer": "vite",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "package": "electron-builder --win nsis"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@ant-design/icons": "^5.3.7",
+    "@monaco-editor/react": "^4.6.0",
+    "@tanstack/react-query": "^5.103.0",
+    "antd": "^5.17.4",
+    "lucide-react": "^1.46.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1",
+    "zustand": "^5.0.15",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "electron": "^30.0.6",
+    "electron-builder": "^24.13.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11",
+    "vitest": "^1.6.0"
+  },
+  "build": {
+    "appId": "com.terrascout.desktop",
+    "artifactName": "TerraScout-Setup-${version}.${ext}",
+    "asar": true,
+    "electronLanguages": [
+      "en-US",
+      "zh-CN"
+    ],
+    "files": [
+      "dist/main/**",
+      "dist/renderer/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/terrascout.jar",
+        "to": "terrascout.jar"
+      },
+      {
+        "from": "resources/jre",
+        "to": "jre"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico",
+      "artifactName": "TerraScout-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

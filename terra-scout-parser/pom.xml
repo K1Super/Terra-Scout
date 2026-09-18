@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  terra-scout-parser：项目类型检测 / pom.xml 解析 / 属性求值 / 约束提取
+  DoD（master-plan §7）：TC-POM-001~010 全过（pom-parser-algorithm.md 3.9）；覆盖率 ≥ 80%
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.terrascout</groupId>
+        <artifactId>terra-scout-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>terra-scout-parser</artifactId>
+    <name>Terra Scout Parser</name>
+    <description>项目类型检测、pom.xml 解析（7 级优先级 / 属性求值 / 父子递归）、.nvmrc 约束提取（pom-parser-algorithm.md）</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.terrascout</groupId>
+            <artifactId>terra-scout-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- package.json（engines.node 等）结构化解析（Version 由 spring-boot-dependencies BOM 管理） -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- 测试 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 覆盖率门禁（生产级 ≥ 80%） -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

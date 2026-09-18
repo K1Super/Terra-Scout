@@ -1,0 +1,120 @@
+/* 全局样式 + 状态/性能/无障碍底座（单色编辑部风格） */
+@import './tokens.css';
+@import './reset.css';
+
+/* ── 全局自定义滚动条：消灭 Windows 原生粗滚动条 ──────────────
+ * 8px 窄轨、透明轨道底、灰阶滑块；只动颜色不占布局宽度。 */
+* {
+  scrollbar-width: thin; /* Firefox 兜底 */
+  scrollbar-color: var(--gray-300) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* 数字对齐：时间戳、版本号、字节数全部等宽数字 */
+.nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 全局可见焦点样式：深灰环（跟随 --color-primary，已是灰-800，无蓝） */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 减少动效（无障碍） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 进度条：只动画 transform: scaleX（性能约定），填充色为深灰主色 */
+.progress-bar {
+  position: relative;
+  height: 4px;
+  background: var(--gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform var(--duration-base) var(--ease-emphasized);
+}
+
+/* 骨架屏：只动画 opacity */
+.skeleton {
+  background: var(--gray-200);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 1.5s var(--ease-in-out) infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── antd 主按钮统一白灰 ──────────────────────────────────
+ * 为什么放这里：antd 主题 token 只能表达"主色实底"，无法把主按钮
+ * 做成"浅底深字"，故用高特异性选择器覆盖（Modal 确定键等）。
+ * 危险按钮（.ant-btn-dangerous）保持语义红，不在此列。 */
+button.ant-btn-primary:not(.ant-btn-dangerous):not(:disabled),
+a.ant-btn-primary:not(.ant-btn-dangerous):not(:disabled) {
+  background: var(--gray-100);
+  border-color: var(--gray-200);
+  color: var(--gray-900);
+}
+
+button.ant-btn-primary:not(.ant-btn-dangerous):not(:disabled):hover,
+a.ant-btn-primary:not(.ant-btn-dangerous):not(:disabled):hover {
+  background: var(--gray-200);
+  border-color: var(--gray-400);
+  color: var(--gray-900);
+}

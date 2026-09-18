@@ -1,0 +1,27 @@
+# Terra Scout · 编辑器统一配置（配合 docs/coding-standards.md §2 缩进约定）
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# 前端与配置文件沿用 2 空格缩进
+[*.{js,jsx,ts,tsx,json,css,scss,html,yml,yaml}]
+indent_size = 2
+
+# Markdown 行尾空格可能是有意换行，不做裁剪
+[*.md]
+trim_trailing_whitespace = false
+
+# Windows 脚本保持 CRLF
+[*.{bat,cmd,ps1}]
+end_of_line = crlf
+
+# 构建脚本使用 Tab
+[Makefile]
+indent_style = tab

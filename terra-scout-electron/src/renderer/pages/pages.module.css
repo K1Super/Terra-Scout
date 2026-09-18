@@ -1,0 +1,529 @@
+/*
+ * 页面通用样式 —— 单色编辑部风格。
+ *
+ * 核心语言：
+ * - 「语境化页头」：不放导航词大标题，只放该页的上下文（统计、动作）；
+ *   纵向韵律采用非均匀留白（页头 24/12，正文区上 28）。
+ * - 内容一律"白纸面"卡片（白底 + 发丝线 + 14px 圆角），灰画布承底。
+ * - 状态一律灰阶胶囊 + 语义色小圆点（绿/红/暖仅以 7px 点出现）。
+ * - 禁止裸 hex：颜色全部引用 tokens.css 变量。
+ */
+
+/* ── 语境化页头 ────────────────────────────────────────── */
+.pageHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-layout-2);
+  /* 非均匀节奏：上 24 / 下 12，与正文区上 28 形成不对称留白 */
+  padding: 24px 0 12px;
+}
+
+.pageHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* 页头主信息：语境文案（如项目名、任务类型），非导航词 */
+.pageHeaderTitle {
+  font-size: var(--font-md);
+  font-weight: var(--weight-semibold);
+  color: var(--gray-900);
+  line-height: var(--lh-md);
+}
+
+/* 页头次级统计：13px 灰，如"3 个项目" */
+.pageHeaderMeta {
+  font-size: var(--font-sm);
+  color: var(--gray-500);
+}
+
+.pageHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  flex-shrink: 0;
+}
+
+/* 正文区：页头之后的内容块，上间距 28 构成不对称韵律 */
+.pageBody {
+  padding-top: 28px;
+}
+
+/* ── 卡片网格（列 16 / 行 20 的非均匀 gap） ── */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px 16px;
+}
+
+/* ── 白纸面卡片 ────────────────────────────────────────── */
+.card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-card);
+  padding: var(--space-layout-3);
+}
+
+/* 堆叠卡片容器：纵向 16px 等距（详情/设置类页面用） */
+.cardStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-layout-2);
+}
+
+/* 卡片内部分组的横向头（标题 + 动作） */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-layout-2);
+  margin-bottom: var(--space-layout-2);
+}
+
+.cardTitle {
+  font-size: var(--font-base);
+  font-weight: var(--weight-semibold);
+  color: var(--gray-900);
+}
+
+.cardMeta {
+  font-size: var(--font-sm);
+  color: var(--gray-500);
+}
+
+/* 11px 大写小标：替代粗分隔线的分组方式（编辑部目录语言） */
+.sectionLabel {
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin: var(--space-layout-3) 0 var(--space-comp-3);
+}
+
+.sectionLabel:first-child {
+  margin-top: 0;
+}
+
+/* ── 清单式信息排版（label 11px 大写 / value 深灰） ── */
+.kvGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-comp-4) var(--space-layout-3);
+}
+
+.kvItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.kvLabel {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
+.kvValue {
+  font-size: var(--font-sm);
+  color: var(--gray-900);
+  word-break: break-all;
+  line-height: var(--lh-base);
+}
+
+/* R51：存储区路径行——路径 + 快捷打开按钮同行，按钮自动贴合右端。 */
+.kvValueLine {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-3);
+  min-width: 0;
+}
+
+.kvValueLine .kvValue {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ── 装配计划 SDK 版本选配行（R48） ── */
+.sdkVersionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  min-width: 0;
+}
+
+.sdkVersionRow + .sdkVersionRow {
+  margin-top: 4px;
+}
+
+.sdkVersionSelect {
+  min-width: 220px;
+  max-width: 100%;
+}
+
+/* ── 状态胶囊：灰阶底 + 语义色小点 ──────────────────────
+ * 完成=绿点、失败=红点、运行=深灰点、其余=浅灰点；
+ * 语义色只以 7px 圆点出现，绝不染整块底色。 */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-full);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  font-size: var(--font-xs);
+  color: var(--gray-600);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pillDot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.pillSuccess .pillDot {
+  background: var(--color-success);
+}
+
+.pillSuccess {
+  color: var(--gray-800);
+}
+
+.pillError .pillDot {
+  background: var(--color-error);
+}
+
+.pillError {
+  color: var(--gray-800);
+}
+
+.pillRun .pillDot {
+  background: var(--gray-800);
+}
+
+.pillRun {
+  color: var(--gray-800);
+}
+
+.pillWarn .pillDot {
+  background: var(--color-warning);
+}
+
+.pillWarn {
+  color: var(--gray-800);
+}
+
+/* ── 按钮 ─────────────────────────────────────────────── */
+.btn,
+.btnDanger,
+.ghostBtn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  transition:
+    background var(--duration-snap) var(--ease-in-out),
+    border-color var(--duration-snap) var(--ease-in-out),
+    color var(--duration-snap) var(--ease-in-out),
+    transform var(--duration-snap) var(--ease-emphasized);
+}
+
+/* 标准按钮：白底发丝线（全站统一标准，原“主/次”之分已取消，全部复用此样式） */
+.btn,
+.ghostBtn {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  color: var(--gray-700);
+}
+
+.btn:hover:not(:disabled),
+.ghostBtn:hover:not(:disabled) {
+  border-color: var(--gray-400);
+  color: var(--gray-900);
+}
+
+/* 危险按钮：语义红仅在此与状态点出现 */
+.btnDanger {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  color: var(--color-error);
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: var(--color-error);
+  border-color: var(--color-error);
+  color: var(--gray-50);
+}
+
+.btn:disabled,
+.btnDanger:disabled,
+.ghostBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 文字链接按钮：深灰，无下划线直到 hover */
+.linkBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--gray-600);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-comp-1);
+  transition: color var(--duration-snap) var(--ease-in-out);
+}
+
+.linkBtn:hover {
+  color: var(--gray-900);
+}
+
+/* 返回链接：页头左上角的"← 返回"（与 linkBtn 同语言，色阶更浅一级） */
+.backLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--gray-500);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-comp-1);
+  transition: color var(--duration-snap) var(--ease-in-out);
+}
+
+.backLink:hover {
+  color: var(--gray-900);
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+}
+
+/* ── 任务列表 ──────────────────────────────────────────── */
+.errorLine {
+  color: var(--color-error);
+  font-size: var(--font-sm);
+  font-family: var(--font-mono);
+  margin: var(--space-comp-2) 0;
+}
+
+.loading {
+  color: var(--gray-500);
+  padding: var(--space-layout-4) 0;
+  text-align: center;
+  font-size: var(--font-sm);
+}
+
+/* ── SDK 列表行：白卡内发丝分隔 ── */
+.sdkRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-layout-2);
+  padding: var(--space-comp-3) 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.sdkRow:last-child {
+  border-bottom: none;
+}
+
+.sdkName {
+  font-weight: var(--weight-medium);
+  color: var(--gray-900);
+  font-size: var(--font-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+}
+
+.sdkMeta {
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+/* 错误弹窗内的补充元信息（如所选目录），弱化灰阶 + 可换行 */
+.errorMeta {
+  margin-top: var(--space-comp-2);
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+  font-family: var(--font-mono);
+  word-break: break-all;
+}
+
+/* SDK 徽标：全部灰阶小胶囊（LTS=中灰实底；停止维护=暖色点缀） */
+.tagLts,
+.tagEol,
+.tagSys {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+}
+
+.tagLts {
+  background: var(--gray-200);
+  color: var(--gray-700);
+}
+
+.tagEol {
+  background: var(--gray-100);
+  color: var(--color-warning);
+}
+
+.tagSys {
+  background: var(--gray-100);
+  color: var(--gray-500);
+}
+
+/* ── SDK 安装进度：行内灰阶进度块（4px 轨道 / 深灰填充） ── */
+.installProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.installProgressText {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-comp-2);
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+  line-height: var(--lh-base);
+}
+
+.installTrack {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--gray-200);
+  overflow: hidden;
+}
+
+.installBar {
+  height: 100%;
+  background: var(--gray-700);
+  border-radius: var(--radius-full);
+  transition: width var(--duration-snap) var(--ease-in-out);
+}
+
+/* 进度块旁挂取消按钮（安装可取消 + 落位路径透明） */
+.installProgressWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  flex-shrink: 0;
+}
+
+.installPathNote {
+  font-size: var(--font-xs);
+  color: var(--gray-400);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── SDK 行右侧按钮组（打开 + 卸载，R45） ── */
+.sdkRowActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-2);
+  flex-shrink: 0;
+}
+
+/* ── 安装落位目录选择弹层（R45：自选目录 + 自动建夹实时预览） ── */
+.installDirPicker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-comp-2);
+}
+
+.installDirLabel {
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+}
+
+.installDirValue {
+  font-family: var(--font-mono);
+  font-size: var(--font-sm);
+  color: var(--gray-800);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-comp-2) var(--space-comp-3);
+  word-break: break-all;
+}
+
+.installDirNote {
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+  line-height: var(--lh-base);
+}
+
+.installDirActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-3);
+}
+
+/* ── 输入框（设置页自研 input，antd 表单控件走全局主题） ── */
+.input {
+  height: 34px;
+  padding: 0 var(--space-comp-3);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  color: var(--gray-800);
+  background: var(--gray-50);
+  width: 100%;
+  transition: border-color var(--duration-snap) var(--ease-in-out);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -1px;
+  border-color: var(--gray-500);
+}
+
+.input::placeholder {
+  color: var(--gray-400);
+}
+
+/* 数据刷新中（如 SDK 页切换语言）：内容区半透明过渡，避免整页替换造成分段控件频闪 */
+.updating {
+  opacity: 0.55;
+  transition: opacity 150ms var(--ease-in-out);
+}

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  terra-scout-download：SDK 下载 / 断点续传 / SHA256 校验 / 归档解压（四重安全检查）
+  DoD（master-plan §7）：MockWebServer 模拟断网 / 损坏 / Zip-Slip 全过；覆盖率 ≥ 80%
+  错误码域：502001-502003（下载源）/ 422009（校验）/ 422010（解压安全）/ 507001-507002（磁盘）
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.terrascout</groupId>
+        <artifactId>terra-scout-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>terra-scout-download</artifactId>
+    <name>Terra Scout Download</name>
+    <description>SDK 下载、断点续传（Range+ETag）、SHA256 校验、Zip4j 四重安全检查解压</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.terrascout</groupId>
+            <artifactId>terra-scout-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- HTTP 客户端（dependencies.md 11.6） -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+        <!-- 解压（security.md 6.7） -->
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+        </dependency>
+        <!-- 文件操作 -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <!-- 测试 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 覆盖率门禁（生产级 ≥ 80%） -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

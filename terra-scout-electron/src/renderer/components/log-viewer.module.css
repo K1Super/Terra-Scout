@@ -1,0 +1,61 @@
+/*
+ * 日志面板 —— 全页唯一深色块（视觉锚点）。
+ * 为什么固定深色：日志面板承担"终端/控制台"的语义，在浅色界面里
+ * 用一块 #18181b 深灰锚点制造编辑部式的对比重心；颜色走 tokens 的
+ * --ink-* 固定变量，不随 prefers-color-scheme 反转（深色模式下浅字
+ * 依旧可读，浅色模式下保持深底锚点语义）。
+ */
+.wrap {
+  background: var(--ink-panel);
+  border-radius: var(--radius-md);
+  padding: var(--space-layout-2);
+  max-height: 360px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-xs);
+  line-height: 20px;
+}
+
+.line {
+  display: flex;
+  gap: var(--space-comp-2);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* 时间戳：深底上的次级信息 */
+.time {
+  color: var(--ink-panel-dim);
+  flex-shrink: 0;
+}
+
+.level {
+  flex-shrink: 0;
+  min-width: 44px;
+  font-weight: var(--weight-medium);
+}
+
+/* 级别色：深底可读的低饱和灰 / 暖 / 红 */
+.info {
+  color: var(--ink-info);
+}
+
+.warn {
+  color: var(--ink-warn);
+}
+
+.err {
+  color: var(--ink-error);
+}
+
+.msg {
+  color: var(--ink-panel-text);
+}
+
+.truncate {
+  color: var(--ink-panel-dim);
+  margin: 0 0 var(--space-comp-2);
+  padding-bottom: var(--space-comp-2);
+  border-bottom: 1px solid var(--ink-panel-border);
+}

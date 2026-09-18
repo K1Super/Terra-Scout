@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  terra-scout-task：任务引擎 / 状态机 / 心跳 / 锁 / 回滚
+  DoD（master-plan §7）：转移表全覆盖测试 + 心跳超时单测；覆盖率 ≥ 80%
+  错误码域：409001 项目锁 / 409005 终态冲突 / 409006 队列满 / 500003 心跳超时 / 500004 回滚失败
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.terrascout</groupId>
+        <artifactId>terra-scout-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>terra-scout-task</artifactId>
+    <name>Terra Scout Task</name>
+    <description>任务状态机（state-machine.md）/ 步骤引擎 / 心跳自报（D-007）/ 项目锁 / 回滚编排</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.terrascout</groupId>
+            <artifactId>terra-scout-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 测试 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 覆盖率门禁（生产级 ≥ 80%） -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,1243 @@
+openapi: 3.0.3
+info:
+  title: Terra Scout Orchestrator API
+  version: 1.0.0
+  description: |
+    Terra Scout 环境感知编排平台本地 REST 接口。
+    仅监听 127.0.0.1，除 /health 外所有请求必须携带 X-TerraScout-Token。
+    强约束：HTTP 状态码 == code 前 3 位（master-plan.md D-001）。
+    与 rest-schema.md V2.1 完全同步。
+servers:
+  - url: http://127.0.0.1:{port}/api/v1
+    variables:
+      port:
+        default: '0'
+        description: 系统分配的实际端口
+security:
+  - TokenAuth: []
+components:
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: X-TerraScout-Token
+  schemas:
+    # ============ 通用结构 ============
+    ApiResponse:
+      type: object
+      required: [code, message, traceId, timestamp]
+      properties:
+        code:
+          type: integer
+          description: 6 位错误码，前 3 位为 HTTP 状态码
+          example: 200000
+        message:
+          type: string
+          example: success
+        data:
+          nullable: true
+        traceId:
+          type: string
+          format: uuid
+        timestamp:
+          type: integer
+          format: int64
+          example: 1700000000000
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              nullable: true
+            details:
+              type: object
+              additionalProperties: true
+    PageResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        page:
+          type: integer
+        size:
+          type: integer
+    # ============ 枚举 ============
+    LanguageEnum:
+      type: string
+      enum: [JAVA, NODE, PYTHON, GO]
+    OsTypeEnum:
+      type: string
+      enum: [WINDOWS, MACOS, LINUX]
+    ArchEnum:
+      type: string
+      enum: [AMD64, ARM64]
+    TaskStatusEnum:
+      type: string
+      enum: [PENDING, QUEUED, RUNNING, PAUSED, SUCCESS, FAILED, CANCELLED, ROLLING_BACK, ROLLED_BACK]
+    StepStatusEnum:
+      type: string
+      enum: [PENDING, RUNNING, SUCCESS, FAILED, SKIPPED, ROLLED_BACK]
+    ScopeEnum:
+      type: string
+      enum: [GLOBAL, PROJECT]
+    LogLevelEnum:
+      type: string
+      enum: [ERROR, WARN, INFO, DEBUG, TRACE]
+    # ============ 项目 ============
+    AnalyzeRequest:
+      type: object
+      required: [path]
+      properties:
+        path:
+          type: string
+          minLength: 1
+          maxLength: 4096
+          description: 项目根目录绝对路径（Windows 盘符格式）
+          example: 'D:\\workspace\\my-project'
+          pattern: '^[A-Za-z]:\\\\.*'
+        idempotencyKey:
+          type: string
+          format: uuid
+          nullable: true
+    AnalyzeResponse:
+      type: object
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: [MAVEN, NPM, GO, PYTHON, MIXED, UNKNOWN]
+        osType:
+          $ref: '#/components/schemas/OsTypeEnum'
+        constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectConstraint'
+        plan:
+          $ref: '#/components/schemas/InstallPlan'
+    ProjectConstraint:
+      type: object
+      required: [language, constraint, sourceFile]
+      properties:
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        constraint:
+          type: string
+          description: Maven 风格版本约束或 semver range
+          example: '17'
+        sourceFile:
+          type: string
+          example: pom.xml
+        sourcePath:
+          type: string
+          nullable: true
+        confidence:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+          default: 1.0
+    InstallPlan:
+      type: object
+      properties:
+        planId:
+          type: string
+          format: uuid
+        sdkInstalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/SdkInstallItem'
+        dependencyInstalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyInstallItem'
+        verifyCommands:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommandSpec'
+    SdkInstallItem:
+      type: object
+      required: [language, version, action]
+      properties:
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        version:
+          type: string
+          example: 17.0.9
+        action:
+          type: string
+          enum: [INSTALL, REUSE]
+        estimatedSizeBytes:
+          type: integer
+          format: int64
+        reason:
+          type: string
+          example: 项目约束 17，本机未安装
+        candidates:
+          type: array
+          description: 候选版本表（裁决 R48；首项 = 自动推荐，N≤5）
+          items:
+            $ref: '#/components/schemas/SdkVersionCandidate'
+    SdkVersionCandidate:
+      type: object
+      required: [version, lts, eol, installed]
+      properties:
+        version:
+          type: string
+          example: 17.0.9
+        lts:
+          type: boolean
+        eol:
+          type: boolean
+        sizeBytes:
+          type: integer
+          format: int64
+        installed:
+          type: boolean
+          description: 该版本是否已成功安装（已装项选中即 REUSE）
+    DependencyInstallItem:
+      type: object
+      properties:
+        ecosystem:
+          type: string
+          enum: [maven, npm, go, python]
+        isolation:
+          type: string
+          example: .devenv/m2
+        installCommand:
+          $ref: '#/components/schemas/CommandSpec'
+    CommandSpec:
+      type: object
+      required: [command, args]
+      properties:
+        command:
+          type: string
+          enum: [mvn, npm, node, java, go, pip, python]
+        args:
+          type: array
+          items:
+            type: string
+            maxLength: 1024
+          maxItems: 64
+    ProjectListItem:
+      type: object
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        projectRootPath:
+          type: string
+        type:
+          type: string
+          enum: [MAVEN, NPM, GO, PYTHON, MIXED, UNKNOWN]
+        osType:
+          $ref: '#/components/schemas/OsTypeEnum'
+        lastTaskStatus:
+          allOf:
+            - $ref: '#/components/schemas/TaskStatusEnum'
+          nullable: true
+        createdAt:
+          type: integer
+          format: int64
+        updatedAt:
+          type: integer
+          format: int64
+    ProjectDetail:
+      allOf:
+        - $ref: '#/components/schemas/ProjectListItem'
+        - type: object
+          properties:
+            constraints:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProjectConstraint'
+    ProjectListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProjectListItem'
+    # ============ 任务 ============
+    ExecuteRequest:
+      type: object
+      required: [planId, confirm]
+      properties:
+        planId:
+          type: string
+          format: uuid
+        confirm:
+          type: boolean
+          enum: [true]
+        idempotencyKey:
+          type: string
+          format: uuid
+        versionOverrides:
+          type: array
+          description: 用户选配的 SDK 版本覆盖（裁决 R48；省略即采用推荐版本）
+          items:
+            $ref: '#/components/schemas/VersionOverride'
+    VersionOverride:
+      type: object
+      required: [language, version]
+      properties:
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        version:
+          type: string
+          example: 1.24.2
+          description: 必须落在该语言预览候选表内，否则 422006
+    ExecuteResponse:
+      type: object
+      properties:
+        taskId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/TaskStatusEnum'
+    TaskDetail:
+      type: object
+      properties:
+        taskId:
+          type: string
+          format: uuid
+        type:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatusEnum'
+        progress:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskStepDetail'
+        errorCode:
+          type: integer
+          nullable: true
+        errorMsg:
+          type: string
+          nullable: true
+        retryCount:
+          type: integer
+        maxRetry:
+          type: integer
+        createdAt:
+          type: integer
+          format: int64
+        updatedAt:
+          type: integer
+          format: int64
+    TaskStepDetail:
+      type: object
+      properties:
+        index:
+          type: integer
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/StepStatusEnum'
+        startedAt:
+          type: integer
+          format: int64
+          nullable: true
+        finishedAt:
+          type: integer
+          format: int64
+          nullable: true
+        errorCode:
+          type: integer
+          nullable: true
+        errorMsg:
+          type: string
+          nullable: true
+    TaskListItem:
+      type: object
+      properties:
+        taskId:
+          type: string
+          format: uuid
+        type:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatusEnum'
+        progress:
+          type: number
+          format: double
+        errorCode:
+          type: integer
+          nullable: true
+        errorMsg:
+          type: string
+          nullable: true
+        createdAt:
+          type: integer
+          format: int64
+        updatedAt:
+          type: integer
+          format: int64
+    TaskListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/TaskListItem'
+    TaskLogResponse:
+      type: object
+      properties:
+        taskId:
+          type: string
+          format: uuid
+        stepIndex:
+          type: integer
+        lines:
+          type: array
+          items:
+            type: string
+        truncated:
+          type: boolean
+        stdoutFile:
+          type: string
+        stderrFile:
+          type: string
+    TaskOperationRequest:
+      type: object
+      required: [taskId]
+      properties:
+        taskId:
+          type: string
+          format: uuid
+    # ============ SDK ============
+    SdkVersionItem:
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        version:
+          type: string
+        os:
+          $ref: '#/components/schemas/OsTypeEnum'
+        arch:
+          $ref: '#/components/schemas/ArchEnum'
+        downloadUrl:
+          type: string
+          format: uri
+        sha256:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        lts:
+          type: boolean
+        eol:
+          type: boolean
+        license:
+          type: string
+        releaseTime:
+          type: integer
+          format: int64
+        installed:
+          type: boolean
+        recordId:
+          type: string
+          format: uuid
+          nullable: true
+          description: 已装条目的安装记录 ID，卸载时使用
+        installedPath:
+          type: string
+          nullable: true
+    SdkListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/SdkVersionItem'
+    SdkInstallRequest:
+      type: object
+      required: [language, version, scope]
+      properties:
+        language:
+          $ref: '#/components/schemas/LanguageEnum'
+        version:
+          type: string
+          pattern: '^[0-9A-Za-z._-]+$'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        projectId:
+          type: string
+          format: uuid
+          nullable: true
+        idempotencyKey:
+          type: string
+          format: uuid
+    SdkUninstallRequest:
+      type: object
+      required: [recordId]
+      properties:
+        recordId:
+          type: string
+          format: uuid
+        idempotencyKey:
+          type: string
+          format: uuid
+    MetadataReloadResponse:
+      type: object
+      properties:
+        loaded:
+          type: boolean
+        sdkCount:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+    # ============ 环境 ============
+    EnvScriptResponse:
+      type: object
+      properties:
+        osType:
+          $ref: '#/components/schemas/OsTypeEnum'
+        script:
+          type: string
+        scriptPath:
+          type: string
+    # ============ 审计 ============
+    AuditLogItem:
+      type: object
+      properties:
+        seq:
+          type: integer
+          format: int64
+        bizId:
+          type: string
+        action:
+          type: string
+        targetType:
+          type: string
+          nullable: true
+        targetId:
+          type: string
+          nullable: true
+        result:
+          type: string
+        createdAt:
+          type: integer
+          format: int64
+    AuditListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/AuditLogItem'
+            chainValid:
+              type: boolean
+              description: hash 链完整性校验结果
+    # ============ 设置与系统 ============
+    Settings:
+      type: object
+      properties:
+        download:
+          type: object
+          properties:
+            mirror:
+              type: string
+              format: uri
+            timeoutMs:
+              type: integer
+            maxRetry:
+              type: integer
+        commandTimeoutMs:
+          type: integer
+        logLevel:
+          $ref: '#/components/schemas/LogLevelEnum'
+        aiEnabled:
+          type: boolean
+    SystemInfo:
+      type: object
+      properties:
+        version:
+          type: string
+        javaVersion:
+          type: string
+        dataDir:
+          type: string
+        sdkRepoDir:
+          type: string
+        dbSizeBytes:
+          type: integer
+          format: int64
+    BackupResponse:
+      type: object
+      properties:
+        backupFile:
+          type: string
+    DiagnosticResponse:
+      type: object
+      properties:
+        zipPath:
+          type: string
+  responses:
+    BadRequest:
+      description: 请求参数错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 400001
+            message: 项目路径为空或格式非法
+            traceId: 550e8400-e29b-41d4-a716-446655440000
+            timestamp: 1700000000000
+    Unauthorized:
+      description: Token 校验失败
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 401001
+            message: Token 缺失或校验失败
+            traceId: 550e8400-e29b-41d4-a716-446655440000
+            timestamp: 1700000000000
+    NotFound:
+      description: 资源不存在
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: 状态冲突
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: 业务校验失败
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: 服务端内部错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+paths:
+  /project/analyze:
+    post:
+      summary: 项目导入分析
+      description: 解析项目配置，生成环境装配计划
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyzeRequest'
+      responses:
+        '200':
+          description: 分析成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AnalyzeResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /project:
+    get:
+      summary: 项目列表（分页）
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProjectListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /project/{projectId}:
+    get:
+      summary: 项目详情
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ProjectDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: 删除项目
+      description: 仅删除数据库记录，不触碰磁盘 .devenv 与用户文件（D-014）
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /task/execute:
+    post:
+      summary: 执行装配任务
+      description: 提交装配计划，创建异步任务；统一返回 200，异步语义由 taskId 表达（D-002）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteRequest'
+      responses:
+        '200':
+          description: 任务已创建
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ExecuteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /task:
+    get:
+      summary: 任务列表（分页，可按状态过滤）
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/TaskStatusEnum'
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /task/{taskId}:
+    get:
+      summary: 查询任务详情
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TaskDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /task/{taskId}/logs:
+    get:
+      summary: 查询任务日志
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: stepIndex
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: 缺省为当前执行步骤
+        - name: tail
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 200
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TaskLogResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /task/pause:
+    post:
+      summary: 暂停任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskOperationRequest'
+      responses:
+        '200':
+          description: 操作成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /task/resume:
+    post:
+      summary: 恢复任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskOperationRequest'
+      responses:
+        '200':
+          description: 操作成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /task/cancel:
+    post:
+      summary: 取消任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskOperationRequest'
+      responses:
+        '200':
+          description: 操作成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /sdk/list:
+    get:
+      summary: 查询 SDK 版本列表
+      description: 已装条目返回 recordId 与 installedPath，供卸载与 UI 展示
+      parameters:
+        - name: language
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/LanguageEnum'
+        - name: os
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/OsTypeEnum'
+        - name: arch
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ArchEnum'
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SdkListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /sdk/install:
+    post:
+      summary: 安装 SDK
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SdkInstallRequest'
+      responses:
+        '200':
+          description: 任务已创建
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ExecuteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /sdk/uninstall:
+    post:
+      summary: 卸载 SDK
+      description: recordId 来源于 GET /sdk/list 已装条目
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SdkUninstallRequest'
+      responses:
+        '200':
+          description: 任务已创建
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /sdk/metadata/reload:
+    post:
+      summary: 重载 SDK 元数据
+      description: 从外部文件 {data-root}/config/sdk-metadata.json 热重载（D-009）
+      responses:
+        '200':
+          description: 重载成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/MetadataReloadResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /env/script/{projectId}:
+    get:
+      summary: 获取环境脚本
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/EnvScriptResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /audit:
+    get:
+      summary: 审计日志查询（分页，可按 bizId/action 过滤）
+      parameters:
+        - name: bizId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: action
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AuditListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /settings:
+    get:
+      summary: 读取设置
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Settings'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      summary: 更新设置
+      description: 持久化至 user-settings.json；仅接受白名单键（D-013）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Settings'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /system/info:
+    get:
+      summary: 系统信息
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SystemInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /system/backup:
+    post:
+      summary: 立即备份数据库
+      description: 执行 H2 BACKUP TO，产出一致快照
+      responses:
+        '200':
+          description: 备份成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/BackupResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /system/diagnostic:
+    get:
+      summary: 导出诊断包
+      description: 脱敏后导出 ZIP 至 {data-root}/diagnostics/
+      responses:
+        '200':
+          description: 导出成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DiagnosticResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /health:
+    get:
+      summary: 健康检查
+      description: 唯一免鉴权端点
+      security: []
+      responses:
+        '200':
+          description: 服务正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+  /shutdown:
+    post:
+      summary: 优雅退出
+      description: Electron 退出前调用，Java 完成当前任务后退出
+      responses:
+        '200':
+          description: 已接受退出请求
+        '401':
+          $ref: '#/components/responses/Unauthorized'
