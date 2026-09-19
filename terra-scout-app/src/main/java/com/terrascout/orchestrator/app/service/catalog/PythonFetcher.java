@@ -293,7 +293,7 @@ public class PythonFetcher implements LanguageCatalogFetcher {
         return null;
     }
 
-    /** API release_date（"yyyy-MM-dd" 或 ISO-8601）→ epoch 毫秒；缺失或非法返回 null。 */
+    /** API release_date 时间字符串 → epoch 毫秒；缺失或非法返回 null。 */
     private static Long parseReleaseDate(String text) {
         if (text == null || text.isEmpty()) {
             return null;

@@ -19,7 +19,7 @@
     <description>领域模型、枚举、46 错误码体系、统一路径常量</description>
 
     <dependencies>
-        <!-- JPA 元数据注解（版本由 Boot BOM 管理，3.1.0） -->
+        <!-- JPA 元数据注解（版本由 Boot BOM 管理） -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>

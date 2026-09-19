@@ -269,7 +269,7 @@ public class GoFetcher implements LanguageCatalogFetcher {
         return dates;
     }
 
-    /** GitHub committer.date（ISO-8601）→ epoch 毫秒；缺失或非法返回 null。 */
+    /** GitHub committer.date → epoch 毫秒；缺失或非法返回 null。 */
     private static Long parseCommitDate(String text) {
         if (text == null || text.isEmpty()) {
             return null;

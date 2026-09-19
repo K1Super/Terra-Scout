@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
  *
  * <p>连接超时 10 秒、单请求总超时 30 秒（下载超时口径）；
  * 请求前先做 {@link CatalogUrlPolicy} 白名单校验，非 2xx 一律抛 IOException。
- * 强制 HTTP/1.1：部分官方源（nodejs.org 等）在代理环境下 HTTP/2 协商不稳定，
- * 实测 HTTP/1.1 稳定可达。连接类瞬时故障（连接超时/拒绝）自动重试
+ * 强制低版本 HTTP 协议：部分官方源（nodejs.org 等）在代理环境下高版本协议协商不稳定，
+ * 实测低版本协议稳定可达。连接类瞬时故障（连接超时/拒绝）自动重试
  * {@value #MAX_ATTEMPTS} 次；非 2xx 与读取超时视为确定性结果，不重试。
  */
 public class JavaHttpCatalogHttpClient implements CatalogHttpClient {
@@ -37,7 +37,7 @@ public class JavaHttpCatalogHttpClient implements CatalogHttpClient {
 
     private final HttpClient httpClient;
 
-    /** 生产构造：连接 10s + 请求 30s + 跟随重定向 + HTTP/1.1。 */
+    /** 生产构造：连接 10s + 请求 30s + 跟随重定向 + 低版本 HTTP 协议。 */
     public JavaHttpCatalogHttpClient() {
         this(HttpClient.newBuilder()
                 .connectTimeout(CONNECT_TIMEOUT)

@@ -155,7 +155,7 @@ public class AdoptiumJavaFetcher implements LanguageCatalogFetcher {
         return null;
     }
 
-    /** ISO-8601 时间戳 → epoch 毫秒；缺失或非法返回 null。 */
+    /** 时间戳字符串 → epoch 毫秒；缺失或非法返回 null。 */
     private static Long parseTimestamp(String timestamp) {
         if (timestamp == null || timestamp.isEmpty()) {
             return null;
