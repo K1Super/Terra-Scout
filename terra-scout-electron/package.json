@@ -44,6 +44,9 @@
   },
   "build": {
     "appId": "com.terrascout.desktop",
+    "directories": {
+      "output": "dist-pkg"
+    },
     "artifactName": "TerraScout-Setup-${version}.${ext}",
     "asar": true,
     "electronLanguages": [
@@ -74,7 +77,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "include": "build/installer.nsh"
     }
   }
 }

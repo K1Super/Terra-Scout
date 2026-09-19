@@ -76,4 +76,44 @@ class SettingsServiceTest {
         Map<String, Object> loaded = service.load();
         assertThat((String) loaded.get("logLevel")).isEqualTo("INFO");
     }
+
+    @Test
+    void defaultsCarryAiTemplates() {
+        Map<String, Object> loaded = service.load();
+        assertThat((String) loaded.get("aiProvider")).isEqualTo("deepseek");
+        assertThat((String) loaded.get("aiBaseUrl")).isEqualTo("https://api.deepseek.com");
+        assertThat((String) loaded.get("aiModel")).isEqualTo("deepseek-chat");
+        assertThat((String) loaded.get("aiApiKey")).isEmpty();
+        assertThat((Boolean) loaded.get("aiEnabled")).isEqualTo(false);
+    }
+
+    @Test
+    void aiConfigRoundTripAndNormalization() throws Exception {
+        Map<String, Object> saved = service.save(Map.of(
+                "aiProvider", "glm",
+                "aiBaseUrl", "https://open.bigmodel.cn/api/paas/v4/",
+                "aiModel", "glm-4-flash",
+                "aiApiKey", "sk-0123456789abcdef",
+                "aiEnabled", true));
+        assertThat((String) saved.get("aiProvider")).isEqualTo("glm");
+        // 尾部斜杠被移除
+        assertThat((String) saved.get("aiBaseUrl")).isEqualTo("https://open.bigmodel.cn/api/paas/v4");
+        assertThat((String) saved.get("aiApiKey")).isEqualTo("sk-0123456789abcdef");
+
+        Map<String, Object> reloaded = service.load();
+        assertThat((String) reloaded.get("aiProvider")).isEqualTo("glm");
+        assertThat((String) reloaded.get("aiApiKey")).isEqualTo("sk-0123456789abcdef");
+        assertThat((Boolean) reloaded.get("aiEnabled")).isEqualTo(true);
+    }
+
+    @Test
+    void unknownAiProviderFallsBackToDefaultTemplate() {
+        Map<String, Object> saved = service.save(Map.of(
+                "aiProvider", "not-a-provider",
+                "aiBaseUrl", "",
+                "aiModel", " "));
+        assertThat((String) saved.get("aiProvider")).isEqualTo("deepseek");
+        assertThat((String) saved.get("aiBaseUrl")).isEqualTo("https://api.deepseek.com");
+        assertThat((String) saved.get("aiModel")).isEqualTo("deepseek-chat");
+    }
 }

@@ -22,6 +22,7 @@ coverage/
 *.tsbuildinfo
 
 # ---- Electron 运行时内嵌产物（由打包脚本从外部注入，不入库）----
+terra-scout-electron/dist/
 terra-scout-electron/resources/terrascout.jar
 terra-scout-electron/resources/jre/
 terra-scout-electron/build/win-unpacked/

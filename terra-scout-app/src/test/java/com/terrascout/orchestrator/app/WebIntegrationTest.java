@@ -1,5 +1,6 @@
 package com.terrascout.orchestrator.app;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.stream.Collectors;
 import com.jayway.jsonpath.JsonPath;
 import com.terrascout.orchestrator.TerraScoutApplication;
 import com.terrascout.orchestrator.core.constant.PathConstants;
+
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -332,6 +336,41 @@ class WebIntegrationTest {
                 new HttpEntity<>(headers()), String.class);
         assertThat((String) JsonPath.read(get.getBody(), "$.data.logLevel")).isEqualTo("DEBUG");
         assertThat((Boolean) JsonPath.read(get.getBody(), "$.data.aiEnabled")).isEqualTo(true);
+    }
+
+    @Test
+    void aiTestRejectsUnknownProviderWith400010() {
+        String body = "{\"aiProvider\":\"unknown\",\"aiBaseUrl\":\"https://x.invalid\",\"aiApiKey\":\"k\",\"aiModel\":\"m\"}";
+        ResponseEntity<String> resp = postJson("/api/v1/settings/ai/test", body);
+        assertThat(Integer.valueOf(resp.getStatusCode().value())).isEqualTo(400);
+        assertThat((Integer) JsonPath.read(resp.getBody(), "$.code")).isEqualTo(400010);
+    }
+
+    @Test
+    void aiTestRejectsBlankApiKeyWith400010() {
+        String body = "{\"aiProvider\":\"deepseek\",\"aiBaseUrl\":\"https://api.deepseek.com\","
+                + "\"aiApiKey\":\" \",\"aiModel\":\"deepseek-chat\"}";
+        ResponseEntity<String> resp = postJson("/api/v1/settings/ai/test", body);
+        assertThat(Integer.valueOf(resp.getStatusCode().value())).isEqualTo(400);
+        assertThat((Integer) JsonPath.read(resp.getBody(), "$.code")).isEqualTo(400010);
+    }
+
+    @Test
+    void aiTestAgainstMockServerReportsOk() throws IOException {
+        MockWebServer server = new MockWebServer();
+        try {
+            server.enqueue(new MockResponse().setResponseCode(200).setBody("{}"));
+            server.start();
+            String body = "{\"aiProvider\":\"openai-compatible\",\"aiBaseUrl\":\""
+                    + server.url("/") + "\",\"aiApiKey\":\"sk-test\",\"aiModel\":\"gpt-4o-mini\"}";
+            ResponseEntity<String> resp = postJson("/api/v1/settings/ai/test", body);
+            assertThat(Integer.valueOf(resp.getStatusCode().value())).isEqualTo(200);
+            assertThat((Integer) JsonPath.read(resp.getBody(), "$.code")).isEqualTo(200000);
+            assertThat((Boolean) JsonPath.read(resp.getBody(), "$.data.ok")).isTrue();
+            assertThat((Integer) JsonPath.read(resp.getBody(), "$.data.latencyMs")).isNotNull();
+        } finally {
+            server.shutdown();
+        }
     }
 
     @Test

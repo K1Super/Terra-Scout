@@ -9,7 +9,7 @@ package com.terrascout.orchestrator.core.error;
  *   <li>HTTP 状态码必须等于 code ÷ 1000（{@link #getHttpStatus()} 结构化保证，永不漂移）；</li>
  *   <li>成功响应 = HTTP 200 + {@code 200000}；</li>
  *   <li>幂等重放返回 200 + 200000 + 首次结果，不设错误码；</li>
- *   <li>总量：46 个错误码 / 9 个 HTTP 族。</li>
+ *   <li>总量：47 个错误码 / 9 个 HTTP 族。</li>
  * </ul>
  *
  * <p>新增错误码必须四表同步、保持一致。
@@ -28,6 +28,8 @@ public enum TerraScoutError {
     FIELD_MISSING(400003, "缺少必填字段"),
     /** 400004：idempotencyKey 格式非法。 */
     INVALID_IDEMPOTENCY_KEY(400004, "idempotencyKey 格式非法"),
+    /** 400010：AI 配置不完整或非法。 */
+    AI_CONFIG_INVALID(400010, "AI 配置不完整或非法"),
 
     // ==================== 401 · 鉴权失败 ====================
     /** 401001：Token 缺失或校验失败。 */

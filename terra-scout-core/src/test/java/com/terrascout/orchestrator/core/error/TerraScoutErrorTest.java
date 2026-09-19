@@ -20,14 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class TerraScoutErrorTest {
 
-    /** 错误码（不含 SUCCESS）应恰为 46 个。 */
+    /** 错误码（不含 SUCCESS）应恰为 47 个。 */
     @Test
-    @DisplayName("错误码总量 = 46（不含成功码 200000）")
-    void errorCountIs46() {
+    @DisplayName("错误码总量 = 47（不含成功码 200000）")
+    void errorCountIs47() {
         long errorCount = Stream.of(TerraScoutError.values())
                 .filter(e -> e != TerraScoutError.SUCCESS)
                 .count();
-        assertThat(errorCount).isEqualTo(46);
+        assertThat(errorCount).isEqualTo(47);
     }
 
     /** 全部 code（含 SUCCESS）唯一。 */
@@ -54,7 +54,7 @@ class TerraScoutErrorTest {
         }
     }
 
-    /** 族计数：400:4 / 401:1 / 403:4 / 404:3 / 409:6 / 422:15 / 500:7 / 502:4 / 507:2。 */
+    /** 族计数：400:5 / 401:1 / 403:4 / 404:3 / 409:6 / 422:15 / 500:7 / 502:4 / 507:2。 */
     @Test
     @DisplayName("HTTP 族分布与预期一致")
     void familyDistributionMatchesSpec() {
@@ -62,7 +62,7 @@ class TerraScoutErrorTest {
                 .filter(e -> e != TerraScoutError.SUCCESS)
                 .collect(Collectors.groupingBy(TerraScoutError::getHttpStatus, TreeMap::new, Collectors.counting()));
         Map<Integer, Long> expected = Map.of(
-                400, 4L,
+                400, 5L,
                 401, 1L,
                 403, 4L,
                 404, 3L,

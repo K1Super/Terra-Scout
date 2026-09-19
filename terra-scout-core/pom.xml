@@ -16,7 +16,7 @@
 
     <artifactId>terra-scout-core</artifactId>
     <name>Terra Scout Core</name>
-    <description>领域模型、枚举、46 错误码体系、统一路径常量</description>
+    <description>领域模型、枚举、47 错误码体系、统一路径常量</description>
 
     <dependencies>
         <!-- JPA 元数据注解（版本由 Boot BOM 管理） -->

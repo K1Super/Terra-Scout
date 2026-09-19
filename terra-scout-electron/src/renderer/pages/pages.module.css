@@ -522,6 +522,22 @@
   color: var(--gray-400);
 }
 
+/* AI 辅助卡片：测试连接按钮与模板提示同行，提示右端贴合 */
+.aiTestRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-comp-3);
+  min-height: 28px;
+}
+
+.aiHint {
+  font-size: var(--font-xs);
+  color: var(--gray-500);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* 数据刷新中（如 SDK 页切换语言）：内容区半透明过渡，避免整页替换造成分段控件频闪 */
 .updating {
   opacity: 0.55;

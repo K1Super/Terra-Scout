@@ -1,17 +1,16 @@
-# Dev mode launcher for Terra Scout Electron app.
-# - Prereq backend jar: run "mvn package -DskipTests" at repo root (app/target/terra-scout-app-0.1.0-SNAPSHOT.jar)
-# - Bootstrap-safe (fixes instant-close "flash exit"):
-#   1) working dir pin to electron project root (npx electron . depends on cwd)
-#   2) auto npm run build when dist/main or dist/renderer is missing/stale
-#   3) clear error when java is missing instead of silent electron exit
-#   4) console output teed to %USERPROFILE%\.terrascout\logs\electron-console.log for diagnosis
-#      (separate file: electron.log is owned by the Electron main process logger)
-# NOTE: keep this file ASCII-only (Windows PowerShell 5.1 parses non-BOM UTF-8 as ANSI).
+﻿# Terra Scout 本机联调启动器。
+# 前置：仓库根已构建后端 jar（mvn package -DskipTests → terra-scout-app/target/…jar）。
+# Bootstrap 防闪退：
+#   1) 工作目录钉到 electron 工程根（npx electron . 依赖 cwd）
+#   2) dist/main 或 dist/renderer 缺失/过期时自动 npm run build
+#   3) 缺少 java 时给出明确报错而非静默退出
+#   4) 控制台输出同步落盘 %USERPROFILE%\.terrascout\logs\electron-console.log
+#      （独立文件：electron.log 归 Electron 主进程 logger 所有）
 $ErrorActionPreference = 'Stop'
 
-$electronRoot = Split-Path -Parent $PSScriptRoot                     # parent of scripts\ = electron project root
-$repoRoot = Split-Path -Parent $electronRoot                          # repo root
-$jar = Join-Path $repoRoot 'terra-scout-app\target\terra-scout-app-0.1.0-SNAPSHOT.jar'
+$root = Split-Path -Parent $PSScriptRoot
+$electronRoot = Join-Path $root 'terra-scout-electron'
+$jar = Join-Path $root 'terra-scout-app\target\terra-scout-app-0.1.0-SNAPSHOT.jar'
 if (-not (Test-Path $jar)) {
   Write-Host "[dev] backend jar not found: $jar" -ForegroundColor Yellow
   Write-Host '[dev] build it first at repo root: mvn package -DskipTests' -ForegroundColor Yellow
@@ -20,8 +19,8 @@ if (-not (Test-Path $jar)) {
 
 Push-Location $electronRoot
 try {
-  # dist guard: electron package.json main points to dist/main/index.js and the
-  # window loads dist/renderer/index.html; missing/stale dist crashes electron instantly.
+  # dist 守卫：package.json main 指向 dist/main/index.js，窗口加载 dist/renderer/index.html；
+  # missing/stale dist 会让 electron 瞬间退出。
   $mainEntry = Join-Path $electronRoot 'dist\main\index.js'
   $rendererEntry = Join-Path $electronRoot 'dist\renderer\index.html'
   $mainSrc = Join-Path $electronRoot 'src\main\index.ts'

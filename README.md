@@ -58,7 +58,7 @@ npm run dev
 
 > 内核启动后通过 stdout `READY <port>` 与 Electron 握手；运行时数据（H2 / 日志 / SDK 仓库）默认位于 `~/.terrascout`，首启自动生成 H2 密码并持久化。
 
-打包发布：`cd terra-scout-electron && npm run build && npm run package`（NSIS 安装包，详见 [deployment-guide.md](docs/deployment-guide.md)）。
+打包发布：`powershell -ExecutionPolicy Bypass -File scripts/build.ps1`（NSIS 安装包，详见 [deployment-guide.md](docs/deployment-guide.md)）。
 
 ## 文档导航
 

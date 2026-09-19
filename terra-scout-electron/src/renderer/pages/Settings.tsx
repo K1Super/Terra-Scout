@@ -1,21 +1,24 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Database, FileArchive, Save } from 'lucide-react';
-import { Form, InputNumber, Select, Switch, Modal, message } from 'antd';
+import { Form, Input, InputNumber, Select, Switch, Modal, message } from 'antd';
 import { api, ApiError } from '../api/client';
-import type { Settings } from '../api/types';
+import type { AiTestResult, Settings } from '../api/types';
+import { AI_PROVIDER_TEMPLATES, aiTemplateOf, applyProviderTemplate } from '../lib/aiTemplates';
 import { PageLoading } from '../components/Common';
 import styles from './pages.module.css';
 
 const LOG_LEVELS = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
 
 /**
- * 设置页：AI 开关 + 镜像源 + 日志 + 备份/诊断。
+ * 设置页：AI 辅助（标准配置模板 + 连通性测试）+ 镜像源 + 日志 + 备份/诊断。
  * 页头放语境统计（就绪的设置分组数）与保存动作；
  * 分组用 11px 大写小标分隔，替代粗分隔线。
  */
 export default function SettingsPage(): React.JSX.Element {
   const [form] = Form.useForm<Settings>();
+  const [testing, setTesting] = useState(false);
+  const provider = Form.useWatch('aiProvider', form) as string | undefined;
 
   const settingsQuery = useQuery({
     queryKey: ['settings'],
@@ -51,9 +54,49 @@ export default function SettingsPage(): React.JSX.Element {
     onSuccess: (d) => message.success(`诊断包已导出：${d.zipPath}`),
   });
 
+  /** 用当前表单值（不落盘）执行一次真实连通性探测。 */
+  async function testConnection(): Promise<void> {
+    const current = form.getFieldsValue();
+    const currentProvider = (current.aiProvider as string | undefined) ?? 'deepseek';
+    const template = aiTemplateOf(currentProvider);
+    const baseUrl = (current.aiBaseUrl ?? '').trim() || (template?.baseUrl ?? '');
+    const apiKey = (current.aiApiKey ?? '').trim();
+    const model = (current.aiModel ?? '').trim() || (template?.model ?? '');
+    if (!baseUrl) {
+      message.warning('请先填写接入地址');
+      return;
+    }
+    if (!apiKey) {
+      message.warning('请先填写 API Key');
+      return;
+    }
+    setTesting(true);
+    try {
+      const result = await api.post<AiTestResult>('/settings/ai/test', {
+        aiProvider: currentProvider,
+        aiBaseUrl: baseUrl,
+        aiApiKey: apiKey,
+        aiModel: model,
+      });
+      if (result.ok) {
+        message.success(`连接成功（${result.latencyMs ?? 0} ms）`);
+      } else {
+        message.error(`连接失败：${result.message}`);
+      }
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        message.error(`${e.code} ${e.message}`);
+      }
+    } finally {
+      setTesting(false);
+    }
+  }
+
   if (settingsQuery.isLoading) {
     return <PageLoading />;
   }
+
+  const activeHint = aiTemplateOf(provider ?? (form.getFieldValue('aiProvider') ?? 'deepseek'))?.hint;
 
   return (
     <div>
@@ -87,6 +130,40 @@ export default function SettingsPage(): React.JSX.Element {
             <Form.Item name="aiEnabled" label="启用 AI 环境规划与报错诊断" valuePropName="checked">
               <Switch />
             </Form.Item>
+            <Form.Item name="aiProvider" label="AI 供应商">
+              <Select
+                options={AI_PROVIDER_TEMPLATES.map((t) => ({ value: t.value, label: t.label }))}
+                onChange={(next: string) => {
+                  const prev = form.getFieldsValue();
+                  const filled = applyProviderTemplate(
+                    (prev.aiProvider as string | undefined) ?? 'deepseek',
+                    { baseUrl: prev.aiBaseUrl, model: prev.aiModel },
+                    next,
+                  );
+                  form.setFieldsValue({ aiBaseUrl: filled.baseUrl, aiModel: filled.model });
+                }}
+              />
+            </Form.Item>
+            <Form.Item name="aiBaseUrl" label="接入地址">
+              <input className={styles.input} placeholder="https://api.deepseek.com" />
+            </Form.Item>
+            <Form.Item name="aiApiKey" label="API Key">
+              <Input.Password placeholder="sk-..." autoComplete="new-password" />
+            </Form.Item>
+            <Form.Item name="aiModel" label="模型">
+              <input className={styles.input} placeholder="deepseek-chat" />
+            </Form.Item>
+            <div className={styles.aiTestRow}>
+              <button
+                type="button"
+                className={styles.btn}
+                onClick={() => void testConnection()}
+                disabled={testing}
+              >
+                {testing ? '测试中…' : '测试连接'}
+              </button>
+              {activeHint ? <span className={styles.aiHint}>{activeHint}</span> : null}
+            </div>
           </div>
 
           <div className={styles.card}>

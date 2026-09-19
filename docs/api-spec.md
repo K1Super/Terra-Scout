@@ -53,6 +53,7 @@
 | 400002 | 请求体 JSON 结构非法 |
 | 400003 | 缺少必填字段 |
 | 400004 | `idempotencyKey` 格式非法 |
+| 400010 | AI 配置不完整或非法 |
 
 #### 401 · 鉴权失败
 
@@ -152,7 +153,7 @@
 
 | HTTP | 数量 |
 |---|---|
-| 400 | 4 |
+| 400 | 5 |
 | 401 | 1 |
 | 403 | 4 |
 | 404 | 3 |
@@ -161,9 +162,9 @@
 | 500 | 7 |
 | 502 | 4 |
 | 507 | 2 |
-| **合计** | **46** |
+| **合计** | **47** |
 
-**46 个错误码，9 个 HTTP 分类，一张表管完。**
+**47 个错误码，9 个 HTTP 分类，一张表管完。**
 
 > 一句话总结：**6 位数字：前 3 位 HTTP 状态码，后 3 位业务序号；HTTP 状态码与 code 前 3 位强一致。**
 
@@ -560,21 +561,28 @@ GET /api/v1/audit?bizId=uuid&action=TASK_CREATE&page=1&size=20
 ```http
 GET /api/v1/settings
 PUT /api/v1/settings
+POST /api/v1/settings/ai/test
 ```
 
-请求/响应体（AI 开关并入本端点，原 `/ai/config` 已废弃）：
+请求/响应体（AI 配置并入本端点，含供应商标准模板与自建覆盖；`aiApiKey` 仅本地持久化，诊断包与日志一律掩码）：
 
 ```json
 {
   "download": { "mirror": "https://repo.huaweicloud.com", "timeoutMs": 60000, "maxRetry": 3 },
   "commandTimeoutMs": 600000,
   "logLevel": "INFO",
-  "aiEnabled": false
+  "aiEnabled": false,
+  "aiProvider": "deepseek",
+  "aiBaseUrl": "https://api.deepseek.com",
+  "aiModel": "deepseek-chat",
+  "aiApiKey": ""
 }
 ```
 
-- 持久化至 `user-settings.json`（D-13）；仅接受白名单键
-- 热生效：镜像 / 超时 / 重试 / 日志级别 / AI 开关；线程池与心跳参数需重启（见 deployment-guide.md 配置参考）
+- `aiProvider` 取值 `deepseek` / `glm` / `openai-compatible`（标准模板：默认接入地址 + 推荐模型，均可在保存时覆盖；非法供应商忽略并回落默认，`aiBaseUrl` 尾部斜杠自动去除、空值回落模板默认）
+- 持久化至 `user-settings.json`；仅接受白名单键
+- 热生效：镜像 / 超时 / 重试 / 日志级别 / AI 开关与配置；线程池与心跳参数需重启（见 deployment-guide.md 配置参考）
+- `POST /settings/ai/test`：对提交的整段 AI 配置（不落盘）发起一次最小真实对话补全探测；入参不完整或非法（供应商不在模板集 / API Key 为空）→ `400010 AI_CONFIG_INVALID`；探测结果统一 `200 + 200000`，`data` 为 `{ ok, message, latencyMs }`（探测失败属预期结果，非业务异常）
 
 ### 4.16 系统信息 / 备份 / 诊断包
 

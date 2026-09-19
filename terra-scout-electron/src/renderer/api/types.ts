@@ -246,6 +246,17 @@ export interface Settings {
   commandTimeoutMs: number;
   logLevel: string;
   aiEnabled: boolean;
+  aiProvider?: string;
+  aiBaseUrl?: string;
+  aiApiKey?: string;
+  aiModel?: string;
+}
+
+/** AI 接入连通性测试结果。 */
+export interface AiTestResult {
+  ok: boolean;
+  message: string;
+  latencyMs?: number;
 }
 
 // ── 系统 ──────────────────────────────────────

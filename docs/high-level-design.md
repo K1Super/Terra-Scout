@@ -1270,17 +1270,20 @@ terrascout/
 │   │       └── V1__init.sql                # 单一基线，变更一律新增 V<n>（D-005）
 │   └── pom.xml
 │
+├── scripts/                               # 项目构建 / 门禁 / 联调脚本（UTF-8 BOM，PowerShell 5.1 兼容）
+│   ├── build.ps1                          # 一键生产构建：mvn package → build-jre → 前端 → NSIS 安装包
+│   ├── build-jre.ps1                      # mvn package → jlink 12 模块（硬编码基线，随 mvn verify 门禁校验）
+│   ├── test.ps1                           # 全量质量门禁：后端 mvn test + 前端 typecheck/单测
+│   ├── dev.ps1                            # 本机联调（TERRA_SCOUT_JAR=后端 target jar，JAVA_BIN=java）
+│   └── dev.bat                            # dev.ps1 双击入口（保持窗口可见错误）
+│
 ├── terra-scout-electron/                      # Electron UI（独立 npm 工程，不进 Maven reactor）
 │   ├── package.json                        # electron 30 / react 18 / antd 5 / lucide-react / zustand / @tanstack/react-query / vite / vitest / electron-builder；main=dist/main/index.js
 │   ├── tsconfig.json                       # 渲染层 + 测试（typecheck，noEmit）
 │   ├── tsconfig.main.json                  # 主进程 + preload 编译（CommonJS → dist/）
 │   ├── vite.config.ts                      # 渲染层构建（root=src/renderer → dist/renderer，base './'；CSS Modules + 路由级懒加载）
 │   ├── vitest.config.ts                    # 进程/工具单测门禁
-│   ├── scripts/
-│   │   ├── dev.ps1                         # 本机联调（TERRA_SCOUT_JAR=后端 target jar，JAVA_BIN=java）
-│   │   ├── build-jre.ps1                   # mvn package → jdeps 校验 → jlink 12 模块（release 8.2/8.3，D-010）
-│   │   └── build-app.ps1                   # npm run build + electron-builder --win nsis（resources 带 jar+jre）
-│   ├── resources/                          # 打包产物（.gitignore，build-jre/build-app 填充）
+│   ├── resources/                          # 打包产物（.gitignore，由根 scripts 构建脚本填充）
 │   │   ├── terrascout.jar
 │   │   └── jre/                            # 裁剪 JRE（bin/java.exe）
 │   ├── src/
