@@ -1,4 +1,4 @@
-/** 生成 UUID v4（幂等键 idempotencyKey，rest-schema 3.5）。 */
+/** 生成 UUID v4（幂等键 idempotencyKey）。 */
 export function uuid(): string {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID();

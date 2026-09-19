@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 枚举三表同步断言（master-plan §0：ddl-migration 2.4 ↔ openapi.yaml ↔ core 枚举类）。
+ * 枚举三表同步断言（三处枚举定义须保持一致）。
  *
- * <p>任何一方漂移（DDL 改枚举值 / openapi 改枚举 / core 改枚举）在此立即暴露。
+ * <p>任何一方漂移（任一来源的枚举定义被改动）在此立即暴露。
  */
 class EnumsSyncTest {
 
@@ -21,25 +21,25 @@ class EnumsSyncTest {
     }
 
     @Test
-    @DisplayName("LanguageEnum = ddl 2.4 sdk_version.language")
+    @DisplayName("LanguageEnum = sdk_version.language")
     void languageEnumMatchesDdl() {
         assertThat(names(LanguageEnum.values())).containsExactly("JAVA", "NODE", "PYTHON", "GO");
     }
 
     @Test
-    @DisplayName("OsTypeEnum = ddl 2.4 project.os_type / sdk_version.os")
+    @DisplayName("OsTypeEnum = project.os_type / sdk_version.os")
     void osTypeEnumMatchesDdl() {
         assertThat(names(OsTypeEnum.values())).containsExactly("WINDOWS", "MACOS", "LINUX");
     }
 
     @Test
-    @DisplayName("ArchEnum = ddl 2.4 sdk_version.arch")
+    @DisplayName("ArchEnum = sdk_version.arch")
     void archEnumMatchesDdl() {
         assertThat(names(ArchEnum.values())).containsExactly("AMD64", "ARM64");
     }
 
     @Test
-    @DisplayName("TaskStatusEnum = ddl 2.4 task.status（9 状态）")
+    @DisplayName("TaskStatusEnum = task.status（9 状态）")
     void taskStatusEnumMatchesDdl() {
         assertThat(names(TaskStatusEnum.values())).containsExactly(
                 "PENDING", "QUEUED", "RUNNING", "PAUSED",
@@ -47,48 +47,48 @@ class EnumsSyncTest {
     }
 
     @Test
-    @DisplayName("TaskTypeEnum = ddl 2.4 task.task_type")
+    @DisplayName("TaskTypeEnum = task.task_type")
     void taskTypeEnumMatchesDdl() {
         assertThat(names(TaskTypeEnum.values())).containsExactly(
                 "PROJECT_ASSEMBLE", "SDK_INSTALL", "SDK_UNINSTALL", "DEPENDENCY_INSTALL", "VERIFY_PROJECT");
     }
 
     @Test
-    @DisplayName("StepStatusEnum = ddl 2.4 task_step.status")
+    @DisplayName("StepStatusEnum = task_step.status")
     void stepStatusEnumMatchesDdl() {
         assertThat(names(StepStatusEnum.values())).containsExactly(
                 "PENDING", "RUNNING", "SUCCESS", "FAILED", "SKIPPED", "ROLLED_BACK");
     }
 
     @Test
-    @DisplayName("ScopeEnum = ddl 2.4 sdk_install_record.scope")
+    @DisplayName("ScopeEnum = sdk_install_record.scope")
     void scopeEnumMatchesDdl() {
         assertThat(names(ScopeEnum.values())).containsExactly("GLOBAL", "PROJECT");
     }
 
     @Test
-    @DisplayName("InstallStatusEnum = ddl 2.4 sdk_install_record.status")
+    @DisplayName("InstallStatusEnum = sdk_install_record.status")
     void installStatusEnumMatchesDdl() {
         assertThat(names(InstallStatusEnum.values())).containsExactly(
                 "INSTALLING", "SUCCESS", "FAILED", "ROLLED_BACK");
     }
 
     @Test
-    @DisplayName("CommandStatusEnum = ddl 2.4 command_execution.status")
+    @DisplayName("CommandStatusEnum = command_execution.status")
     void commandStatusEnumMatchesDdl() {
         assertThat(names(CommandStatusEnum.values())).containsExactly(
                 "RUNNING", "SUCCESS", "FAILED", "TIMEOUT");
     }
 
     @Test
-    @DisplayName("CveSeverityEnum = ddl 2.4 sdk_version.highest_cve_severity（D-017）")
+    @DisplayName("CveSeverityEnum = sdk_version.highest_cve_severity")
     void cveSeverityEnumMatchesDdl() {
         assertThat(names(CveSeverityEnum.values())).containsExactly(
                 "NONE", "LOW", "MEDIUM", "HIGH", "CRITICAL");
     }
 
     @Test
-    @DisplayName("ProjectTypeEnum = openapi AnalyzeResponse.type")
+    @DisplayName("ProjectTypeEnum = AnalyzeResponse.type")
     void projectTypeEnumMatchesOpenapi() {
         assertThat(names(ProjectTypeEnum.values()))
                 .containsExactly("MAVEN", "NPM", "GO", "PYTHON", "MIXED", "UNKNOWN");

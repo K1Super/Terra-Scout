@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * Token 鉴权拦截器（security.md 6.2 / exception-strategy.md 7.3）。
+ * Token 鉴权拦截器。
  *
- * <p>校验失败统一返回 HTTP 401 + 业务码 401001（D-001 强约束：HTTP 状态码与错误码前 3 位强一致）。
+ * <p>校验失败统一返回 HTTP 401 + 业务码 401001（HTTP 状态码与错误码前 3 位强一致）。
  * 免鉴权白名单仅 {@code GET /api/v1/health}；其余路径全部经此项拦截，防止新端点漏鉴权。
  */
 @Component
@@ -56,7 +56,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         TraceContext.clear();
     }
 
-    /** 写 401 + 401001 JSON，HTTP 状态码与业务码前缀强一致（D-001）。 */
+    /** 写 401 + 401001 JSON，HTTP 状态码与业务码前缀强一致。 */
     private void writeUnauthorized(HttpServletResponse response) throws IOException {
         response.setStatus(TerraScoutError.TOKEN_INVALID.getHttpStatus());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());

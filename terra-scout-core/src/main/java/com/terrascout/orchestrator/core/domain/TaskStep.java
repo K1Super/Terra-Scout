@@ -10,10 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * 任务步骤实体（ddl-migration.md 2.3 表 task_step）。
+ * 任务步骤实体（表 task_step）。
  *
  * <p>(task_id, step_index) 唯一；rollback_json 记录回滚所需上下文（如前向操作产生的目录），
- * 由 state-machine.md 回滚链消费。
+ * 由回滚链消费。
  */
 @Entity
 @Table(name = "task_step")

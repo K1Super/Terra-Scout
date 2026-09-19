@@ -1,5 +1,5 @@
 /**
- * 错误码 → UI 映射（docs/coding-standards.md §8）。
+ * 错误码 → UI 映射。
  * 未收录的错误码回退到通用"服务异常"。
  */
 export type ErrorTone = 'red' | 'yellow';

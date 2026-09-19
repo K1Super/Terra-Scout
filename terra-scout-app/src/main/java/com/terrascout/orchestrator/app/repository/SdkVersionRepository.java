@@ -11,11 +11,11 @@ import com.terrascout.orchestrator.core.enums.OsTypeEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * SDK 版本仓储（表 sdk_version；(language, version, os, arch) 唯一，D-017 与元数据字段一一对应）。
+ * SDK 版本仓储（表 sdk_version；(language, version, os, arch) 唯一，与元数据字段一一对应）。
  */
 public interface SdkVersionRepository extends JpaRepository<SdkVersion, String> {
 
-    /** 按语言、OS、架构过滤（未指定维度时可传 null；rest-schema 3.4.10）。 */
+    /** 按语言、OS、架构过滤（未指定维度时可传 null）。 */
     List<SdkVersion> findByLanguageAndOsAndArch(LanguageEnum language, OsTypeEnum os, ArchEnum arch);
 
     /** 按唯一键 (language, version, os, arch) 精确查找（元数据 upsert 主键定位）。 */

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 项目类型检测器单测（裁决 R46）：根级声明文件检测 + 「选了上级目录」的子目录候选枚举。
+ * 项目类型检测器单测：根级声明文件检测 + 「选了上级目录」的子目录候选枚举。
  */
 class ProjectTypeDetectorTest {
 
@@ -38,7 +38,7 @@ class ProjectTypeDetectorTest {
         assertThat(ProjectTypeDetector.detect(empty)).isEqualTo(ProjectTypeEnum.UNKNOWN);
     }
 
-    // ---- 裁决 R48：GO / PYTHON 与多语言组合 ----
+    // ---- GO / PYTHON 与多语言组合 ----
 
     @Test
     void detectRecognizesGoAndPythonManifests() throws Exception {

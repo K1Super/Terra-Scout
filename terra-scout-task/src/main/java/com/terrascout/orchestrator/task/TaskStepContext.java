@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 任务步骤执行上下文（task-step-definition.md 5.5）。
+ * 任务步骤执行上下文。
  *
  * <p>承载单步执行的输入/输出/回滚数据，由 {@link TaskEngine} 在每步执行前创建，
  * 完成后保留以供回滚复用。

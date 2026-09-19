@@ -15,10 +15,10 @@ import com.terrascout.orchestrator.core.constant.PathConstants;
 import org.springframework.stereotype.Service;
 
 /**
- * 诊断包服务（process-management.md 5.9 / rest-schema 3.4.16）。
+ * 诊断包服务。
  *
  * <p>一键导出：日志 + 设置 + 环境信息；输出脱敏 ZIP 到 {@code {data-root}/diagnostics/}。
- * 出于安全，<b>不包含</b>含数据库密码的 {@code db.properties}（security 安全红线 7）。
+ * 出于安全，<b>不包含</b>含数据库密码的 {@code db.properties}（安全红线约束）。
  */
 @Service
 public class DiagnosticService {

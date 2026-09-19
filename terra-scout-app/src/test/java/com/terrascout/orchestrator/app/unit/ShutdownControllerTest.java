@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * 优雅关闭控制器单测（process-management 5.5）：返回 SHUTTING_DOWN 并异步触发 {@code context.close()}。
+ * 优雅关闭控制器单测：返回 SHUTTING_DOWN 并异步触发 {@code context.close()}。
  *
  * <p>不放在共享 @SpringBootTest 上下文（避免关闭共享 context 影响其他测试），用 mock context；
  * {@link ShutdownController} 在 daemon 线程 (sleep 200ms) 后关闭 Spring 上下文。

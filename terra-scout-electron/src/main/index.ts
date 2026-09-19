@@ -6,7 +6,7 @@ import { JavaProcess, resolveJarPath } from './java-process';
 import { setDataDir, getKernelInfo, type KernelInfo } from './kernel-info';
 import { registerIpcHandlers, broadcastToRenderers } from './ipc-handlers';
 
-/** 数据目录固定为 %USERPROFILE%\.terrascout（release 8.6 卸载保留用户数据）。 */
+/** 数据目录固定为 %USERPROFILE%\.terrascout（卸载保留用户数据）。 */
 const DATA_DIR = (process.env.TERRASCOUT_DATA_DIR ?? join(homedir(), '.terrascout'));
 
 /** 本机联调：未打包时 jar 指向后端 target。 */

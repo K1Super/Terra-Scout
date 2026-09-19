@@ -13,7 +13,7 @@ import { api } from './api/client';
 import KernelStatus from './components/KernelStatus';
 import styles from './app.module.css';
 
-// 路由级懒加载（spec §9.6.3）
+// 路由级懒加载
 const HomePage = lazy(() => import('./pages/Home'));
 const ProjectDetailPage = lazy(() => import('./pages/ProjectDetail'));
 const TasksPage = lazy(() => import('./pages/Tasks'));

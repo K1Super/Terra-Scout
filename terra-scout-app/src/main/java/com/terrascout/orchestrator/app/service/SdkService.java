@@ -45,7 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * SDK 服务（rest-schema.md 3.4.10-3.4.12、3.4.18 / D-004、D-009、D-017）。
+ * SDK 服务。
  *
  * <p>list 合并 {@code sdk_version} 元数据与 {@code sdk_install_record} 安装记录，
  * 给出 installed / recordId / installedPath，并按版本号数字段升序返回；
@@ -133,7 +133,7 @@ public class SdkService {
             }
             items.add(item);
         }
-        // 系统项合成（R29）：元数据未收录的系统已装版本也要可见（全新安装元数据为空时页面不空）；
+        // 系统项合成：元数据未收录的系统已装版本也要可见（全新安装元数据为空时页面不空）；
         // 与 catalog 同样遵守语言过滤，探测面仅本机 WINDOWS/AMD64
         for (Map.Entry<LanguageEnum, Map<String, String>> languageEntry : systemMap.entrySet()) {
             LanguageEnum lang = languageEntry.getKey();
@@ -169,11 +169,11 @@ public class SdkService {
     }
 
     /**
-     * 安装：立即返回异步任务 jobId（3.4.18 轮询进度）；后台真实下载 + 校验 + 解压 +
+     * 安装：立即返回异步任务 jobId（轮询进度）；后台真实下载 + 校验 + 解压 +
      * 幂等写记录。已装版本直接返回 SUCCESS 结果（无需任务）。
-     *
-     * <p>installDir 可选（3.4.11，R45）：用户自选目录作为仓库根，自动落位
-     * {@code 所选目录\{语言小写}\{版本}}；缺省回落 D-004 标准仓库。已装复用分支
+ *
+ * <p>installDir 可选（多语言）：用户自选目录作为仓库根，自动落位
+ * {@code 所选目录\{语言小写}\{版本}}；缺省回落标准仓库。已装复用分支
      * 不校验 installDir（复用语义不变）。
      */
     public Map<String, Object> install(LanguageEnum language, String version,
@@ -218,7 +218,7 @@ public class SdkService {
         return result;
     }
 
-    /** 解析安装落位目录（R45）：installDir 非空 = 自定义根，校验后拼 {根}\{语言}\{版本}；空 = 标准仓库。 */
+    /** 解析安装落位目录：installDir 非空 = 自定义根，校验后拼 {根}\{语言}\{版本}；空 = 标准仓库。 */
     private static Path resolveInstallHome(LanguageEnum language, String version, String installDir) {
         if (installDir == null || installDir.isBlank()) {
             return PathConstants.sdkHome(PathConstants.dataRoot(), language, version);
@@ -243,7 +243,7 @@ public class SdkService {
         return home;
     }
 
-    /** 安装进度查询（3.4.18）：按 jobId 取内存快照。 */
+    /** 安装进度查询：按 jobId 取内存快照。 */
     public Map<String, Object> installProgress(String jobId) {
         return progressStore.get(jobId)
                 .map(SdkInstallProgressStore.Snapshot::toMap)
@@ -252,7 +252,7 @@ public class SdkService {
     }
 
     /**
-     * 取消安装任务（3.4.18）：置取消信号并返回最新快照。工作线程在最近检查点
+     * 取消安装任务：置取消信号并返回最新快照。工作线程在最近检查点
      * （下载块 / 阶段边界）中止，清理 .part 与半解压残留后收敛 CANCELLED 终态。
      * 任务已终态（DONE / FAILED / CANCELLED）拒绝（409005）。
      */
@@ -393,7 +393,7 @@ public class SdkService {
     }
 
     /**
-     * 重载 SDK 元数据（rest-schema 3.4.12 / D-009）：官方源在线拉取 → 分语言 upsert
+     * 重载 SDK 元数据：官方源在线拉取 → 分语言 upsert
      * → 淘汰过老 JAVA（major &lt; {@link AdoptiumJavaFetcher#MIN_MAJOR}）
      * → 响应分语言状态。全部语言失败时回退本地外部文件；两者皆不可用抛 502001。
      */
@@ -444,7 +444,7 @@ public class SdkService {
         return result;
     }
 
-    /** 淘汰过老 JAVA 版本元数据（major &lt; MIN_MAJOR），返回删除条数（rest-schema 3.4.12）。 */
+    /** 淘汰过老 JAVA 版本元数据（major &lt; MIN_MAJOR），返回删除条数。 */
     private int purgeStaleJava() {
         List<SdkVersion> stale = versionRepository.findAll().stream()
                 .filter(v -> v.getLanguage() == LanguageEnum.JAVA)

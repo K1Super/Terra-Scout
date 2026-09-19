@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Terra Scout 环境感知编排平台 · 父 POM
-  规范依据：docs/SRS.md（技术栈矩阵、质量门禁、D-012 依赖最小化）
+  规范说明：技术栈矩阵、质量门禁、依赖最小化
   模块顺序：core → parser → download → task → env → app；electron 为独立 npm 工程
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -18,7 +18,7 @@
     <description>Terra Scout 环境感知编排平台 - 多模块父工程</description>
 
     <modules>
-        <!-- 按 master-plan §7 顺序逐步加入，未建成的模块不声明 -->
+        <!-- 按依赖顺序逐步加入，未建成的模块不声明 -->
         <module>terra-scout-core</module>
         <module>terra-scout-parser</module>
         <module>terra-scout-download</module>
@@ -33,7 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- 技术栈版本矩阵（master-plan §3 / dependencies.md 11.6） -->
+        <!-- 技术栈版本矩阵 -->
         <spring-boot.version>3.2.5</spring-boot.version>
         <okhttp.version>4.12.0</okhttp.version>
         <zip4j.version>2.11.5</zip4j.version>
@@ -46,7 +46,7 @@
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
 
-        <!-- 覆盖率门禁：生产级标准 ≥ 80%（严于 master-plan §6 的 75%） -->
+        <!-- 覆盖率门禁：生产级标准 ≥ 80% -->
         <coverage.minimum>0.80</coverage.minimum>
     </properties>
 
@@ -60,7 +60,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- BOM 未管理的第三方（dependencies.md 11.6 显式版本） -->
+            <!-- BOM 未管理的第三方（显式版本） -->
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
@@ -186,7 +186,7 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- 环境守门：JDK 17+ / Maven 3.9+（master-plan §3 构建要求） -->
+            <!-- 环境守门：JDK 17+ / Maven 3.9+ -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -210,7 +210,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 代码规范：全部 Java 模块强制执行（master-plan §6） -->
+            <!-- 代码规范：全部 Java 模块强制执行 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>

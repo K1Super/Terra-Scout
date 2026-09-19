@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * 项目导入分析单测（裁决 R46/R47）：根目录无声明文件时采纳唯一子目录候选为项目根；
+ * 项目导入分析单测：根目录无声明文件时采纳唯一子目录候选为项目根；
  * 无候选 / 多候选时 422001 携带 selectedPath / candidates / hint 明细；根级声明文件保持原根；
  * 分析/详情返回完整画像（type / constraints / 预览计划）。
  */
@@ -146,7 +146,7 @@ class ProjectServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // ---- 裁决 R47：完整画像与预览计划 ----
+    // ---- 完整画像与预览计划 ----
 
     @Test
     void analyzePersistsProfileWithTypeAndReturnsPreviewPlan() throws Exception {

@@ -14,17 +14,17 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * 归档解压器（Zip4j；security.md 6.7 四重安全检查，解压中止 → 422010 ARCHIVE_UNSAFE）。
+ * 归档解压器（Zip4j；四重安全检查，解压中止 → 422010 ARCHIVE_UNSAFE）。
  *
  * <p>四重检查：Zip-Slip 路径穿越、符号/硬链接与设备文件、单文件解压后大小、文件总数。
  * 另做解压目标磁盘空间校验（不足 → 507002 EXTRACT_DISK_FULL）。
  */
 public final class ArchiveExtractor {
 
-    /** 解压文件总数上限（security.md 6.7）。 */
+    /** 解压文件总数上限。 */
     public static final long MAX_ENTRY_COUNT = 100_000L;
 
-    /** 单文件解压后大小上限：1GB（security.md 6.7）。 */
+    /** 单文件解压后大小上限：1GB。 */
     public static final long MAX_ENTRY_SIZE = 1L << 30;
 
     /** Unix 文件类型掩码所在位。 */

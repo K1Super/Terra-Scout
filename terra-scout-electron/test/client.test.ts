@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { decodeEnvelope, ApiError, shouldForceRestart } from '../src/renderer/api/client';
 
-describe('ApiEnvelope 解码（D-002）', () => {
+describe('ApiEnvelope 解码', () => {
   it('200 + 200000 返回 data', () => {
     const data = decodeEnvelope<{ a: number }>(200, { code: 200000, data: { a: 1 } });
     expect(data).toEqual({ a: 1 });
@@ -18,7 +18,7 @@ describe('ApiEnvelope 解码（D-002）', () => {
     expect(shouldForceRestart(new ApiError(401000))).toBe(true);
   });
 
-  it('HTTP 非 2xx 透传合法信封业务码（422001 不再折叠为 422000，裁决 R46）', () => {
+  it('HTTP 非 2xx 透传合法信封业务码（422001 不再折叠为 422000）', () => {
     try {
       decodeEnvelope(422, {
         code: 422001,

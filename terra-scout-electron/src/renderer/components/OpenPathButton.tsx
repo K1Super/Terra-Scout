@@ -2,7 +2,7 @@ import React from 'react';
 import { FolderOpen } from 'lucide-react';
 import { message } from 'antd';
 
-/** 快捷打开按钮（R51）：经内核 ipc 用系统资源管理器打开目标目录/文件。 */
+/** 快捷打开按钮：经内核 ipc 用系统资源管理器打开目标目录/文件。 */
 export interface OpenPathButtonProps {
   /** 目标绝对路径；为空时不渲染（等价于 SDK 行内原有条件渲染）。 */
   path?: string;
@@ -15,7 +15,7 @@ export interface OpenPathButtonProps {
 }
 
 /**
- * 封装自 SDK 已安装行的「打开」交互（R45 引入的 sdk:open-path），
+ * 封装自 SDK 已安装行的「打开」交互（sdk:open-path），
  * 供关于页存储区等场景复用同一视觉与失败提示，避免重复实现。
  */
 export function OpenPathButton({

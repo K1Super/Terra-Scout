@@ -18,7 +18,7 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 诊断包单测（process-management 5.9）：日志 + 设置打包为脱敏 ZIP，不含 db.properties。
+ * 诊断包单测：日志 + 设置打包为脱敏 ZIP，不含 db.properties。
  */
 class DiagnosticServiceTest {
 
@@ -44,7 +44,7 @@ class DiagnosticServiceTest {
         Path kernelLog = PathConstants.kernelLog(PathConstants.dataRoot());
         Files.createDirectories(kernelLog.getParent());
         Files.writeString(kernelLog, "kernel log line");
-        // 预置一份含密码的 db.properties，确保被排除（安全红线 7）
+        // 预置一份含密码的 db.properties，确保被排除（安全红线约束）
         Path dbProps = PathConstants.dbProperties(PathConstants.dataRoot());
         Files.createDirectories(dbProps.getParent());
         Files.writeString(dbProps, "password=secret");

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   terra-scout-app：SpringBoot 内核启动模块
-  DoD（master-plan §7）：OpenAPI 契约 + 校验/Token 拦截 + Flyway V1 + 审计 hash 链
-  依赖：core / parser / download / task / env；H2 原生模式（D-011）、Flyway 唯一账本（D-005）
+  DoD：契约 + 校验/Token 拦截 + Flyway V1 + 审计 hash 链
+  依赖：core / parser / download / task / env；H2 原生模式、Flyway 唯一账本
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

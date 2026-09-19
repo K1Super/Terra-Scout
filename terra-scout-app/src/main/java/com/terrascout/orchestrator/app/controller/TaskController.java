@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
- * 任务端点（rest-schema.md 3.4.5-3.4.9）：执行装配 / 列表 / 详情 / 操作。
+ * 任务端点：执行装配 / 列表 / 详情 / 操作。
  */
 @RestController
 @RequestMapping("/api/v1/task")
@@ -42,13 +42,13 @@ public class TaskController {
         this.taskStepRepository = taskStepRepository;
     }
 
-    /** 执行装配（3.4.5，异步阈值：200 + QUEUED + taskId）。 */
+    /** 执行装配（异步阈值：200 + QUEUED + taskId）。 */
     @PostMapping("/execute")
     public ApiResponse<ExecuteResponse> execute(@RequestBody ExecuteRequest request) {
         return ApiResponse.ok(taskService.execute(request));
     }
 
-    /** 任务列表（3.4.6，可浇 status）。 */
+    /** 任务列表（可浇 status）。 */
     @GetMapping
     public ApiResponse<ApiList> list(
             @RequestParam(required = false) TaskStatusEnum status,
@@ -60,7 +60,7 @@ public class TaskController {
                 paged.getTotalElements(), paged.getNumber() + 1, paged.getSize()));
     }
 
-    /** 任务详情（3.4.7，含步骤）。 */
+    /** 任务详情（含步骤）。 */
     @GetMapping("/{taskId}")
     public ApiResponse<TaskResponse> detail(@PathVariable String taskId) {
         TaskResponse detail = taskService.detail(taskId);
@@ -72,13 +72,13 @@ public class TaskController {
         return ApiResponse.ok(detail);
     }
 
-    /** 任务步骤日志（3.4.8）。 */
+    /** 任务步骤日志。 */
     @GetMapping("/{taskId}/logs")
     public ApiResponse<Map<String, Object>> logs(@PathVariable String taskId) {
         return ApiResponse.ok(taskService.logs(taskId));
     }
 
-    /** 任务操作（3.4.9：pause/resume/cancel）。P0 返回任务当前状态（执行引擎由 task 模块驱动）。 */
+    /** 任务操作（pause/resume/cancel）。P0 返回任务当前状态（执行引擎由 task 模块驱动）。 */
     @PostMapping("/{action}")
     public ApiResponse<TaskResponse> operation(@PathVariable String action,
                                                @RequestBody TaskOperationRequest body) {
@@ -112,7 +112,7 @@ public class TaskController {
         return detail;
     }
 
-    /** 任务操作请求体（3.4.9：{@code { "taskId": "uuid" }}）。 */
+    /** 任务操作请求体（{@code { "taskId": "uuid" }}）。 */
     public static class TaskOperationRequest {
         private String taskId;
 

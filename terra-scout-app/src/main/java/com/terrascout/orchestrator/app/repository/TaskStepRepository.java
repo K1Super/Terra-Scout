@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface TaskStepRepository extends JpaRepository<TaskStep, String> {
 
-    /** 按任务取全部步骤（step_index 升序），供任务详情与日志（rest-schema 3.4.7/3.4.8）。 */
+    /** 按任务取全部步骤（step_index 升序），供任务详情与日志。 */
     List<TaskStep> findByTaskIdOrderByStepIndex(String taskId);
 
     /** 按任务 + 步骤序号取单条（编排落库 upsert 用）。 */

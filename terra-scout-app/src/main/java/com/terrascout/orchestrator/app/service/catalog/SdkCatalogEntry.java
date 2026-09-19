@@ -9,7 +9,7 @@ import com.terrascout.orchestrator.core.enums.OsTypeEnum;
 
 /**
  * SDK 目录条目（官方源拉取与本地元数据文件解析的中间载体，字段语义与
- * {@code sdk_version} 表一一对应，D-017）。
+ * {@code sdk_version} 表一一对应）。
  *
  * <p>{@code downloadUrl} 对应 schema 文件中的 {@code url}，{@code releaseTime}
  * 对应 {@code releaseDate}（日期字符串解析为 UTC 零点 epoch 毫秒）。

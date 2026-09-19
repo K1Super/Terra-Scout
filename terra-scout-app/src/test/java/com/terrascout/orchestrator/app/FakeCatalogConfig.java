@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 /**
- * 假官方源目录编排器（测试专用）：确定性夹具替代真实网络抓取（D-009 测试隔离）。
+ * 假官方源目录编排器（测试专用）：确定性夹具替代真实网络抓取（测试隔离）。
  *
  * <p>顶层 {@link TestConfiguration}：jar 内无法在 {@code @SpringBootTest(classes=...)}
  * 注解中引用测试类自身的嵌套类（javac 在类头归因阶段不可见），故独立成顶层类并显式注册。

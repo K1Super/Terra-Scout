@@ -13,10 +13,10 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * 任务执行引擎（state-machine.md 4.3 / 4.6 / 4.7，concurrency-model 6.4）。
+ * 任务执行引擎：状态机驱动 + 并发约束。
  *
  * <p>职责：按步骤定义依次执行；失败按 maxRetry 重试；重试耗尽时对已完成的、具备补偿的步骤
- * 逆序回滚；任务执行期间由本线程自报心跳（D-007，经注入的 {@link Heartbeat} 回调）。
+ * 逆序回滚；任务执行期间由本线程自报心跳（经注入的 {@link Heartbeat} 回调）。
  *
  * <p>持久化边界：本引擎不落库，最终状态由调用方（app 层）写入；锁争用抛 409001。
  */

@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.enums;
 
 /**
- * SDK 安装记录状态（ddl-migration.md 2.4 sdk_install_record.status）。
+ * SDK 安装记录状态（对应 sdk_install_record.status）。
  */
 public enum InstallStatusEnum {
     /** 安装中。 */

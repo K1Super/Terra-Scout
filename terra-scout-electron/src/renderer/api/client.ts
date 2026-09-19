@@ -24,8 +24,8 @@ const TOKEN_HEADER = 'X-TerraScout-Token';
 const OK_CODE = 200000;
 
 /**
- * 纯函数：解析内核统一响应（D-002）。可供 vitest 直接单测。
- * - HTTP 非 2xx：优先透传信封业务码（校验 code÷1000 == HTTP 状态，D-001），
+ * 纯函数：解析内核统一响应。可供 vitest 直接单测。
+ * - HTTP 非 2xx：优先透传信封业务码（校验 code÷1000 == HTTP 状态），
  *   信封缺失或码状态不符时回退 status×1000（422 → 422000）
  * - HTTP 2xx 但 code ≠ 200000：抛业务错误
  * - 否则返回 data（可为 null）
@@ -53,7 +53,7 @@ export function decodeEnvelope<T>(status: number, json: ApiEnvelope<T> | null, r
   return json.data === undefined ? null : json.data;
 }
 
-/** 由错误码判断是否应触发"强制重启提示"（ui-pages 5.8 401001）。 */
+/** 由错误码判断是否应触发"强制重启提示"（401001）。 */
 export function shouldForceRestart(error: unknown): boolean {
   return error instanceof ApiError && isAuthFailure(error.code);
 }

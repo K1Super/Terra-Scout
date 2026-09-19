@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Flyway 基线自检（非容器）：裸跑 Flyway 验证 {@code V1__init.sql} 在原生 H2 上能完整执行，
- * 且 P0 全部核心表与唯一迁移账本（flyway_schema_history）均创建（ddl-migration.md 2.3 / D-005）。
+ * 且 P0 全部核心表与唯一迁移账本（flyway_schema_history）均创建。
  */
 class FlywaySchemaSelfcheckTest {
 

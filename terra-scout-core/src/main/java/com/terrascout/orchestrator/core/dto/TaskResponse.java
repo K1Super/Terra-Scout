@@ -6,7 +6,7 @@ import com.terrascout.orchestrator.core.enums.StepStatusEnum;
 import com.terrascout.orchestrator.core.enums.TaskStatusEnum;
 
 /**
- * 任务详情响应（rest-schema.md 3.4.7；openapi TaskDetail）。
+ * 任务详情响应。
  */
 public class TaskResponse {
 
@@ -40,7 +40,7 @@ public class TaskResponse {
     private long updatedAt;
 
     /**
-     * 任务步骤详情（openapi TaskStepDetail）。
+     * 任务步骤详情。
      */
     public static class TaskStepDetail {
 

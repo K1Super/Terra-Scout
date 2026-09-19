@@ -52,7 +52,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * SDK 服务单测（3.4.10-3.4.12、3.4.18 / D-004、D-009、D-017）：列表合并安装状态与升序排布 /
+ * SDK 服务单测：列表合并安装状态与升序排布 /
  * 异步安装与进度快照 / 卸载 / 元数据重载与过老 JAVA 淘汰。
  */
 class SdkServiceTest {
@@ -113,7 +113,7 @@ class SdkServiceTest {
         assertThat((Boolean) items.get(0).get("installed")).isTrue();
         assertThat((String) items.get(0).get("recordId")).isEqualTo("r1");
         assertThat((String) items.get(0).get("installedPath")).isEqualTo("C:\\fake\\sdk\\17.0.9");
-        // R45：已装条目 installPath 展示记录实际路径（含自定义落位），消除空间盲区
+        // 已装条目 installPath 展示记录实际路径（含自定义落位），消除空间盲区
         assertThat((String) items.get(0).get("installPath")).isEqualTo("C:\\fake\\sdk\\17.0.9");
     }
 
@@ -163,7 +163,7 @@ class SdkServiceTest {
         assertThat((Boolean) progress.get("finished")).isTrue();
         assertThat((Boolean) progress.get("success")).isTrue();
         assertThat((String) progress.get("recordId")).isEqualTo("r0");
-        // 快照落地路径为 D-004 标准目录（真实落位路径透明可见）
+        // 快照落地路径为标准安装目录（真实落位路径透明可见）
         assertThat((String) progress.get("installPath"))
                 .isEqualTo(PathConstants.sdkHome(dataRoot, LanguageEnum.JAVA, "17.0.9").toString());
         // QUEUED 响应即携带落地路径

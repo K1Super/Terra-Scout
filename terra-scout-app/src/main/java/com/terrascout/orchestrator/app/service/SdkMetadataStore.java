@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * SDK 元数据存储（D-009 外部文件 + sdk_version 表之间的加载/落盘/写回中枢）。
+ * SDK 元数据存储（外部文件 + sdk_version 表之间的加载/落盘/写回中枢）。
  *
  * <p>职责：
  * <ul>

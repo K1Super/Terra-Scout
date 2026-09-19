@@ -1,4 +1,4 @@
-# 生产配置（打包只读，config-reference.md 全量项）
+# 生产配置（打包只读）
 server:
   address: 127.0.0.1
   port: 0                              # 0 = 系统分配，端口经 stdout READY <port> 传给 Electron
@@ -8,7 +8,7 @@ spring:
     url: jdbc:h2:file:${terrascout.data-dir}/db/terrascout;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: terrascout
-    # 首启由 StartupGuard 生成并持久化到 config/db.properties（D-006）；这里仅占位，启动时被覆盖
+    # 首启由 StartupGuard 生成并持久化到 config/db.properties；这里仅占位，启动时被覆盖
     password: ${terrascout.db.password:}
   jpa:
     hibernate:

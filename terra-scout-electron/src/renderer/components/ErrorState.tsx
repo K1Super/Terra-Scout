@@ -9,7 +9,7 @@ interface ErrorStateProps {
   onRetry?: () => void;
 }
 
-/** 错误状态（spec §5.3/§10.3：原因 + 解决路径 + 错误码 + 操作），复用错误码映射表。 */
+/** 错误状态（原因 + 解决路径 + 错误码 + 操作），复用错误码映射表。 */
 export default function ErrorState({
   code,
   message,

@@ -33,10 +33,10 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 /**
- * 系统级 SDK 探测单测（R29/R30 + P0~P3）：策略链（release / javapath 执行解析 / node execPath+version /
- * py -0p / go VERSION 文件）、多版本兄弟扫描、nvm 多版本、绝对路径绑定（P0-1）、保序不可变（P0-2）、
- * 冲突埋点（P0-3）、PATH 全量回退（P0-4）、single-flight（P1-1）、显式超时（P1-2）、诊断 SPI（P1-3）、
- * 平台守卫（P1-4）、ProgramW6432（P1-5）、NVM_HOME 权威（P2-6）、时钟回拨（P2-7）、长路径前缀（P3-6）。
+ * 系统级 SDK 探测单测：策略链（release / javapath 执行解析 / node execPath+version /
+ * py -0p / go VERSION 文件）、多版本兄弟扫描、nvm 多版本、绝对路径绑定、保序不可变、
+ * 冲突埋点、PATH 全量回退、single-flight、显式超时、诊断 SPI、平台守卫、ProgramW6432、
+ * NVM_HOME 权威、时钟回拨、长路径前缀。
  */
 class SystemSdkProberTest {
 
@@ -79,7 +79,7 @@ class SystemSdkProberTest {
         };
     }
 
-    /** 收集型诊断（P1-3 验收）：探测失败的每条降级都必须有事件。 */
+    /** 收集型诊断（验收）：探测失败的每条降级都必须有事件。 */
     private static final class RecordingDiagnostics implements ProbeDiagnostics {
         final List<String> failures = new ArrayList<>();
         final List<String> successes = new ArrayList<>();
@@ -125,7 +125,7 @@ class SystemSdkProberTest {
 
     @Test
     void javaHomeWithLongPathPrefixNormalized() throws Exception {
-        // P3-6:剥 \\?\ 前缀后解析;路径本身无 release,结果应为空(旧实现直接丢弃,行为一致)
+        // 剥 \\?\ 前缀后解析;路径本身无 release,结果应为空(旧实现直接丢弃,行为一致)
         assertThat(prober.probeJava("\\\\?\\C:\\tools\\jdk", List.of())).isEmpty();
     }
 
@@ -219,7 +219,7 @@ class SystemSdkProberTest {
 
     @Test
     void javaShimExecutionFailureRecordsDiagnostics() throws Exception {
-        // P1-3:降级必须可观测,不得静默消失
+        // 降级必须可观测,不得静默消失
         Path shim = dir.resolve("javapath");
         Files.createDirectories(shim);
         Files.write(shim.resolve("java.exe"), new byte[] {1});
@@ -255,7 +255,7 @@ class SystemSdkProberTest {
 
     @Test
     void javaDiscoveryOrderFollowsPriorityChain() throws Exception {
-        // P0-2:JAVA_HOME 优先于 PATH 顺序,返回 LinkedHashMap 必须保序
+        // JAVA_HOME 优先于 PATH 顺序,返回 LinkedHashMap 必须保序
         Path homeA = jdkHome("11.0.19");
         Path homeB = jdkHome(dir.resolve("elsewhere"), "17.0.12");
 
@@ -265,7 +265,7 @@ class SystemSdkProberTest {
 
     @Test
     void duplicateVersionKeepsFirstAndRecordsConflict() throws Exception {
-        // P0-3:同版本不同 home,保留先发现者并触发 duplicate 事件
+        // 同版本不同 home,保留先发现者并触发 duplicate 事件
         Path homeA = jdkHome("17.0.12");
         Path homeB = jdkHome(dir.resolve("elsewhere"), "17.0.12");
         RecordingDiagnostics diag = new RecordingDiagnostics();
@@ -321,7 +321,7 @@ class SystemSdkProberTest {
 
     @Test
     void nodeProbeBindsAbsoluteExecutablePerPathVariable() throws Exception {
-        // P0-1 验收:PATH 中 3 个 node.exe,探测命令必须分别锚定 3 个绝对路径,禁止裸命令名
+        // 验收:PATH 中 3 个 node.exe,探测命令必须分别锚定 3 个绝对路径,禁止裸命令名
         Path a = Files.createDirectories(dir.resolve("node-a"));
         Files.write(a.resolve("node.exe"), new byte[] {1});
         Path b = Files.createDirectories(dir.resolve("node-b"));
@@ -345,7 +345,7 @@ class SystemSdkProberTest {
 
     @Test
     void nodeExecPathWithLongPathPrefixNormalized() throws Exception {
-        // P3-6:execPath 输出带 \\?\ 长路径前缀,剥前缀后 home 必须是常规形式
+        // execPath 输出带 \\?\ 长路径前缀,剥前缀后 home 必须是常规形式
         Path symlinkDir = dir.resolve("nvm-symlink");
         Files.createDirectories(symlinkDir);
         Files.write(symlinkDir.resolve("node.exe"), new byte[] {1});
@@ -360,7 +360,7 @@ class SystemSdkProberTest {
 
     @Test
     void explicitProbeTimeoutPassedToExecutor() throws Exception {
-        // P1-2 验收:每次探测向执行器传显式超时,禁止走无限挂起路径
+        // 验收:每次探测向执行器传显式超时,禁止走无限挂起路径
         Path home = dir.resolve("nodejs");
         Files.createDirectories(home);
         Files.write(home.resolve("node.exe"), new byte[] {1});
@@ -426,7 +426,7 @@ class SystemSdkProberTest {
 
     @Test
     void pythonLauncherAbsentEnumeratesAllPathVariableHits() throws Exception {
-        // P0-4 验收:无 Python Launcher 时,PATH 中每个 python.exe 都必须被收录
+        // 验收:无 Python Launcher 时,PATH 中每个 python.exe 都必须被收录
         Path home39 = dir.resolve("python39");
         Files.createDirectories(home39);
         Files.write(home39.resolve("python.exe"), new byte[] {1});
@@ -533,7 +533,7 @@ class SystemSdkProberTest {
 
     @Test
     void clockRollbackTreatsCacheAsExpiredAndRebuilds() {
-        // P2-7:时钟回拨导致 elapsed 为负,必须判过期重建而非永久命中
+        // 时钟回拨导致 elapsed 为负,必须判过期重建而非永久命中
         AtomicLong clock = new AtomicLong(1_000_000L);
         SystemSdkProber cached = new SystemSdkProber(executor, 30_000L, clock::get);
 
@@ -551,7 +551,7 @@ class SystemSdkProberTest {
 
     @Test
     void probeVersionsResultMapsAreOrderedAndImmutable() {
-        // P0-2 验收:返回 Map 为有序不可变视图,外部写入被拒绝
+        // 验收:返回 Map 为有序不可变视图,外部写入被拒绝
         SystemSdkProber isolated = new SystemSdkProber(executor, 30_000L, () -> 1_000L,
                 ProbeDiagnostics.NOOP, PathReader.DEFAULT, fakeEnv(Map.of(), "Windows 10"));
         Map<LanguageEnum, Map<String, String>> result = isolated.probeVersions();
@@ -563,7 +563,7 @@ class SystemSdkProberTest {
 
     @Test
     void nonWindowsPlatformReturnsEmptyAndRecordsRejection() {
-        // P1-4:非 Windows 直接返回空 Map 并记录平台拒绝,不得拉起任何进程
+        // 非 Windows 直接返回空 Map 并记录平台拒绝,不得拉起任何进程
         RecordingDiagnostics diag = new RecordingDiagnostics();
         SystemSdkProber linux = new SystemSdkProber(executor, 30_000L, () -> 1_000L,
                 diag, PathReader.DEFAULT, fakeEnv(Map.of(), "Linux"));
@@ -576,7 +576,7 @@ class SystemSdkProberTest {
 
     @Test
     void standardRootsPreferProgramW6432() throws Exception {
-        // P1-5:W6432 存在时 64 位根取 W6432 而非 WOW64 下的 ProgramFiles(后者被遮蔽仅作回退)
+        // W6432 存在时 64 位根取 W6432 而非 WOW64 下的 ProgramFiles(后者被遮蔽仅作回退)
         Path pf64 = Files.createDirectories(dir.resolve("PF64"));
         Path pf32 = Files.createDirectories(dir.resolve("PF32"));
         Path pf86 = Files.createDirectories(dir.resolve("PF86"));
@@ -607,7 +607,7 @@ class SystemSdkProberTest {
 
     @Test
     void explicitNvmHomeOverridesAppData() throws Exception {
-        // P2-6:NVM_HOME 显式设置即权威,APPDATA\nvm 不得被合并
+        // NVM_HOME 显式设置即权威,APPDATA\nvm 不得被合并
         Path nvm = dir.resolve("nvm");
         Path nvmVersion = Files.createDirectories(nvm.resolve("v18.20.0"));
         Files.write(nvmVersion.resolve("node.exe"), new byte[] {1});
@@ -626,7 +626,7 @@ class SystemSdkProberTest {
 
     @Test
     void invalidExplicitNvmHomeIsAuthorityAndRecordsFailure() throws Exception {
-        // P2-6:显式 NVM_HOME 无效即权威(不回退 APPDATA),并记录降级事件
+        // 显式 NVM_HOME 无效即权威(不回退 APPDATA),并记录降级事件
         Path appDataNvm = dir.resolve("appdata").resolve("nvm");
         Path appDataVersion = Files.createDirectories(appDataNvm.resolve("v20.11.0"));
         Files.write(appDataVersion.resolve("node.exe"), new byte[] {1});
@@ -644,7 +644,7 @@ class SystemSdkProberTest {
 
     @Test
     void concurrentExpiredCacheRebuildsOnlyOnce() throws Exception {
-        // P1-1 验收:TTL 过期瞬间并发 32 线程,探测(single-flight 以 PATH 解析次数计)只执行一次,
+        // 验收:TTL 过期瞬间并发 32 线程,探测(single-flight 以 PATH 解析次数计)只执行一次,
         // 且所有线程拿到同一快照
         AtomicInteger pathReads = new AtomicInteger();
         ProbeEnv countingEnv = new ProbeEnv() {

@@ -3,7 +3,7 @@ package com.terrascout.orchestrator.core.dto;
 import com.terrascout.orchestrator.core.enums.LanguageEnum;
 
 /**
- * 项目版本约束（openapi ProjectConstraint；parser 模块 ConstraintExtractor 产出）。
+ * 项目版本约束（parser 模块 ConstraintExtractor 产出）。
  *
  * <p>constraint 为 Maven 风格版本范围或 semver range（如 {@code 17}、{@code [1.8,)}、{@code ^18.0.0}）。
  */

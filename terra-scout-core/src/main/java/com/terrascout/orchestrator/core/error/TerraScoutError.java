@@ -1,22 +1,22 @@
 package com.terrascout.orchestrator.core.error;
 
 /**
- * Terra Scout 统一错误码体系（rest-schema.md 3.3.1，V2.1 定稿）。
+ * Terra Scout 统一错误码体系。
  *
- * <p>编码规则（master-plan.md D-001，强约束）：
+ * <p>编码规则（强约束）：
  * <ul>
  *   <li>6 位数字 = 前 3 位 HTTP 状态码 + 后 3 位业务序号；</li>
  *   <li>HTTP 状态码必须等于 code ÷ 1000（{@link #getHttpStatus()} 结构化保证，永不漂移）；</li>
- *   <li>成功响应 = HTTP 200 + {@code 200000}（D-002）；</li>
+ *   <li>成功响应 = HTTP 200 + {@code 200000}；</li>
  *   <li>幂等重放返回 200 + 200000 + 首次结果，不设错误码；</li>
- *   <li>总量：46 个错误码 / 9 个 HTTP 族（rest-schema 3.3.3）。</li>
+ *   <li>总量：46 个错误码 / 9 个 HTTP 族。</li>
  * </ul>
  *
- * <p>新增错误码必须四表同步（rest-schema 3.3.1 / 本枚举 / exception-strategy 7.5 / ui-pages 5.8）。
+ * <p>新增错误码必须四表同步、保持一致。
  */
 public enum TerraScoutError {
 
-    /** 成功（D-002：所有成功响应 = HTTP 200 + 200000）。 */
+    /** 成功（所有成功响应 = HTTP 200 + 200000）。 */
     SUCCESS(200000, "success"),
 
     // ==================== 400 · 请求参数错误 ====================
@@ -132,7 +132,7 @@ public enum TerraScoutError {
     /** 6 位错误码：前 3 位 HTTP 状态码 + 后 3 位业务序号。 */
     private final int code;
 
-    /** 默认消息（rest-schema 3.3.1 含义列原文；用户可见文案在 exception-strategy 7.5 映射）。 */
+    /** 默认消息。 */
     private final String defaultMessage;
 
     TerraScoutError(int code, String defaultMessage) {
@@ -149,7 +149,7 @@ public enum TerraScoutError {
     }
 
     /**
-     * HTTP 状态码恒等于 code 前 3 位（D-001 强约束）。
+     * HTTP 状态码恒等于 code 前 3 位（强约束）。
      * 由 code 直接推导，结构上杜绝 401 载荷配 403 码之类的错位缺陷。
      */
     public int getHttpStatus() {
@@ -157,7 +157,7 @@ public enum TerraScoutError {
     }
 
     /**
-     * 类加载期自检：全部常量满足「前 3 位为合法 HTTP 状态码（200-599，成功码前缀为 200，D-002）」
+     * 类加载期自检：全部常量满足「前 3 位为合法 HTTP 状态码（200-599，成功码前缀为 200）」
      * 与「后 3 位在 000-999 内」。违反说明枚举被手工改坏，立即失败（fail-fast）而非运行期错位返回。
      */
     static {
@@ -167,7 +167,7 @@ public enum TerraScoutError {
             boolean validHttpStatus = httpStatus >= 200 && httpStatus <= 599;
             boolean validSequence = error == SUCCESS ? sequence == 0 : (sequence >= 1 && sequence <= 999);
             if (!validHttpStatus || !validSequence) {
-                throw new IllegalStateException("错误码 " + error.code + " 违反 D-001 编码不变量");
+                throw new IllegalStateException("错误码 " + error.code + " 违反编码不变量");
             }
         }
     }

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * 审计 hash 链单测（security.md 6.8 / D-015）：链式接续 + 篡改检测。
+ * 审计 hash 链单测：链式接续 + 篡改检测。
  */
 class AuditServiceTest {
 

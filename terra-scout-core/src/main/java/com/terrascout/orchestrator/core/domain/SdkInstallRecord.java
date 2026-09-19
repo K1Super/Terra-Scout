@@ -12,9 +12,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * SDK 安装记录实体（ddl-migration.md 2.3 表 sdk_install_record）。
+ * SDK 安装记录实体（表 sdk_install_record）。
  *
- * <p>install_path 指向全局仓库物理位置（D-004：{data-root}\sdks\{language}\{version}）；
+ * <p>install_path 指向全局仓库物理位置（{data-root}\sdks\{language}\{version}）；
  * scope 表达记录归属（PROJECT = 由项目装配触发创建），不表达物理位置。
  */
 @Entity

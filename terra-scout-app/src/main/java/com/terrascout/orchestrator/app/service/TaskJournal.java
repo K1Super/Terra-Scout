@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 任务执行日志：任务 / 步骤 / 命令执行三类实体的落库组件（异步编排线程独立事务写入）。
  *
  * <p>每个方法自成一个事务（编排线程不持长事务），确保任务线程自报心跳、步骤状态推进、
- * 命令执行审计（security.md 6.4）都即时可见。
+ * 命令执行审计都即时可见。
  */
 @Service
 public class TaskJournal {
@@ -44,7 +44,7 @@ public class TaskJournal {
         this.objectMapper = objectMapper;
     }
 
-    /** 任务进入 RUNNING，记录自报锁属主与首跳心跳（D-007）。 */
+    /** 任务进入 RUNNING，记录自报锁属主与首跳心跳。 */
     @Transactional
     public void markRunning(String taskId, String lockOwner) {
         Task task = requireTask(taskId);
@@ -121,7 +121,7 @@ public class TaskJournal {
         taskRepository.save(task);
     }
 
-    /** 命令执行审计落库（security.md 6.4：每次命令执行写记录）。 */
+    /** 命令执行审计落库（每次命令执行写记录）。 */
     @Transactional
     public void recordCommand(String projectId, CommandSpec spec, String workDir, Integer exitCode,
                               CommandStatusEnum status, long startedAt, Long finishedAt) {

@@ -3,10 +3,10 @@ package com.terrascout.orchestrator.download;
 import java.nio.file.Path;
 
 /**
- * 下载编排门面：断点续传下载 + SHA-256 校验（security.md 6.6）。
+ * 下载编排门面：断点续传下载 + SHA-256 校验。
  *
  * <p>组合 {@link ResumeableDownloader} 与 {@link Sha256Verifier}；校验失败抛 422009。
- * 下载/解压的安全红线（master-plan §8）中下载侧语义均在此收敛。
+ * 下载/解压的安全红线（下载侧语义均在此收敛）。
  */
 public final class Downloader {
 

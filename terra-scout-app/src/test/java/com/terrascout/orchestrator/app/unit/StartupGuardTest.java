@@ -12,7 +12,7 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 启动引导单测（ddl-migration.md 2.1 / 2.5 / D-006）：
+ * 启动引导单测：
  * 数据根目录树创建 + 数据库密码持久化（首启生成、复用）。
  */
 class StartupGuardTest {

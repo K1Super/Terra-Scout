@@ -30,7 +30,7 @@ import com.terrascout.orchestrator.task.TaskStepDefinition;
 /**
  * MATCH_VERSION 步骤：按版本匹配算法为每个约束挑出推荐版本，产出 SDK 安装计划。
  *
- * <p>裁决 R48：会话携带 {@code versionOverrides} 时逐语言覆盖自动推荐版本（校验不过 422006），
+ * <p>会话携带 {@code versionOverrides} 时逐语言覆盖自动推荐版本（校验不过 422006），
  * 且每个安装项回写候选表供前端展示/回选。
  */
 public class MatchVersionStep extends AbstractStepExecutor {

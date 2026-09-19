@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
- * 全局异常处理器（exception-strategy.md 7.3；D-001：HTTP 状态码 = 错误码 ÷ 1000）。
+ * 全局异常处理器（HTTP 状态码 = 错误码 ÷ 1000）。
  *
  * <p>统一出口：{@code ApiResponse{code,message,data=null,details,traceId,timestamp}}。
  * TerraScoutException 用其自带 error 推导 HTTP 状态；校验失败映射 400003；其余映射 500007 UNKNOWN。

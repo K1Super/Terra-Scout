@@ -108,7 +108,7 @@ public class InstallDependenciesStep extends AbstractStepExecutor {
         DependencyInstallItem item = new DependencyInstallItem();
         item.setEcosystem(DependencyInstallItem.ECOSYSTEM_PYTHON);
         // 通过所选解释器自身执行 pip（python -m pip）：Windows 官方 zip 分发包不含
-        // Scripts\pip.exe 入口，直接用 pip 会错解析到系统解释器并污染系统环境（裁决 R48）；
+        // Scripts\pip.exe 入口，直接用 pip 会错解析到系统解释器并污染系统环境；
         // 依赖装入所选 SDK 的 Lib\site-packages（项目专属 SDK 隔离），无需额外隔离目录
         item.setInstallCommand(command("python", List.of("-m", "pip", "install", "-r",
                 "requirements.txt")));

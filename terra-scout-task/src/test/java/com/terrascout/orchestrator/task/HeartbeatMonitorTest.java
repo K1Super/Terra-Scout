@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * 心跳超时检测测试（concurrency-model.md 6.4 / state-machine.md 4.5，D-007）。
+ * 心跳超时检测测试：自报心跳超时判定。
  */
 class HeartbeatMonitorTest {
 

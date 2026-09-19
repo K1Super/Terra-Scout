@@ -20,7 +20,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * {@link ArchiveExtractor} 测试（security.md 6.7 四重检查；Zip-Slip → 422010）。
+ * {@link ArchiveExtractor} 测试（四重安全检查；Zip-Slip → 422010）。
  */
 class ArchiveExtractorTest {
 

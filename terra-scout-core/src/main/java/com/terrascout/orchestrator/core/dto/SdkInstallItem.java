@@ -5,12 +5,12 @@ import java.util.List;
 import com.terrascout.orchestrator.core.enums.LanguageEnum;
 
 /**
- * SDK 安装计划项（openapi SdkInstallItem）。
+ * SDK 安装计划项。
  *
- * <p>REUSE = 本机全局仓库已有满足约束的版本，直接复用（D-004 跨项目复用语义）；
+ * <p>REUSE = 本机全局仓库已有满足约束的版本，直接复用（跨项目复用语义）；
  * INSTALL = 需要下载安装到 {data-root}\sdks\{language}\{version}。
  *
- * <p>裁决 R48：{@code candidates} 为可选版本候选表（首项 = 自动推荐，N≤5），供前端选配版本。
+ * <p>{@code candidates} 为可选版本候选表（首项 = 自动推荐，N≤5），供前端选配版本。
  */
 public class SdkInstallItem {
 
@@ -34,7 +34,7 @@ public class SdkInstallItem {
     /** 决策理由（面向用户展示）。 */
     private String reason;
 
-    /** 可选版本候选表（首项 = 自动推荐，裁决 R48）。 */
+    /** 可选版本候选表（首项 = 自动推荐）。 */
     private List<SdkVersionCandidate> candidates;
 
     public LanguageEnum getLanguage() {

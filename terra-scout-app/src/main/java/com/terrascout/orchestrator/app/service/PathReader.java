@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * 文件系统访问注入缝（P2-1）：探测类的全部文件副作用经此接口，单测可注入内存实现。
+ * 文件系统访问注入缝：探测类的全部文件副作用经此接口，单测可注入内存实现。
  * 生产默认 {@link #DEFAULT}（直接委托 {@link Files}）。
  */
 interface PathReader {

@@ -32,7 +32,7 @@ contextBridge.exposeInMainWorld('kernel', {
   restart: (): Promise<boolean> => ipcRenderer.invoke('kernel:restart'),
   /** 弹出系统目录选择，返回选中路径或 null（项目导入）。 */
   selectDirectory: (): Promise<string | null> => ipcRenderer.invoke('dialog:select-directory'),
-  /** 用系统资源管理器打开已安装 SDK 目录（3.4.10，仅接受绝对路径）。 */
+  /** 用系统资源管理器打开已安装 SDK 目录（仅接受绝对路径）。 */
   openPath: (targetPath: string): Promise<{ ok: boolean; error?: string }> =>
     ipcRenderer.invoke('sdk:open-path', targetPath),
 });

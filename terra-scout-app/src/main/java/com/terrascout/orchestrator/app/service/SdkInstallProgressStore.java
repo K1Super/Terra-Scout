@@ -26,7 +26,7 @@ public class SdkInstallProgressStore {
 
     private final Map<String, Snapshot> jobs = new ConcurrentHashMap<>();
 
-    /** 注册新任务并返回可写快照（落地路径取 D-004 标准目录）。 */
+    /** 注册新任务并返回可写快照（落地路径取标准仓库目录）。 */
     public Snapshot open(String jobId, LanguageEnum language, String version) {
         return open(jobId, language, version,
                 PathConstants.sdkHome(PathConstants.dataRoot(), language, version).toString());
@@ -137,7 +137,7 @@ public class SdkInstallProgressStore {
             this.success = false;
         }
 
-        /** 快照 → API 响应字段（rest-schema 3.4.18）。 */
+        /** 快照 → API 响应字段。 */
         public Map<String, Object> toMap() {
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("jobId", jobId);

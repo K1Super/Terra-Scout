@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 优雅关闭端点（process-management.md 5.5）。
+ * 优雅关闭端点。
  *
  * <p>收到请求后记审计并异步关闭 Spring 上下文（先返回 200，让 Electron 拿到响应后再退出）。
  * 需 Token 鉴权（随 {@code /api/**} 拦截器）。

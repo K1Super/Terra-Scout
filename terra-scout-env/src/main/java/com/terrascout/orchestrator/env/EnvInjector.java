@@ -13,7 +13,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * 进程级环境注入计算（security.md / acceptance TC-005，D-004 隔离域）。
+ * 进程级环境注入计算（环境隔离域）。
  *
  * <p>生成子进程要注入的环境变量：JAVA_HOME / NODE_HOME / GOROOT / GOMODCACHE、前置到 PATH 的 bin 目录
  * （python 目标目录直置 PATH 首位，embeddable 版 python.exe 位于根目录）、

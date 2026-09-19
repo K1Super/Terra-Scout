@@ -18,7 +18,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutException;
 import org.junit.jupiter.api.Test;
 
 /**
- * 任务执行引擎测试（state-machine.md 4.6 / 4.7）：happy path / 重试 / 回滚 / 锁争用 / 心跳自报。
+ * 任务执行引擎测试：happy path / 重试 / 回滚 / 锁争用 / 心跳自报。
  */
 class TaskEngineTest {
 

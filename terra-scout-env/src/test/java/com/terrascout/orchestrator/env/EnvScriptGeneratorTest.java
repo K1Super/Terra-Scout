@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * env.ps1 生成测试（rest-schema 3.4.13；TC-005 可 dot-source）。
+ * env.ps1 生成测试：可 dot-source。
  */
 class EnvScriptGeneratorTest {
 

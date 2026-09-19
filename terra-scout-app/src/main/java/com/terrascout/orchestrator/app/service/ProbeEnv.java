@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.app.service;
 
 /**
- * 环境访问注入缝（P2-2）：环境变量与系统属性统一入口，探测类不得直接触碰
+ * 环境访问注入缝：环境变量与系统属性统一入口，探测类不得直接触碰
  * {@code System.getenv / System.getProperty}；单测可注入 Map 实现。
  */
 interface ProbeEnv {

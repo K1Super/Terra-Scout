@@ -27,7 +27,7 @@ interface ActiveInstallJob {
 
 const INSTALL_POLL_INTERVAL_MS = 600;
 
-/** 安装请求载荷：版本 + 可选自定义落位根目录（R45）。 */
+/** 安装请求载荷：版本 + 可选自定义落位根目录。 */
 interface InstallPayload {
   v: SdkVersion;
   installDir?: string;
@@ -158,7 +158,7 @@ export default function SdksPage(): React.JSX.Element {
     setCustomDir(null);
   };
 
-  /** 系统目录选择（R45）：所选目录作为仓库根，自动创建 {语言}\{版本} 两级结构。 */
+  /** 系统目录选择：所选目录作为仓库根，自动创建 {语言}\{版本} 两级结构。 */
   const pickCustomDir = async (): Promise<void> => {
     const dir = await window.kernel.selectDirectory();
     if (dir) {
@@ -331,7 +331,7 @@ export default function SdksPage(): React.JSX.Element {
         )}
       </div>
 
-      {/* R45：安装确认弹层 — 落位目录自选（默认标准仓库），目标路径实时预览 */}
+      {/* 安装确认弹层 — 落位目录自选（默认标准仓库），目标路径实时预览 */}
       <Modal
         open={Boolean(installTarget)}
         title={installTarget ? `安装 ${installTarget.language} ${installTarget.version}?` : '安装'}

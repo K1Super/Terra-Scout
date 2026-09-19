@@ -12,30 +12,30 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * 命令与参数白名单校验（security.md 6.4/6.5，D-008，安全红线 1）。
+ * 命令与参数白名单校验（安全红线）。
  *
  * <p>命令命中白名单映射（{@code mvn→mvn.cmd} 等）；每个参数必须匹配白名单正则
  * {@code ^[A-Za-z0-9@+=:,._/\\-]+$}，该字符集覆盖 cmd.exe 全部元字符（{@code & | ; > < ` $ % ^ ( ) ! " '}），
- * 从构造上杜绝命令注入（TC-010）。拒绝一律抛 403002 COMMAND_REJECTED。
+ * 从构造上杜绝命令注入。拒绝一律抛 403002 COMMAND_REJECTED。
  */
 public final class CommandWhitelist {
 
-    /** 白名单面（R30）：装配面限 P0 工作面（mvn/npm/java/node/go/pip/python）；探测面仅限系统 SDK 只读探测。 */
+    /** 白名单面：装配面限 P0 工作面（mvn/npm/java/node/go/pip/python）；探测面仅限系统 SDK 只读探测。 */
     public enum Surface {
         ASSEMBLY,
         PROBE
     }
 
-    /** 参数白名单正则（D-008）：仅允许安全字符，覆盖 cmd.exe 全部元字符。 */
+    /** 参数白名单正则：仅允许安全字符，覆盖 cmd.exe 全部元字符。 */
     private static final String ARG_PATTERN_STR = "^[A-Za-z0-9@+=:,._/\\\\-]+$";
     private static final Pattern ARG_PATTERN = Pattern.compile(ARG_PATTERN_STR);
 
-    /** 单参数最大长度（openapi CommandSpec）。 */
+    /** 单参数最大长度（CommandSpec）。 */
     static final int MAX_ARG_LENGTH = 1024;
-    /** 参数最大数量（openapi CommandSpec）。 */
+    /** 参数最大数量（CommandSpec）。 */
     static final int MAX_ARGS = 64;
 
-    /** 装配面命令名 → 实际可执行文件（security 6.5 白名单，D-008；R48 放行 go/pip/python 支撑 Go/Python 全链路装配）。 */
+    /** 装配面命令名 → 实际可执行文件（白名单；放行 go/pip/python 支撑 Go/Python 全链路装配）。 */
     private static final Map<String, String> ASSEMBLY_EXECUTABLE_BY_COMMAND = Map.of(
             "mvn", "mvn.cmd",
             "npm", "npm.cmd",
@@ -46,8 +46,8 @@ public final class CommandWhitelist {
             "python", "python.exe");
 
     /**
-     * 探测面命令名 → 实际可执行文件（R30）：仅由 SystemSdkProber 的硬编码只读指令使用；
-     * py（Python Launcher）不在装配面，任务执行面保持 D-008 原状。
+     * 探测面命令名 → 实际可执行文件：仅由 SystemSdkProber 的硬编码只读指令使用；
+     * py（Python Launcher）不在装配面，任务执行面保持原状。
      */
     private static final Map<String, String> PROBE_EXECUTABLE_BY_COMMAND = Map.of(
             "java", "java.exe",
@@ -122,7 +122,7 @@ public final class CommandWhitelist {
     }
 
     /**
-     * 探测面全量校验（R30 + P0-1）：命令可为逻辑名（java/node/py/python/go）或绝对路径
+     * 探测面全量校验：命令可为逻辑名（java/node/py/python/go）或绝对路径
      * （路径尾段文件名必须恰为探测面白名单可执行文件，如 {@code C:\Windows\py.exe}），
      * 参数规则与装配面一致；任一不合法抛 {@code 403002 COMMAND_REJECTED}。
      */
@@ -136,8 +136,8 @@ public final class CommandWhitelist {
     }
 
     /**
-     * 解析探测面命令为实际可执行串（R30 + P0-1）：逻辑名映射（{@code go → go.exe}）；
-     * 绝对路径按尾段文件名白名单放行（P0-1 绑绝对路径，杜绝 PATH 首命中错配）。
+     * 解析探测面命令为实际可执行串：逻辑名映射（{@code go → go.exe}）；
+     * 绝对路径按尾段文件名白名单放行（绑绝对路径，杜绝 PATH 首命中错配）。
      * 不在白名单返回 null。
      */
     public static String resolveProbeExecutable(String command) {

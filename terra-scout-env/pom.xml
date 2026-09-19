@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   terra-scout-env：环境注入 / 命令白名单执行 / env.ps1
-  DoD（master-plan §7）：TC-005 注入正确 + TC-010 注入被拦截（D-008 白名单）
+  DoD：环境注入正确 + 注入被拦截（命令白名单）
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -16,7 +16,7 @@
 
     <artifactId>terra-scout-env</artifactId>
     <name>Terra Scout Env</name>
-    <description>进程级环境注入、命令白名单执行与 env.ps1 生成（security.md 6.4/6.5，D-008）</description>
+    <description>进程级环境注入、命令白名单执行与 env.ps1 生成</description>
 
     <dependencies>
         <dependency>

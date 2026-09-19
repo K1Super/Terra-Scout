@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 /**
- * 内核就绪通知：Spring 上下文就绪后向 stdout 打印 {@code READY <actualPort>}（process-management.md 5.2）。
+ * 内核就绪通知：Spring 上下文就绪后向 stdout 打印 {@code READY <actualPort>}。
  *
  * <p>Electron 主进程监听本行（正则 {@code ^READY\s+(\d+)$}）获取实际端口（server.port=0 时为随机端口）。
  * 必须使用 {@link System#out} 裸打印，不得经日志框架加前缀，否则破坏契约行。

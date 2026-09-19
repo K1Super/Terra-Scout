@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
  * {@code .windows-amd64.zip} 结尾的归档，sha256 / size 直接取自官方响应；
  * 下载地址改写为 {@code https://dl.google.com/go/}（境内 CDN 可达，白名单已收录）。
  *
- * <p>版本线策略（裁决 R49）：stable 版本按 minor 归组为「版本线」，仅收录最新的
+ * <p>版本线策略：stable 版本按 minor 归组为「版本线」，仅收录最新的
  * {@value #SUPPORTED_LINES} 个 minor 线（Go 官方仅维护最近两大版本）；每条线按版本
  * 倒序至多探测 {@value #PROBE_PER_LINE} 个、最多保留 {@value #KEEP_PER_LINE} 个成功
  * 条目——覆盖完整受支持版本线，而非仅最新窗口的 5 条。

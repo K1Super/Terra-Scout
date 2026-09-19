@@ -16,22 +16,22 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * SDK 版本匹配器（version-matcher-algorithm.md 4.2~4.6）。
+ * SDK 版本匹配器。
  *
  * <p>纯静态：输入约束 + 已装版本 + 可用版本，输出推荐 {@link SdkInstallItem}（action =
  * REUSE / INSTALL）。硬过滤 EOL 与 CRITICAL CVE；无匹配区分 422006 / 422007 / 422008。
  *
- * <p>裁决 R48：{@link #candidateList} 输出候选表（首项 = 推荐，N≤5）供用户选配，
+ * <p>{@link #candidateList} 输出候选表（首项 = 推荐，N≤5）供用户选配，
  * {@link #overrideVersion} 对用户选配版本做同源校验（只许落在候选集内）。
  */
 public final class SdkVersionMatcher {
 
     private static final String UNKNOWN = "UNKNOWN";
-    /** 候选表最大数量（裁决 R48：首项 = 推荐）。 */
+    /** 候选表最大数量（首项 = 推荐）。 */
     private static final int MAX_CANDIDATES = 5;
     private static final Pattern LEADING_DIGITS = Pattern.compile("^(\\d+)");
     private static final Pattern LEGACY_CONSTRAINT = Pattern.compile("^1\\.([5-9])$");
-    /** 比较符后带空格的写法（">= 20.0.0"），合并为紧凑形式统一处理（裁决 R47）。 */
+    /** 比较符后带空格的写法（">= 20.0.0"），合并为紧凑形式统一处理。 */
     private static final Pattern COMPARATOR_SPACE = Pattern.compile("^(>=|<=|>|<)\\s+");
 
     private SdkVersionMatcher() {
@@ -43,7 +43,7 @@ public final class SdkVersionMatcher {
      * @param constraint        约束字符串（"17" / "17.0.9" / "[17,18)" / "^18.0.0" / "UNKNOWN"）
      * @param installedVersions 该语言已成功安装的版本集合（可空）
      * @param available         该语言可用版本（已按 os / arch 过滤）
-     * @return 推荐安装项（含候选表，裁决 R48）
+     * @return 推荐安装项（含候选表）
      * @throws TerraScoutException 422006 / 422007 / 422008
      */
     public static SdkInstallItem match(String constraint, Set<String> installedVersions,
@@ -63,7 +63,7 @@ public final class SdkVersionMatcher {
     }
 
     /**
-     * 候选版本表（裁决 R48）：满足约束且通过硬过滤（非 EOL、无 CRITICAL CVE）的可用版本，
+     * 候选版本表：满足约束且通过硬过滤（非 EOL、无 CRITICAL CVE）的可用版本，
      * 按「已装 → LTS → CVE 少 → 版本新 → 发行版」排序，截断至 {@value #MAX_CANDIDATES} 个。
      *
      * @return 候选表（首项 = 自动推荐）；无候选时抛 422006 / 422007 / 422008
@@ -76,7 +76,7 @@ public final class SdkVersionMatcher {
     }
 
     /**
-     * 用户选配版本覆盖（裁决 R48）：所选版本必须属于可用版本集、通过硬过滤（非 EOL、无
+     * 用户选配版本覆盖：所选版本必须属于可用版本集、通过硬过滤（非 EOL、无
      * CRITICAL CVE）且满足项目约束，否则抛 422006；合法则改写安装项的版本 / 动作 / 体积 / 理由。
      *
      * @param item             自动推荐的安装项（含候选表）
@@ -147,7 +147,7 @@ public final class SdkVersionMatcher {
         return candidates;
     }
 
-    /** 候选转 DTO（裁决 R48），截断至 {@value #MAX_CANDIDATES} 个。 */
+    /** 候选转 DTO，截断至 {@value #MAX_CANDIDATES} 个。 */
     private static List<SdkVersionCandidate> toCandidateDtos(List<SdkVersion> candidates,
                                                              Set<String> installed) {
         List<SdkVersionCandidate> result = new ArrayList<>();
@@ -166,7 +166,7 @@ public final class SdkVersionMatcher {
         return result;
     }
 
-    /** 候选为空时区分 422006 / 422007 / 422008（version-matcher-algorithm 4.2 步骤 4）。 */
+    /** 候选为空时区分 422006 / 422007 / 422008。 */
     private static TerraScoutException noMatch(String constraint, List<SdkVersion> matchingRaw) {
         if (matchingRaw.isEmpty()) {
             return new TerraScoutException(TerraScoutError.NO_SDK_VERSION_MATCH,
@@ -198,7 +198,7 @@ public final class SdkVersionMatcher {
             return true;
         }
         String c = constraint.trim();
-        // engines.node 常见或组合 "A || B"：任一满足即匹配（裁决 R47）
+        // engines.node 常见或组合 "A || B"：任一满足即匹配
         if (c.contains("||")) {
             for (String part : c.split("\\|\\|")) {
                 if (!part.isBlank() && matches(version, part.trim())) {
@@ -209,7 +209,7 @@ public final class SdkVersionMatcher {
         }
         // 比较符带空格（">= 20.0.0"）合并后按紧凑形式继续
         c = COMPARATOR_SPACE.matcher(c).replaceAll("$1");
-        // 空格分隔的 AND 组合（">=16 <17"）：全部满足（裁决 R47）
+        // 空格分隔的 AND 组合（">=16 <17"）：全部满足
         if (c.matches(".*\\s+.*")) {
             for (String part : c.split("\\s+")) {
                 if (!matches(version, part.trim())) {
@@ -239,7 +239,7 @@ public final class SdkVersionMatcher {
     }
 
     /**
-     * 比较符范围匹配（">=20.0.0" 等，裁决 R47）：按主版本比较（与 {@link #mavenRangeMatches}
+     * 比较符范围匹配（">=20.0.0" 等）：按主版本比较（与 {@link #mavenRangeMatches}
      * 的 P0 口径一致）；边界无法解析时宽松放行（不阻断匹配流程）。
      */
     static boolean comparatorMatches(String version, String constraint) {

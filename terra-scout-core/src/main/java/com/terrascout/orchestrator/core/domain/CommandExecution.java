@@ -10,9 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * 命令执行记录实体（ddl-migration.md 2.3 表 command_execution；审计三要素之一）。
+ * 命令执行记录实体（表 command_execution；审计三要素之一）。
  *
- * <p>命令执行安全约束（security.md 6.4 / D-008）：List 形式参数、白名单命令、参数白名单正则、
+ * <p>命令执行安全约束：List 形式参数、白名单命令、参数白名单正则、
  * 超时、审计记录（本表）。
  */
 @Entity

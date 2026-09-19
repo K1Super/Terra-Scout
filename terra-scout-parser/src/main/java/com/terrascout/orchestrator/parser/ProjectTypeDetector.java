@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import com.terrascout.orchestrator.core.enums.ProjectTypeEnum;
 
 /**
- * 项目类型检测器（p0-scope 1.1：P0 项目文件 = pom.xml / package.json；裁决 R48 扩展 go.mod /
+ * 项目类型检测器（P0 项目文件 = pom.xml / package.json；扩展 go.mod /
  * .python-version / pyproject.toml，四语言全链路）。
  *
  * <p>类型判定规则（ProjectTypeEnum）：
@@ -23,27 +23,27 @@ import com.terrascout.orchestrator.core.enums.ProjectTypeEnum;
  *   <li>无声明文件 → UNKNOWN（上层语义对应 422001）</li>
  * </ul>
  *
- * <p>NODE 版本约束提取顺序（裁决 R47）：.nvmrc / .node-version 由本检测器仅做存在性参考；
+ * <p>NODE 版本约束提取顺序：.nvmrc / .node-version 由本检测器仅做存在性参考；
  * package.json 的 engines.node 深度解析由 {@link ConstraintExtractor} 承担。
  */
 public final class ProjectTypeDetector {
 
-    /** Maven 项目声明文件名（p0-scope 1.1）。 */
+    /** Maven 项目声明文件名。 */
     public static final String POM_XML = "pom.xml";
 
-    /** npm 项目声明文件名（p0-scope 1.1）。 */
+    /** npm 项目声明文件名。 */
     public static final String PACKAGE_JSON = "package.json";
 
-    /** Go 项目声明文件名（裁决 R48）。 */
+    /** Go 项目声明文件名。 */
     public static final String GO_MOD = "go.mod";
 
-    /** Python 版本声明文件（pyenv 约定，裁决 R48）。 */
+    /** Python 版本声明文件（pyenv 约定）。 */
     public static final String PYTHON_VERSION = ".python-version";
 
-    /** Python PEP 621 声明文件（裁决 R48）。 */
+    /** Python PEP 621 声明文件。 */
     public static final String PYPROJECT_TOML = "pyproject.toml";
 
-    /** Node 版本声明文件（nvm 约定，rest-schema 3.4.1 约束来源示例）。 */
+    /** Node 版本声明文件（nvm 约定）。 */
     public static final String NVMRC = ".nvmrc";
 
     /** Node 版本声明文件（nodenv / fnm 约定）。 */
@@ -88,7 +88,7 @@ public final class ProjectTypeDetector {
 
     /**
      * 列出所选根的直接子目录中包含声明文件（pom.xml / package.json / go.mod /
-     * .python-version / pyproject.toml）的候选（裁决 R46，R48 扩展）。
+     * .python-version / pyproject.toml）的候选。
      *
      * <p>根目录自身无声明文件时用于「选了项目上级目录」的补救：候选恰一个即采纳为项目根，
      * 多个候选因无法判别归属返回全部（上层以 422001 明细列出）；子目录无法枚举时返回空表。

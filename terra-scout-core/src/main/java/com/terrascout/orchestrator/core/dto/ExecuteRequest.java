@@ -3,10 +3,10 @@ package com.terrascout.orchestrator.core.dto;
 import java.util.List;
 
 /**
- * 执行装配请求（rest-schema.md 3.4.5；openapi ExecuteRequest）。
+ * 执行装配请求。
  *
- * <p>confirm 仅接受 true（危险操作二次确认）；idempotencyKey 重复提交返回 200 + 首次结果（D-001）。
- * versionOverrides 为可选 SDK 版本选配（裁决 R48），每条覆盖对应语言的自动推荐版本。
+ * <p>confirm 仅接受 true（危险操作二次确认）；idempotencyKey 重复提交返回 200 + 首次结果。
+ * versionOverrides 为可选 SDK 版本选配，每条覆盖对应语言的自动推荐版本。
  */
 public class ExecuteRequest {
 
@@ -19,7 +19,7 @@ public class ExecuteRequest {
     /** 幂等键（UUID v4，可选）。 */
     private String idempotencyKey;
 
-    /** SDK 版本选配覆盖（可选，裁决 R48）。 */
+    /** SDK 版本选配覆盖（可选）。 */
     private List<VersionOverride> versionOverrides;
 
     public String getPlanId() {

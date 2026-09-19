@@ -136,7 +136,7 @@
   line-height: var(--lh-base);
 }
 
-/* R51：存储区路径行——路径 + 快捷打开按钮同行，按钮自动贴合右端。 */
+/* 存储区路径行——路径 + 快捷打开按钮同行，按钮自动贴合右端。 */
 .kvValueLine {
   display: flex;
   align-items: center;
@@ -153,7 +153,7 @@
   font-family: var(--font-mono);
 }
 
-/* ── 装配计划 SDK 版本选配行（R48） ── */
+/* ── 装配计划 SDK 版本选配行 ── */
 .sdkVersionRow {
   display: flex;
   align-items: center;
@@ -456,7 +456,7 @@
   text-overflow: ellipsis;
 }
 
-/* ── SDK 行右侧按钮组（打开 + 卸载，R45） ── */
+/* ── SDK 行右侧按钮组（打开 + 卸载） ── */
 .sdkRowActions {
   display: flex;
   align-items: center;
@@ -464,7 +464,7 @@
   flex-shrink: 0;
 }
 
-/* ── 安装落位目录选择弹层（R45：自选目录 + 自动建夹实时预览） ── */
+/* ── 安装落位目录选择弹层（自选目录 + 自动建夹实时预览） ── */
 .installDirPicker {
   display: flex;
   flex-direction: column;

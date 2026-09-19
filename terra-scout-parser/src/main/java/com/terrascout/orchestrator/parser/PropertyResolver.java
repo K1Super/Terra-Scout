@@ -9,7 +9,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * Maven 属性占位符求值器（pom-parser-algorithm.md 3.3）。
+ * Maven 属性占位符求值器。
  *
  * <p>输入为已合并的原始属性表（含父 POM 属性、激活 profile 属性、project.* 内置属性与
  * 系统 java.version 回退，均由调用方 {@link PomParser} 注入），输出全部求值后的属性表。
@@ -24,7 +24,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutException;
  */
 public final class PropertyResolver {
 
-    /** 求值循环上限（算法 3.3 步骤 4）。 */
+    /** 求值循环上限。 */
     public static final int MAX_ROUNDS = 10;
 
     /** 占位符语法：${key}（不支持嵌套占位符，P0 范围外）。 */

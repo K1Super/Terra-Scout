@@ -20,7 +20,7 @@ import com.terrascout.orchestrator.parser.PomParser.ParsedPom;
 import com.terrascout.orchestrator.parser.PomParser.VersionSource;
 
 /**
- * {@link PomParser} 单元测试（DoD 硬性要求，pom-parser-algorithm.md 3.9 要求覆盖 TC-POM-001~010 全表）。
+ * {@link PomParser} 单元测试（覆盖全部用例场景）。
  *
  * <p>补充覆盖：版本标准化表、GAV/文件循环、递归超限、parent 坐标不完整、SpringBoot parent 推断、
  * 编译器插件 release 提取、jdk/os profile 激活、pom 缺失 → IAE、properties 不可变。
@@ -45,7 +45,7 @@ class PomParserTest {
         Files.createDirectories(projectRoot);
     }
 
-    // ---- TC-POM-001~010 -------------------------------------------------
+    // ---- pom.xml 解析用例 ----
 
     @Test
     void tcPom001LiteralCompilerRelease() throws IOException {
@@ -127,7 +127,7 @@ class PomParserTest {
     void tcPom008MultiModuleRootParsedWithoutFreeze() throws IOException {
         writeSample("with-multi-module.xml");
         ParsedPom pom = parser().parse(projectRoot.resolve("pom.xml"));
-        // 裁决 R46：多模块不再冻结拒绝；根聚合 POM 自身未声明版本 → UNKNOWN
+        // 多模块不再冻结拒绝；根聚合 POM 自身未声明版本 → UNKNOWN
         assertThat(pom.javaVersionOrUnknown()).isEqualTo("UNKNOWN");
     }
 
@@ -367,7 +367,7 @@ class PomParserTest {
 
     /**
      * 在 Maven 本地仓库写入坐标 POM（可选 parent、可选 properties）。
-     * 目录/文件名即坐标：{group}/{artifact}/{version}/{artifact}-{version}.pom（算法 3.4 步骤 b）。
+     * 目录/文件名即坐标：{group}/{artifact}/{version}/{artifact}-{version}.pom。
      */
     private void writeM2(String group, String artifact, String version,
                           String parentGavOrNull, String props) throws IOException {

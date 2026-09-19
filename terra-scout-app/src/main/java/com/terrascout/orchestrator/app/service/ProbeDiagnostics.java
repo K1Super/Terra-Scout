@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 系统 SDK 探测可观测性 SPI（R30，P1-3）：探测策略链的每一处降级都必须产生诊断事件，
+ * 系统 SDK 探测可观测性 SPI：探测策略链的每一处降级都必须产生诊断事件，
  * 禁止"静默消失"——线上某台机器缺 Python 版本时，可通过事件定位到具体命令与失败原因。
  *
  * <ul>

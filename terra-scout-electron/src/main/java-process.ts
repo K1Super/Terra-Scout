@@ -15,11 +15,11 @@ export interface JavaProcessOptions {
   /** 等待 READY 超时（ms），默认 20000。Windows 上系统防御软件实时扫描
    *  53MB fat jar 会使 Spring 装配波动（实测 8~12s），10s 阈值在慢机上有误报风险。 */
   readyTimeoutMs?: number;
-  /** 崩溃自动重启最大次数，默认 3（process-management 5.4）。 */
+  /** 崩溃自动重启最大次数，默认 3。 */
   maxRestarts?: number;
   /** 重启间隔（ms），默认 2000。 */
   restartDelayMs?: number;
-  /** 优雅退出后等待进程退出的超时（ms），默认 5000（process-management 5.5）。 */
+  /** 优雅退出后等待进程退出的超时（ms），默认 5000。 */
   shutdownTimeoutMs?: number;
 }
 
@@ -38,7 +38,7 @@ export interface JavaProcessEvents {
 }
 
 /**
- * Java 内核进程管理（process-management 5.2~5.7）：
+ * Java 内核进程管理：
  * - spawn java -jar terrascout.jar --server.address=127.0.0.1 --server.port=0 --terrascout.token=<b64> --terrascout.data-dir=...
  * - 解析 stdout "READY <actualPort>" 得到实际端口
  * - 崩溃自动重启 ≤3 次，每次间隔 2s；isShuttingDown 时跳过重启
@@ -74,9 +74,9 @@ export class JavaProcess extends EventEmitter {
   }
 
   /**
-   * 生成 Java 启动参数（process-management 5.3 契约）。
+   * 生成 Java 启动参数。
    * 强制 IPv4 栈：Windows 默认 IPv6 优先，部分官方源（python.org→Fastly 等）的
-   * AAAA 路由不可达会导致抓取连接超时；IPv4 实测稳定（见 docs 决策裁决）。
+   * AAAA 路由不可达会导致抓取连接超时；IPv4 实测稳定。
    * 堆内存显式化 + UTF-8 显式化：避免默认按物理内存 1/4 估算的漂移与 Windows
    * 默认代码页（GBK）对路径/响应的不确定编码（启动加速收益弱，本组参数为确定性）。
    */
@@ -182,7 +182,7 @@ export class JavaProcess extends EventEmitter {
   }
 
   /**
-   * 优雅退出（process-management 5.5）：
+   * 优雅退出：
    * 置 isShuttingDown→POST /api/v1/shutdown（带 token）→等待退出 ≤5s→超时强制 kill。
    * 返回 Promise 在进程最终退出时 resolve。
    */

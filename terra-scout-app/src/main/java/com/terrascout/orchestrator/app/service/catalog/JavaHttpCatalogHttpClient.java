@@ -14,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 基于 JDK {@link HttpClient} 的目录客户端（零外部依赖，D-012）。
+ * 基于 JDK {@link HttpClient} 的目录客户端（零外部依赖）。
  *
- * <p>连接超时 10 秒、单请求总超时 30 秒（config-reference.md 下载超时口径）；
+ * <p>连接超时 10 秒、单请求总超时 30 秒（下载超时口径）；
  * 请求前先做 {@link CatalogUrlPolicy} 白名单校验，非 2xx 一律抛 IOException。
  * 强制 HTTP/1.1：部分官方源（nodejs.org 等）在代理环境下 HTTP/2 协商不稳定，
  * 实测 HTTP/1.1 稳定可达。连接类瞬时故障（连接超时/拒绝）自动重试

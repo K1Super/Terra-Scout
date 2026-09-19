@@ -21,7 +21,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * 步骤定义与 PROJECT_ASSEMBLE 装配表测试（task-step-definition.md 5.2、D-018）。
+ * 步骤定义与 PROJECT_ASSEMBLE 装配表测试。
  */
 class TaskStepDefinitionTest {
 

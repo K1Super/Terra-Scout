@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * TerraScoutException 行为断言（exception-strategy.md 7.1 / coding-standard.md 2.4）。
+ * TerraScoutException 行为断言。
  */
 class TerraScoutExceptionTest {
 
@@ -60,7 +60,7 @@ class TerraScoutExceptionTest {
     }
 
     @Test
-    @DisplayName("原因构造：保留 cause 链（系统异常包装模式 7.2）")
+    @DisplayName("原因构造：保留 cause 链（系统异常包装模式）")
     void constructorWithCause() {
         IOExceptionLike cause = new IOExceptionLike("disk gone");
         TerraScoutException exception =

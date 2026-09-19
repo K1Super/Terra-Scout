@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * 命令执行器测试（security.md 6.4；TC-010 注入拦截于 spawn 前）。
+ * 命令执行器测试：命令注入拦截于 spawn 前。
  */
 class ProcessExecutorTest {
 
@@ -77,7 +77,7 @@ class ProcessExecutorTest {
 
     @Test
     void probeSurfaceCommandRejectedOnExecuteButAcceptedOnExecuteProbe() {
-        // R48：go/pip/python 已放行装配面（Go/Python 全链路装配）；仅 py（Python Launcher）仍探测面专属
+        // go/pip/python 已放行装配面（Go/Python 全链路装配）；仅 py（Python Launcher）仍探测面专属
         AtomicBoolean spawned = new AtomicBoolean(false);
         ProcessExecutor executor = new ProcessExecutor(1_000, pb -> {
             spawned.set(true);
@@ -112,7 +112,7 @@ class ProcessExecutorTest {
 
     @Test
     void executeProbeAcceptsAbsolutePathExecutable() {
-        // P0-1:绝对路径探测命令须通过白名单并进入 spawn(假 spawn 抛 IOException → 422015 证明已越过校验)
+        // 绝对路径探测命令须通过白名单并进入 spawn(假 spawn 抛 IOException → 422015 证明已越过校验)
         AtomicBoolean spawned = new AtomicBoolean(false);
         ProcessExecutor executor = new ProcessExecutor(1_000, pb -> {
             spawned.set(true);
@@ -127,7 +127,7 @@ class ProcessExecutorTest {
 
     @Test
     void executeProbeRejectsUnknownAbsolutePathBeforeSpawn() {
-        // P0-1:尾段文件名不在白名单的绝对路径在 spawn 前被 403002 拦截
+        // 尾段文件名不在白名单的绝对路径在 spawn 前被 403002 拦截
         AtomicBoolean spawned = new AtomicBoolean(false);
         ProcessExecutor executor = new ProcessExecutor(1_000, pb -> {
             spawned.set(true);
@@ -143,7 +143,7 @@ class ProcessExecutorTest {
 
     @Test
     void executeProbeExplicitTimeoutKillsHungCommand() {
-        // P1-2:探测面显式超时覆盖实例默认值——注入确实慢的外部进程,100ms 内必须被销毁并抛 422015
+        // 探测面显式超时覆盖实例默认值——注入确实慢的外部进程,100ms 内必须被销毁并抛 422015
         ProcessExecutor executor = new ProcessExecutor(60_000, pb -> {
             ProcessBuilder slow = new ProcessBuilder("cmd.exe", "/c", "ping", "-n", "10", "127.0.0.1");
             return slow.start();
@@ -197,7 +197,7 @@ class ProcessExecutorTest {
 
     @Test
     void resolveExeOnInjectedPathPinsToInjectedPathFirstHit() throws Exception {
-        // R48 裁决：Windows 裸名按父进程 PATH 解析（JDK 行为），注入 PATH 不生效；
+        // Windows 裸名按父进程 PATH 解析（JDK 行为），注入 PATH 不生效；
         // 必须在 spawn 前钉到注入 PATH 首项对应目录，杜绝系统同名工具错配
         java.nio.file.Path sdkBin = java.nio.file.Files.createDirectories(tmp.resolve("go").resolve("bin"));
         java.nio.file.Files.writeString(sdkBin.resolve("go.exe"), "fake");
@@ -224,7 +224,7 @@ class ProcessExecutorTest {
 
     @Test
     void executePinsBareExeToInjectedPathBeforeSpawn() throws Exception {
-        // R48：装配面 spawn 前必须把裸文件名解析为注入 PATH 下的绝对路径
+        // 装配面 spawn 前必须把裸文件名解析为注入 PATH 下的绝对路径
         java.nio.file.Path sdkBin = java.nio.file.Files.createDirectories(tmp.resolve("sdk").resolve("bin"));
         java.nio.file.Files.writeString(sdkBin.resolve("java.exe"), "fake");
         AtomicReference<List<String>> spawned = new AtomicReference<>();

@@ -24,18 +24,18 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * 项目版本约束提取器（rest-schema 3.4.1 / openapi ProjectConstraint；ConstraintExtractor）。
+ * 项目版本约束提取器（数据模型见 {@link ProjectConstraint}）。
  *
  * <p>依据 {@link ProjectTypeDetector} 判定的项目类型提取版本约束：
  * <ul>
- *   <li>MAVEN → 委托 {@link PomParser} 解析 pom.xml 聚合树（含 {@code <modules>} 子模块递归合并，裁决 R46），
- *       产出 JAVA 约束（constraint 已按算法 3.7 标准化；相同版本去重，根优先）</li>
- *   <li>NPM → 读 .nvmrc（优先）/ .node-version / package.json engines.node（裁决 R47），
- *       产出 NODE 约束（去前导 v、首行 trim；engines 保留范围表达式原样供匹配器语义化）</li>
- *   <li>GO → 读 go.mod 的 {@code go} 指令（裁决 R48），产出 GO 约束（最低版本语义，值归一为
- *       {@code >=<version>}，如 {@code >=1.21}）</li>
- *   <li>PYTHON → 读 .python-version（优先）/ pyproject.toml {@code [project] requires-python}（裁决 R48），
- *       产出 PYTHON 约束（原样保留供匹配器语义化）</li>
+ *   <li>MAVEN → 委托 {@link PomParser} 解析 pom.xml 聚合树（含 {@code <modules>} 子模块递归合并），
+     *       产出 JAVA 约束（constraint 已标准化；相同版本去重，根优先）</li>
+     *   <li>NPM → 读 .nvmrc（优先）/ .node-version / package.json engines.node，
+     *       产出 NODE 约束（去前导 v、首行 trim；engines 保留范围表达式原样供匹配器语义化）</li>
+     *   <li>GO → 读 go.mod 的 {@code go} 指令，产出 GO 约束（最低版本语义，值归一为
+     *       {@code >=<version>}，如 {@code >=1.21}）</li>
+     *   <li>PYTHON → 读 .python-version（优先）/ pyproject.toml {@code [project] requires-python}，
+     *       产出 PYTHON 约束（原样保留供匹配器语义化）</li>
  *   <li>MIXED → 按声明文件实际存在性依次产出 JAVA → NODE → GO → PYTHON 约束</li>
  *   <li>UNKNOWN → 抛 422001（PROJECT_TYPE_UNKNOWN），提示无可识别声明文件</li>
  * </ul>
@@ -45,7 +45,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutException;
  */
 public final class ConstraintExtractor {
 
-    /** 未声明任何版本的约束字面量（与 PomParser.Unused javaVersion 语义一致，rest-schema 3.4.1）。 */
+    /** 未声明任何版本的约束字面量（与 PomParser.Unused javaVersion 语义一致）。 */
     private static final String UNKNOWN = "UNKNOWN";
 
     /** 多模块遍历深度上限（聚合 → 子模块），防异常深层嵌套。 */
@@ -54,15 +54,15 @@ public final class ConstraintExtractor {
     /** 约束来源文件：根 pom.xml。 */
     private static final String SOURCE_POM = ProjectTypeDetector.POM_XML;
 
-    /** go.mod 的 go 指令（裁决 R48）：行首 `go 1.21` / `go 1.21.5`，容忍缩进与行尾注释。 */
+    /** go.mod 的 go 指令：行首 `go 1.21` / `go 1.21.5`，容忍缩进与行尾注释。 */
     private static final java.util.regex.Pattern GO_DIRECTIVE =
             java.util.regex.Pattern.compile("^\\s*go\\s+(\\d+\\.\\d+(?:\\.\\d+)?)");
 
-    /** pyproject.toml [project] 段 requires-python 双引号字符串值（裁决 R48）。 */
+    /** pyproject.toml [project] 段 requires-python 双引号字符串值。 */
     private static final java.util.regex.Pattern REQUIRES_PYTHON =
             java.util.regex.Pattern.compile("^\\s*requires-python\\s*=\\s*\"([^\"]+)\"");
 
-    /** JSON 解析器（package.json engines.node，裁决 R47；线程安全）。 */
+    /** JSON 解析器（package.json engines.node；线程安全）。 */
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     /** 解析器日志（System.Logger，与 PomParser 约定一致）。 */
@@ -123,7 +123,7 @@ public final class ConstraintExtractor {
     }
 
     /**
-     * 提取 JAVA 约束（裁决 R46）：BFS 遍历根 pom.xml 与其 {@code <modules>} 聚合树（深度 ≤
+     * 提取 JAVA 约束：BFS 遍历根 pom.xml 与其 {@code <modules>} 聚合树（深度 ≤
      * {@value #MAX_MODULE_DEPTH}，visited 防环）。合并规则：仅收集已声明版本（未声明的聚合根不算约束），
      * 按标准化版本去重（根优先）；全部未声明时回退单条 UNKNOWN（与单模块行为一致）。
      */
@@ -189,7 +189,7 @@ public final class ConstraintExtractor {
     }
 
     /**
-     * 提取 NODE 约束（裁决 R47）：.nvmrc（优先）→ .node-version → package.json 的 engines.node。
+     * 提取 NODE 约束：.nvmrc（优先）→ .node-version → package.json 的 engines.node。
      * engines.node 保留原样声明的范围表达式（如 {@code >=20.0.0}），由 SdkVersionMatcher 承担语义匹配；
      * 均不存在 → UNKNOWN。置信度一律 1.0。
      */
@@ -216,7 +216,7 @@ public final class ConstraintExtractor {
     }
 
     /**
-     * 解析 package.json 的 {@code engines.node} 字符串声明（裁决 R47）。
+     * 解析 package.json 的 {@code engines.node} 字符串声明。
      * 值 trim 后返回（空串视为未声明）；package.json 缺失 / 非对象 / 解析失败 / 值非字符串一律返回 null
      * （宽松语义：导入不因项目自带的 JSON 问题而失败）。
      */
@@ -248,7 +248,7 @@ public final class ConstraintExtractor {
 
     /**
      * 读取文件首行（trim + 剥离 UTF-8 BOM）。.nvmrc / .node-version / .python-version 属无规范文本文件，
-     * Windows 编辑器常写入 BOM；不剥离会使约束带不可见零宽字符导致静默失配（裁决 R48）。
+     * Windows 编辑器常写入 BOM；不剥离会使约束带不可见零宽字符导致静默失配。
      * 读失败按 IO 异常处理（与 PomParser 读盘语义一致）。
      */
     private static String readFirstLine(Path file) {
@@ -289,7 +289,7 @@ public final class ConstraintExtractor {
     }
 
     /**
-     * 提取 GO 约束（裁决 R48）：go.mod 的 {@code go} 指令（行首 `go 1.21` / `go 1.21.5`，
+     * 提取 GO 约束：go.mod 的 {@code go} 指令（行首 `go 1.21` / `go 1.21.5`，
      * 容忍缩进与行尾注释）。go 指令语义为最低版本，约束值归一为 {@code >=<version>}（如 {@code >=1.21}）
      * 供 SdkVersionMatcher 按主版本语义匹配；指令缺失 / 文件读取失败 → UNKNOWN。置信度 1.0。
      */
@@ -312,7 +312,7 @@ public final class ConstraintExtractor {
     }
 
     /**
-     * 提取 PYTHON 约束（裁决 R48）：.python-version 首行（优先，原样保留如 3.11.9 / 3.11）→
+     * 提取 PYTHON 约束：.python-version 首行（优先，原样保留如 3.11.9 / 3.11）→
      * pyproject.toml {@code [project]} 段 requires-python 双引号值（原样保留范围表达式如 {@code >=3.9}）。
      * 均无有效声明 → UNKNOWN（sourceFile 取 .python-version）。置信度 1.0。
      */
@@ -337,7 +337,7 @@ public final class ConstraintExtractor {
     }
 
     /**
-     * 解析 pyproject.toml {@code [project]} 段的 requires-python 双引号字符串（裁决 R48）。
+     * 解析 pyproject.toml {@code [project]} 段的 requires-python 双引号字符串。
      * 仅在该段内行匹配（段头到下一个 {@code [} 表头间）；非双引号/缺失/读取失败 → null（宽松：不阻断识别）。
      */
     private static String readRequiresPython(Path pyproject) {
@@ -367,7 +367,7 @@ public final class ConstraintExtractor {
         }
     }
 
-    /** 构造单语言约束（置信度 1.0；GO/PYTHON 复用，裁决 R48）。 */
+    /** 构造单语言约束（置信度 1.0；GO/PYTHON 复用）。 */
     private static ProjectConstraint languageConstraint(LanguageEnum language,
                                                         String constraint, String sourceFile) {
         ProjectConstraint result = new ProjectConstraint();

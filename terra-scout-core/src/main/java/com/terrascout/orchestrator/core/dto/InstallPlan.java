@@ -3,7 +3,7 @@ package com.terrascout.orchestrator.core.dto;
 import java.util.List;
 
 /**
- * 装配计划（openapi InstallPlan；version-matcher 依据约束与已装记录生成）。
+ * 装配计划（依据约束与已装记录生成）。
  *
  * <p>404003：执行时 planId 不存在即返回该错误码。
  */

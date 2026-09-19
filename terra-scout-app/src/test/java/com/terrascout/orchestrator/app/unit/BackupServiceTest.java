@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * 数据库备份单测（process-management 5.9 / D-003）：文件库拷贝生成时间戳备份。
+ * 数据库备份单测：文件库拷贝生成时间戳备份。
  */
 class BackupServiceTest {
 

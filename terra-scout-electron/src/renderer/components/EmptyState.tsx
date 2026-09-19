@@ -9,7 +9,7 @@ interface EmptyStateProps {
   action?: React.ReactNode;
 }
 
-/** 空状态（spec §5.2：图标 ≤96px + 文案 ≤2 行 + 操作入口）。 */
+/** 空状态（图标 ≤96px + 文案 ≤2 行 + 操作入口）。 */
 export default function EmptyState({
   title,
   hint,

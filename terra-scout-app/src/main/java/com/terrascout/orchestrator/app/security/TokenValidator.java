@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Token 校验器（security.md 6.2，D-001 / D-016）。
+ * Token 校验器。
  *
  * <p>常量时间比较防时序攻击；免鉴权白名单当前仅 {@code GET /api/v1/health}。
  * Token 由 Electron 经命令行传入进程（{@code terrascout.token}），进程生命周期内不变、不落盘。

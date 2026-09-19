@@ -3,9 +3,9 @@ package com.terrascout.orchestrator.core.dto;
 import com.terrascout.orchestrator.core.enums.TaskStatusEnum;
 
 /**
- * 执行装配响应（rest-schema.md 3.4.5；openapi ExecuteResponse）。
+ * 执行装配响应。
  *
- * <p>异步语义（D-002）：HTTP 200 + 200000，由 taskId + 轮询表达进度，不使用 202。
+ * <p>异步语义：HTTP 200 + 200000，由 taskId + 轮询表达进度，不使用 202。
  */
 public class ExecuteResponse {
 

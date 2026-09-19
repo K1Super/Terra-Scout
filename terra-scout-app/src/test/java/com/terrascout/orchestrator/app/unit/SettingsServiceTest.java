@@ -17,7 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 设置服务单测（D-013）：默认打底 / 白名单过滤 / 持久化回读 / 损坏回退。
+ * 设置服务单测：默认打底 / 白名单过滤 / 持久化回读 / 损坏回退。
  *
  * <p>非 Spring 上下文，用真实 ObjectMapper，数据根重定向到临时目录。
  */

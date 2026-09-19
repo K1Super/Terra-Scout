@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { describeError, isBusinessCode, isAuthFailure } from '../src/renderer/api/errorMap';
 
-describe('errorMap (ui-pages 5.8)', () => {
+describe('errorMap', () => {
   it('已收录错误码返回对应文案与颜色', () => {
     const p = describeError(422003);
     expect(p.title).toBe('父 POM 未找到');

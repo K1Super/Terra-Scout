@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   terra-scout-parser：项目类型检测 / pom.xml 解析 / 属性求值 / 约束提取
-  DoD（master-plan §7）：TC-POM-001~010 全过（pom-parser-algorithm.md 3.9）；覆盖率 ≥ 80%
+  DoD：解析用例全覆盖；覆盖率 ≥ 80%
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -16,7 +16,7 @@
 
     <artifactId>terra-scout-parser</artifactId>
     <name>Terra Scout Parser</name>
-    <description>项目类型检测、pom.xml 解析（7 级优先级 / 属性求值 / 父子递归）、.nvmrc 约束提取（pom-parser-algorithm.md）</description>
+    <description>项目类型检测、pom.xml 解析（7 级优先级 / 属性求值 / 父子递归）、.nvmrc 约束提取</description>
 
     <dependencies>
         <dependency>

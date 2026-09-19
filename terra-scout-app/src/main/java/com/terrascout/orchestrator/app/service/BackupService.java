@@ -15,7 +15,7 @@ import com.terrascout.orchestrator.core.constant.PathConstants;
 import org.springframework.stereotype.Service;
 
 /**
- * 数据库备份服务（process-management.md 5.9 / master-plan D-003）。
+ * 数据库备份服务。
  *
  * <p>把当前 H2 文件库拷贝到 {@code {data-root}/db/backup/}，命名带时间戳，
  * 仅保留最近 {@value #KEEP_DAYS} 天（每次备份后清理过期备份）。
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BackupService {
 
-    /** 备份保留天数（process-management 5.9：备份保留 7 天）。 */
+    /** 备份保留天数（备份保留 7 天）。 */
     static final int KEEP_DAYS = 7;
 
     private static final DateTimeFormatter BACKUP_TS =

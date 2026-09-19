@@ -35,7 +35,7 @@ public class BeansConfig {
         return new ConstraintExtractor(pomParser);
     }
 
-    /** 命令执行器（env 模块，D-008 白名单 + 超时）。 */
+    /** 命令执行器（env 模块白名单 + 超时）。 */
     @Bean
     public ProcessExecutor processExecutor() {
         return new ProcessExecutor();

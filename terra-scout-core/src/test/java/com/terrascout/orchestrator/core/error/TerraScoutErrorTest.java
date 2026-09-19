@@ -13,14 +13,14 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * TerraScoutError 错误码体系断言（rest-schema.md 3.3.1 / 3.3.3；master-plan D-001）。
+ * TerraScoutError 错误码体系断言。
  *
  * <p>三道防线：46 码总量 + 9 族分布、code 唯一、HTTP 状态码恒等于 code 前 3 位。
  * 枚举手工漂移（增删改码）在本测试立即暴露。
  */
 class TerraScoutErrorTest {
 
-    /** 错误码（不含 SUCCESS）应恰为 46 个（rest-schema 3.3.3）。 */
+    /** 错误码（不含 SUCCESS）应恰为 46 个。 */
     @Test
     @DisplayName("错误码总量 = 46（不含成功码 200000）")
     void errorCountIs46() {
@@ -42,9 +42,9 @@ class TerraScoutErrorTest {
         }
     }
 
-    /** D-001 不变量：HTTP 状态码 == code / 1000；成功码前缀 200（D-002），错误码前缀 400-599。 */
+    /** 不变量：HTTP 状态码 == code / 1000；成功码前缀 200，错误码前缀 400-599。 */
     @Test
-    @DisplayName("HTTP 状态码恒等于 code 前 3 位（D-001）")
+    @DisplayName("HTTP 状态码恒等于 code 前 3 位")
     void httpStatusMatchesCodePrefix() {
         for (TerraScoutError error : TerraScoutError.values()) {
             assertThat(error.getHttpStatus())
@@ -54,9 +54,9 @@ class TerraScoutErrorTest {
         }
     }
 
-    /** rest-schema 3.3.3 族计数：400:4 / 401:1 / 403:4 / 404:3 / 409:6 / 422:15 / 500:7 / 502:4 / 507:2。 */
+    /** 族计数：400:4 / 401:1 / 403:4 / 404:3 / 409:6 / 422:15 / 500:7 / 502:4 / 507:2。 */
     @Test
-    @DisplayName("HTTP 族分布与 rest-schema 3.3.3 一致")
+    @DisplayName("HTTP 族分布与预期一致")
     void familyDistributionMatchesSpec() {
         Map<Integer, Long> actual = Stream.of(TerraScoutError.values())
                 .filter(e -> e != TerraScoutError.SUCCESS)
@@ -87,7 +87,7 @@ class TerraScoutErrorTest {
         assertThat(TerraScoutError.SUCCESS.getCode()).isEqualTo(200000);
     }
 
-    /** 关键语义锚点：V2.1 修复后的码位语义（B2/B3 修复验证）。 */
+    /** 关键语义锚点。 */
     @Test
     @DisplayName("关键错误码语义锚点（401001 / 409005 / 409006 / 422010）")
     void semanticAnchors() {

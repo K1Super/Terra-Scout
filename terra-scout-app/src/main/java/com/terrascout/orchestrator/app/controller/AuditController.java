@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 审计日志端点（rest-schema.md 3.4.14）：查询 + hash 链校验结果。
+ * 审计日志端点：查询 + hash 链校验结果。
  */
 @RestController
 @RequestMapping("/api/v1/audit")

@@ -12,7 +12,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutException;
 import org.junit.jupiter.api.Test;
 
 /**
- * 命令/参数白名单测试（security.md 6.4/6.5，D-008；TC-010 注入拦截）。
+ * 命令/参数白名单测试：命令注入拦截。
  */
 class CommandWhitelistTest {
 
@@ -115,7 +115,7 @@ class CommandWhitelistTest {
         CommandWhitelist.validate(s); // 不抛
     }
 
-    // ── 探测面（R30）─────────────────────────────────────────────
+    // ── 探测面 ────────────────────────────────────────────────
 
     @Test
     void probeSurfaceAllowsReadOnlySdks() {
@@ -136,7 +136,7 @@ class CommandWhitelistTest {
 
     @Test
     void onlyPyRemainsProbeExclusiveOnAssemblySurface() {
-        // R48：go/pip/python 已放行装配面（Go/Python 全链路装配），探测面专属仅剩 py（Python Launcher）
+        // go/pip/python 已放行装配面（Go/Python 全链路装配），探测面专属仅剩 py（Python Launcher）
         assertThat(CommandWhitelist.isAllowedCommand("py")).isFalse();
         assertThat(CommandWhitelist.resolveExecutable("py")).isNull();
         assertThatThrownBy(() -> CommandWhitelist.validate(spec("py", "-0p")))
@@ -165,11 +165,11 @@ class CommandWhitelistTest {
                 .isInstanceOf(TerraScoutException.class);
     }
 
-    // ── 探测面绝对路径（P0-1）───────────────────────────────────
+    // ── 探测面绝对路径 ───────────────────────────────────────
 
     @Test
     void probeSurfaceAcceptsAbsolutePathExecutable() {
-        // P0-1:探测面命令可绑绝对路径,放行条件 = 路径尾段文件名恰为白名单可执行
+        // 探测面命令可绑绝对路径,放行条件 = 路径尾段文件名恰为白名单可执行
         for (String abs : List.of("C:\\Windows\\py.exe",
                 "D:\\Deps\\Nodejs\\node.exe",
                 "C:\\Program Files\\Go\\bin\\go.exe",
@@ -182,7 +182,7 @@ class CommandWhitelistTest {
 
     @Test
     void probeSurfaceRejectsUnknownExecutableFileName() {
-        // P0-1:尾段文件名不在白名单(calc/cmd/伪 java.exe.bat)一律 403002
+        // 尾段文件名不在白名单(calc/cmd/伪 java.exe.bat)一律 403002
         for (String abs : List.of("C:\\Windows\\System32\\calc.exe",
                 "C:\\Windows\\System32\\cmd.exe",
                 "C:\\evil\\java.exe.bat",
@@ -198,7 +198,7 @@ class CommandWhitelistTest {
 
     @Test
     void probeSurfaceAbsolutePathStillEnforcesArgSafety() {
-        // P0-1:绝对路径放行命令后,参数校验强度与逻辑名路径完全一致
+        // 绝对路径放行命令后,参数校验强度与逻辑名路径完全一致
         assertThatThrownBy(() -> CommandWhitelist.validateProbe(
                 spec("C:\\Windows\\py.exe", "-c", "os.system('x')")))
                 .isInstanceOf(TerraScoutException.class)

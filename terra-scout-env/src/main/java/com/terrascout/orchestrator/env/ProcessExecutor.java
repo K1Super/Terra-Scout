@@ -18,18 +18,18 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * 命令执行器（security.md 6.4，D-008，安全红线 1）。
+ * 命令执行器：命令白名单校验（安全红线）。
  *
- * <p>禁止字符串拼接构造命令：一律 {@code List<String>} + {@link CommandWhitelist} 校验（TC-010 拦截注入）。
+ * <p>禁止字符串拼接构造命令：一律 {@code List<String>} + {@link CommandWhitelist} 校验（拦截注入）。
  * `.cmd` 需经 {@code cmd.exe /c} 调用；npm 默认追加 {@code --ignore-scripts}（防供应链脚本执行）。
- * 装配面裸命令名在 spawn 前按注入 PATH 钉为绝对路径（裁决 R48，防 Windows 父进程 PATH 错配系统工具）。
+ * 装配面裸命令名在 spawn 前按注入 PATH 钉为绝对路径（防 Windows 父进程 PATH 错配系统工具）。
  * 启动失败 / 超时 / 被中断 → {@code 422015 COMMAND_EXECUTION_FAILED}；非零退出码作为返回值由上层裁决。
  */
 public final class ProcessExecutor implements AutoCloseable {
 
-    /** 命令超时配置键（config-reference：terrascout.command.timeout-ms，默认 10 分钟）。 */
+    /** 命令超时配置键（terrascout.command.timeout-ms，默认 10 分钟）。 */
     public static final String DEFAULT_TIMEOUT_PROPERTY = "terrascout.command.timeout-ms";
-    /** 默认命令超时 10 分钟（security 6.4）。 */
+    /** 默认命令超时 10 分钟。 */
     public static final long DEFAULT_TIMEOUT_MS = 600_000L;
     private static final String IGNORE_SCRIPTS = "--ignore-scripts";
 
@@ -72,14 +72,14 @@ public final class ProcessExecutor implements AutoCloseable {
      */
     public Result execute(CommandSpec spec, Path workDir, Map<String, String> env) {
         Objects.requireNonNull(spec, "spec 不能为 null");
-        CommandWhitelist.validate(spec); // 403002（TC-010），装配面
+        CommandWhitelist.validate(spec); // 403002，装配面
         String executable = resolveExeOnInjectedPath(
                 CommandWhitelist.resolveExecutable(spec.getCommand()), env);
         return run(executable, spec, workDir, env, timeoutMs);
     }
 
     /**
-     * 将裸文件名按注入 env 的 PATH 解析为绝对路径（裁决 R48）。
+     * 将裸文件名按注入 env 的 PATH 解析为绝对路径。
      *
      * <p>Windows 上 JDK 以裸名启动进程时，CreateProcess 按<b>父进程（JVM）PATH</b>定位
      * 可执行文件，注入到子进程 env 的 PATH 不参与解析——SDK bin 前置目录形同虚设，
@@ -117,18 +117,18 @@ public final class ProcessExecutor implements AutoCloseable {
     }
 
     /**
-     * 以探测面白名单执行只读的系统 SDK 探测命令（R30）：
+     * 以探测面白名单执行只读的系统 SDK 探测命令：
      * {@code java/node/py/python/go} 且参数仅由 {@code SystemSdkProber} 硬编码常量提供，
-     * 与任务装配面（D-008 mvn/npm/java/node）严格分离，不放大装配命令面。
+     * 与任务装配面（mvn/npm/java/node）严格分离，不放大装配命令面。
      * 超时取实例默认值；探测调用应优先使用 {@link #executeProbe(CommandSpec, Path, Map, long)}
-     * 显式限时（P1-2：探测不得无限挂起）。
+     * 显式限时（探测不得无限挂起）。
      */
     public Result executeProbe(CommandSpec spec, Path workDir, Map<String, String> env) {
         return executeProbe(spec, workDir, env, timeoutMs);
     }
 
     /**
-     * 探测面执行（显式超时，R30 + P1-2）：系统 SDK 探测命令必须显式限时，
+     * 探测面执行（显式超时）：系统 SDK 探测命令必须显式限时，
      * 单个坏 java.exe 不得无限挂起、卡住 SDK 列表查询；超时销毁进程并抛 422015。
      *
      * @param spec      命令规格（须通过探测面白名单，否则 403002）

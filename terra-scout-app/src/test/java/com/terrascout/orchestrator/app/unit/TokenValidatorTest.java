@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Token 校验器单测（security.md 6.2）：常量时间比较 + 免鉴权白名单。
+ * Token 校验器单测：常量时间比较 + 免鉴权白名单。
  */
 class TokenValidatorTest {
 

@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * 项目实体（ddl-migration.md 2.3 表 project）。
+ * 项目实体（表 project）。
  *
  * <p>project_root_path 唯一约束（uk_project_path）：重复导入同一路径时按幂等处理。
  * profile_json 缓存解析后的项目画像，避免每次重新解析。

@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * DTO 属性往返断言：全部 DTO 的可写属性 setter/getter 回读一致（等价于 openapi 契约字段全覆盖），
- * 并验证 ApiResponse 工厂语义（D-002：成功 = 200000 + "success"）。
+ * DTO 属性往返断言：全部 DTO 的可写属性 setter/getter 回读一致（等价于契约字段全覆盖），
+ * 并验证 ApiResponse 工厂语义（成功 = 200000 + "success"）。
  */
 class DtoBeanRoundTripTest {
 
@@ -51,7 +51,7 @@ class DtoBeanRoundTripTest {
     }
 
     @Test
-    @DisplayName("ApiResponse.ok：code=200000，message=success（D-002）")
+    @DisplayName("ApiResponse.ok：code=200000，message=success")
     void apiResponseOk() {
         long before = System.currentTimeMillis();
         ApiResponse<String> response = ApiResponse.ok("payload");

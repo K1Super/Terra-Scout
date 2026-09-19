@@ -1,4 +1,4 @@
-/** 任务进度条（spec §4.7/§8.6.4：transform: scaleX，禁止动画 width）。 */
+/** 任务进度条（transform: scaleX，禁止动画 width）。 */
 interface TaskProgressProps {
   percent: number;
   label?: string;

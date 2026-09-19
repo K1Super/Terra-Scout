@@ -11,7 +11,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * env.ps1 生成器（rest-schema 3.4.13，接受 TC-005 dot-source {@code . .\.devenv\env.ps1}）。
+ * env.ps1 生成器（接受 dot-source {@code . .\.devenv\env.ps1}）。
  *
  * <p>为当前 PowerShell 会话设置注入的环境变量（{@code $env:KEY='value'}），PATH 变量统一写
  * {@code $env:Path=...}。值内单引号按 PowerShell 单引号转义（{@code ''}）。

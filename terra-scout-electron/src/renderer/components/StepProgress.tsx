@@ -1,7 +1,7 @@
 import { Steps } from 'antd';
 import type { TaskStep } from '../api/types';
 
-/** 任务步骤进度（ui-pages 5.5）。 */
+/** 任务步骤进度。 */
 export default function StepProgress({ steps, current }: { steps: TaskStep[]; current?: number }): React.JSX.Element {
   const items = steps.map((s) => ({
     title: `${s.index}. ${s.name}`,

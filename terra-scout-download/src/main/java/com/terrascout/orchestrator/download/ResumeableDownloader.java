@@ -18,7 +18,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * 断点续传下载器（security.md 6.6：Range + ETag / .part 临时文件 / 磁盘≥2 倍文件校验）。
+ * 断点续传下载器（Range + ETag / .part 临时文件 / 磁盘≥2 倍文件校验）。
  *
  * <ul>
  *   <li>续传：向服务端发送 {@code Range: bytes={existing}-}，成功返回 206 时在 .part 后追加；</li>
@@ -30,10 +30,10 @@ import com.terrascout.orchestrator.core.error.TerraScoutException;
  */
 public final class ResumeableDownloader {
 
-    /** 未完成下载的临时文件后缀（security.md 6.6）。 */
+    /** 未完成下载的临时文件后缀。 */
     public static final String PART_SUFFIX = ".part";
 
-    /** 磁盘预检系数：可用空间需 ≥ 2 倍目标大小（security.md 6.6）。 */
+    /** 磁盘预检系数：可用空间需 ≥ 2 倍目标大小。 */
     private static final long DISK_HEADROOM = 2L;
 
     private static final int BUFFER_SIZE = 8192;

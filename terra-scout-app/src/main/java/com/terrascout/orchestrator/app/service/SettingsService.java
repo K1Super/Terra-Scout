@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * 运行时设置服务（rest-schema.md 3.4.15 / master-plan D-013）。
+ * 运行时设置服务。
  *
  * <p>持久化于 {@code {data-root}/config/user-settings.json}，只接受白名单键；
  * 优先级：内置默认 → 文件。文件损坏时回退默认并重建（不允许因坏配置起不来）。
@@ -72,14 +72,14 @@ public class SettingsService {
         return accepted;
     }
 
-    /** 白名单键（rest-schema 3.4.15；AI 开关并入本端点）。 */
+    /** 白名单键（AI 开关并入本端点）。 */
     private static boolean isAcceptedKey(String key) {
         return "mirror".equals(key) || "timeoutMs".equals(key) || "maxRetry".equals(key)
                 || "commandTimeoutMs".equals(key) || "logLevel".equals(key) || "aiEnabled".equals(key)
                 || "download".equals(key);
     }
 
-    /** 内置默认（D-013 优先级底）。 */
+    /** 内置默认。 */
     private static Map<String, Object> defaults() {
         Map<String, Object> download = new LinkedHashMap<>();
         download.put("mirror", "https://repo.huaweicloud.com");

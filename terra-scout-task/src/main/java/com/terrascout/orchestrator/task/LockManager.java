@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 按 projectId 分锁（concurrency-model.md 6.2）。
+ * 按 projectId 分锁。
  *
  * <p>同一项目任务串行、不同项目并行；锁等待超时由管理方映射为 409001 PROJECT_LOCKED。
  * locks map 随项目数线性增长，桌面规模（&lt;1000 项目）可接受，不做过期清理。

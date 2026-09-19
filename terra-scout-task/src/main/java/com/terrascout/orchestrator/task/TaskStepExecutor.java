@@ -3,7 +3,7 @@ package com.terrascout.orchestrator.task;
 import com.terrascout.orchestrator.core.enums.StepStatusEnum;
 
 /**
- * 任务步骤执行器统一接口（task-step-definition.md 5.4 / state-machine.md 4.10）。
+ * 任务步骤执行器统一接口。
  *
  * <p>具体步骤实现（下载解压 / 命令执行 / 环境注入）由高级模块（download / env）提供，
  * 本模块仅定义契约并负责编排（重试 / 回滚 / 暂停判定）。

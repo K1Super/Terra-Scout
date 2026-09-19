@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 设置端点（rest-schema.md 3.4.15 / master-plan D-013）：读取 / 更新 user-settings.json。
+ * 设置端点：读取 / 更新 user-settings.json。
  */
 @RestController
 @RequestMapping("/api/v1/settings")

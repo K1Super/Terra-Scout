@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.enums;
 
 /**
- * CPU 架构（ddl-migration.md 2.4 sdk_version.arch）。
+ * CPU 架构（对应 sdk_version.arch）。
  */
 public enum ArchEnum {
     /** x86_64。 */

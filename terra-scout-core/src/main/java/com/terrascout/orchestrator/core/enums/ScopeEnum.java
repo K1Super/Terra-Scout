@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.enums;
 
 /**
- * 安装记录归属（ddl-migration.md 2.4 sdk_install_record.scope；master-plan D-004）。
+ * 安装记录归属（对应 sdk_install_record.scope）。
  *
  * <p>语义：记录由哪类操作触发，<b>不表达物理位置</b>——SDK 物理上始终在全局仓库
  * {@code {data-root}\sdks}；PROJECT 表示该记录由项目装配触发创建。

@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 实体 ↔ DDL 逐列同步断言（ddl-migration.md 2.3）。
+ * 实体与 DDL 逐列同步断言。
  *
  * <p>ddl-auto: validate 只校验存在性与类型，<b>不校验列名拼写</b>——本测试补上这道防线：
  * 每个实体的 @Table 名与 @Column 名集合必须与 V1__init.sql 基线完全一致，
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class DomainEntitySyncTest {
 
-    /** 与 ddl-migration.md 2.3 V1__init.sql 逐列对照的权威清单。 */
+    /** 与 V1__init.sql 逐列对照的权威清单。 */
     private static List<Class<?>> entities() {
         return List.of(Project.class, SdkVersion.class, SdkInstallRecord.class,
                 Task.class, TaskStep.class, CommandExecution.class, AuditLog.class);
@@ -47,7 +47,7 @@ class DomainEntitySyncTest {
     private static void assertColumns(Class<?> entity, Set<String> expected) {
         Set<String> actual = columnNames(entity);
         assertThat(actual)
-                .as("%s 的 @Column 集合应与 ddl 2.3 一致", entity.getSimpleName())
+                .as("%s 的 @Column 集合应与 DDL 一致", entity.getSimpleName())
                 .containsExactlyInAnyOrderElementsOf(expected);
         // 字段数 == 显式列注解数（防漏注解字段走隐式命名）
         long fieldCount = Arrays.stream(entity.getDeclaredFields())
@@ -78,7 +78,7 @@ class DomainEntitySyncTest {
     }
 
     @Test
-    @DisplayName("sdk_version 列集合与 DDL 一致（D-017 全字段）")
+    @DisplayName("sdk_version 列集合与 DDL 一致（全字段）")
     void sdkVersionColumns() {
         assertColumns(SdkVersion.class, Set.of(
                 "id", "language", "version", "os", "arch", "download_url", "sha256", "size_bytes",

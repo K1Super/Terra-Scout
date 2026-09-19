@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   terra-scout-download：SDK 下载 / 断点续传 / SHA256 校验 / 归档解压（四重安全检查）
-  DoD（master-plan §7）：MockWebServer 模拟断网 / 损坏 / Zip-Slip 全过；覆盖率 ≥ 80%
+  DoD：MockWebServer 模拟断网 / 损坏 / Zip-Slip 全过；覆盖率 ≥ 80%
   错误码域：502001-502003（下载源）/ 422009（校验）/ 422010（解压安全）/ 507001-507002（磁盘）
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -25,12 +25,12 @@
             <artifactId>terra-scout-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- HTTP 客户端（dependencies.md 11.6） -->
+        <!-- HTTP 客户端 -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
         </dependency>
-        <!-- 解压（security.md 6.7） -->
+        <!-- 解压 -->
         <dependency>
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>

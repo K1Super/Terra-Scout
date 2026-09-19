@@ -5,13 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Terra Scout 统一业务异常（exception-strategy.md 7.1 / coding-standard.md 2.4）。
+ * Terra Scout 统一业务异常。
  *
  * <p>使用约束：
  * <ul>
  *   <li>业务校验失败抛出本异常，携带对应 {@link TerraScoutError}；</li>
  *   <li>系统异常先包装：{@code new TerraScoutException(TerraScoutError.UNKNOWN, e.getMessage(), e)}；</li>
- *   <li>全局异常处理器按 {@link #getHttpStatus()} 渲染 HTTP 状态（恒等于 code 前 3 位，D-001）。</li>
+ *   <li>全局异常处理器按 {@link #getHttpStatus()} 渲染 HTTP 状态（恒等于 code 前 3 位）。</li>
  * </ul>
  */
 public class TerraScoutException extends RuntimeException {
@@ -51,7 +51,7 @@ public class TerraScoutException extends RuntimeException {
         return error;
     }
 
-    /** HTTP 状态码恒等于错误码前 3 位（D-001 强约束）。 */
+    /** HTTP 状态码恒等于错误码前 3 位（强约束）。 */
     public int getHttpStatus() {
         return error.getHttpStatus();
     }

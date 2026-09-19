@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 审计服务：hash 链（security.md 6.8 / AuditLog 注释），防无意篡改。
+ * 审计服务：hash 链（见 AuditLog 注释），防无意篡改。
  *
  * <p>规则：{@code hash = SHA-256(prev_hash + biz_id + action + target_type + target_id
  * + before_json + after_json + result + created_at)}；首条 prev_hash = null。
@@ -66,7 +66,7 @@ public class AuditService {
     }
 
     /**
-     * 重放 hash 链校验当前集合是否完整且未被改（security.md 6.8：防无意篡改）。
+     * 重放 hash 链校验当前集合是否完整且未被改（防无意篡改）。
      * 校验失败时返回为 false；不会修改数据库。
      */
     @Transactional(readOnly = true)
@@ -96,7 +96,7 @@ public class AuditService {
         return s == null ? "" : s;
     }
 
-    /** SHA-256 十六进制（复用 security.md 6.8 口径）。 */
+    /** SHA-256 十六进制。 */
     public static String sha256(String content) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

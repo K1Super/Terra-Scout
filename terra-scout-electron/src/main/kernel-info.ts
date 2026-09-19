@@ -3,11 +3,11 @@ import { appendFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 /**
- * 内核信息管理（D-016 token 合规）：
+ * 内核信息管理（token 合规）：
  * - Token：crypto.randomBytes(32).toString('base64') 仅内存，随进程退出失效；
  *   经 --terrascout.token= 传给 Java，渲染进程经 contextBridge 仅拼 X-TerraScout-Token 头。
- * - 端口 / PID 记录在内存，不落盘（process-management 5.6）。
- * - Electron 日志写入 {data-dir}/logs/electron.log（process-management 5.8，按天+大小滚动由外层/内核负责）。
+ * - 端口 / PID 记录在内存，不落盘。
+ * - Electron 日志写入 {data-dir}/logs/electron.log（按天+大小滚动由外层/内核负责）。
  */
 export class KernelInfo {
   private readonly logFile: string;

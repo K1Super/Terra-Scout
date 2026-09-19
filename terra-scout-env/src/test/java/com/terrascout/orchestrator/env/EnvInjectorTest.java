@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * 环境注入计算测试（TC-005：注入正确，不污染系统全局）。
+ * 环境注入计算测试：注入正确，不污染系统全局。
  */
 class EnvInjectorTest {
 

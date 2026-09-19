@@ -6,7 +6,7 @@ import com.terrascout.orchestrator.core.enums.OsTypeEnum;
 import com.terrascout.orchestrator.core.enums.ProjectTypeEnum;
 
 /**
- * 项目导入分析响应（rest-schema.md 3.4.1；openapi AnalyzeResponse）。
+ * 项目导入分析响应。
  */
 public class AnalyzeResponse {
 

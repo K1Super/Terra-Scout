@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.enums;
 
 /**
- * 任务状态（ddl-migration.md 2.4 task.status；state-machine.md 9 状态 / 10 事件转移表）。
+ * 任务状态（对应 task.status；9 状态 / 10 事件转移表）。
  *
  * <p>终态集合（409005）：SUCCESS / FAILED / CANCELLED / ROLLED_BACK——终态任务拒绝再次操作。
  */
@@ -10,7 +10,7 @@ public enum TaskStatusEnum {
     PENDING,
     /** 已入队，等待线程池调度。 */
     QUEUED,
-    /** 执行中（任务线程自报心跳，D-007）。 */
+    /** 执行中（任务线程自报心跳）。 */
     RUNNING,
     /** 用户暂停。 */
     PAUSED,

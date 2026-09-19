@@ -15,7 +15,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * {@link Sha256Verifier} 单元测试（security.md 6.6；校验失败 422009）。
+ * {@link Sha256Verifier} 单元测试（校验失败 422009）。
  */
 class Sha256VerifierTest {
 

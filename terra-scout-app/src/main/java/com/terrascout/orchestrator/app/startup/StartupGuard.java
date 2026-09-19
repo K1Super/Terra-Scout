@@ -19,7 +19,7 @@ import java.util.Set;
 import com.terrascout.orchestrator.core.constant.PathConstants;
 
 /**
- * 启动期引导：数据根目录树 / 数据库备份 / 数据库密码持久化（D-003 / D-006 / ddl-migration 2.1、2.5）。
+ * 启动期引导：数据根目录树 / 数据库备份 / 数据库密码持久化。
  *
  * <p>本类在 {@code main()} 中、Spring 上下文启动前执行，保证：
  * <ul>
@@ -46,7 +46,7 @@ public final class StartupGuard {
         backupExistingDb(dataRoot);
     }
 
-    /** 确保数据库密码已持久化到 db.properties；已存在则复用（D-006）。 */
+    /** 确保数据库密码已持久化到 db.properties；已存在则复用。 */
     public static String ensureDatabasePassword() {
         Path root = PathConstants.dataRoot();
         createDirs(root.resolve(PathConstants.DIR_CONFIG));
@@ -91,7 +91,7 @@ public final class StartupGuard {
         }
     }
 
-    /** 生成 24 字节随机密码并 Base64（security.md 6.9 / ddl-migration 2.1）。 */
+    /** 生成 24 字节随机密码并 Base64。 */
     private static String randomPassword() {
         byte[] bytes = new byte[24];
         RANDOM.nextBytes(bytes);
@@ -136,7 +136,7 @@ public final class StartupGuard {
     }
 
     /**
-     * 收紧密码文件 ACL：确保当前用户可读可写（等效 chmod 600；security.md T6 / D-006）。
+     * 收紧密码文件 ACL：确保当前用户可读可写（等效 chmod 600）。
      *
      * <p>采用<b>追加</b>而非替换：保留文件既有（含继承）条目，并为 owner 补一条完整读写
      * ALLOW。NIO {@link AclFileAttributeView} 在 Windows 上整体替换会丢失继承 ACE，

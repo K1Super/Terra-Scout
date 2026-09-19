@@ -38,7 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * SDK 安装器单测（D-004 全局仓库物理落位）：幂等复用 / 真实下载 / 项目级回滚。
+ * SDK 安装器单测（全局仓库物理落位）：幂等复用 / 真实下载 / 项目级回滚。
  */
 class SdkInstallerTest {
 

@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
 /**
- * 步骤上下文测试（task-step-definition.md 5.5）。
+ * 步骤上下文测试。
  */
 class TaskStepContextTest {
 

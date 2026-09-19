@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 心跳超时检测器（concurrency-model.md 6.4 / state-machine.md 4.5、4.9，D-007）。
+ * 心跳超时检测器：自报心跳超时检测。
  *
  * <p>设计原则：任务线程自报心跳，本检测器"只检测、不刷新"。检测到 RUNNING 且
  * heartbeat_at 早于阈值的任务即视为假死，标记 FAILED + 错误码 500003（任务心跳超时）。
@@ -59,7 +59,7 @@ public final class HeartbeatMonitor {
     }
 
     /**
-     * 启动恢复扫描（state-machine.md 4.9 / concurrency-model 6.5）：与常规检测同逻辑。
+     * 启动恢复扫描：与常规检测同逻辑。
      */
     public int recoverOnStartup(HeartbeatStore store) {
         return detectTimeout(store, System.currentTimeMillis());

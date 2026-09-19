@@ -8,15 +8,15 @@ import java.util.Objects;
 import com.terrascout.orchestrator.core.enums.LanguageEnum;
 
 /**
- * 统一路径常量（master-plan.md §4 唯一路径口径，禁止第二套硬编码路径）。
+ * 统一路径常量（唯一路径口径，禁止第二套硬编码路径）。
  *
  * <p>设计约束：
  * <ul>
- *   <li>本类只负责<b>路径组装</b>；规范化与安全校验（toRealPath + 目标前缀校验）在使用方执行（安全红线 3）；</li>
- *   <li>数据根默认 {@code %USERPROFILE%\.terrascout}（D-003），可被系统属性
+ *   <li>本类只负责<b>路径组装</b>；规范化与安全校验（toRealPath + 目标前缀校验）在使用方执行；</li>
+ *   <li>数据根默认 {@code %USERPROFILE%\.terrascout}，可被系统属性
  *       {@code terrascout.data-dir}（{@link #DATA_DIR_PROPERTY}）覆盖，由 app 层配置绑定传入；</li>
- *   <li>SDK 仓库全局共享 {@code {data-root}\sdks\{language}\{version}}（D-004）；</li>
- *   <li>项目隔离域 {@code {projectRoot}\.devenv}（D-004）。</li>
+ *   <li>SDK 仓库全局共享 {@code {data-root}\sdks\{language}\{version}}；</li>
+ *   <li>项目隔离域 {@code {projectRoot}\.devenv}。</li>
  * </ul>
  */
 public final class PathConstants {
@@ -24,7 +24,7 @@ public final class PathConstants {
     /** 覆盖数据根的系统属性键（app 层与 Spring relaxed binding 共用）。 */
     public static final String DATA_DIR_PROPERTY = "terrascout.data-dir";
 
-    /** 默认数据根目录名（D-003：唯一数据根 {@code %USERPROFILE%\.terrascout}）。 */
+    /** 默认数据根目录名（唯一数据根 {@code %USERPROFILE%\.terrascout}）。 */
     public static final String DEFAULT_DATA_DIR_NAME = ".terrascout";
 
     // ==================== 数据根子目录 ====================
@@ -36,7 +36,7 @@ public final class PathConstants {
     public static final String DIR_LOGS = "logs";
     /** 配置目录：{data-root}\config。 */
     public static final String DIR_CONFIG = "config";
-    /** SDK 仓库目录：{data-root}\sdks（D-004，全局共享）。 */
+    /** SDK 仓库目录：{data-root}\sdks（全局共享）。 */
     public static final String DIR_SDKS = "sdks";
     /** SDK 安装落位票根文件（写入安装目录内，卸载物理删除的护栏凭据）。 */
     public static final String FILE_SDK_MARKER = ".terrascout-sdk-marker";
@@ -46,11 +46,11 @@ public final class PathConstants {
     // ==================== 数据根文件名 ====================
     /** H2 文件库：{data-root}\db\terrascout.mv.db。 */
     public static final String FILE_DB = "terrascout.mv.db";
-    /** 数据库密码文件：{data-root}\config\db.properties（D-006，ACL 仅当前用户）。 */
+    /** 数据库密码文件：{data-root}\config\db.properties（ACL 仅当前用户）。 */
     public static final String FILE_DB_PROPERTIES = "db.properties";
-    /** 运行时设置：{data-root}/config/user-settings.json（D-013）。 */
+    /** 运行时设置：{data-root}/config/user-settings.json。 */
     public static final String FILE_USER_SETTINGS = "user-settings.json";
-    /** SDK 元数据：{data-root}\config\sdk-metadata.json（D-009，外部文件支持热重载）。 */
+    /** SDK 元数据：{data-root}\config\sdk-metadata.json（外部文件支持热重载）。 */
     public static final String FILE_SDK_METADATA = "sdk-metadata.json";
     /** 内核日志文件名。 */
     public static final String FILE_LOG_KERNEL = "terrascout.log";
@@ -59,7 +59,7 @@ public final class PathConstants {
     /** 备份文件后缀。 */
     public static final String BACKUP_SUFFIX = ".mv.db";
 
-    // ==================== 项目隔离域（D-004） ====================
+    // ==================== 项目隔离域 ====================
     /** 隔离域目录名：{projectRoot}\.devenv。 */
     public static final String ISOLATION_DIR_NAME = ".devenv";
     /** 隔离域内 Maven 本地仓库目录名。 */
@@ -68,7 +68,7 @@ public final class PathConstants {
     public static final String ISOLATION_NPM_CACHE = "npm-cache";
     /** 隔离域内 Go 模块缓存目录名（GOMODCACHE）。 */
     public static final String ISOLATION_GO_CACHE = "go-cache";
-    /** 环境脚本文件名（ADR-007：进程级注入入口）。 */
+    /** 环境脚本文件名（进程级注入入口）。 */
     public static final String ISOLATION_ENV_SCRIPT = "env.ps1";
 
     private PathConstants() {
@@ -115,12 +115,12 @@ public final class PathConstants {
         return logsDir(dataRoot).resolve(FILE_LOG_KERNEL);
     }
 
-    /** SDK 仓库：{data-root}\sdks（D-004 全局共享）。 */
+    /** SDK 仓库：{data-root}\sdks（全局共享）。 */
     public static Path sdkRepository(Path dataRoot) {
         return requireNonNull(dataRoot).resolve(DIR_SDKS);
     }
 
-    /** SDK 安装目录：{data-root}\sdks\{language}\{version}（D-004；目录名用小写语言名）。 */
+    /** SDK 安装目录：{data-root}\sdks\{language}\{version}（目录名用小写语言名）。 */
     public static Path sdkHome(Path dataRoot, LanguageEnum language, String version) {
         Objects.requireNonNull(language, "language 不能为 null");
         Objects.requireNonNull(version, "version 不能为 null");
@@ -137,7 +137,7 @@ public final class PathConstants {
         return requireNonNull(dataRoot).resolve(DIR_DB).resolve(DIR_BACKUP);
     }
 
-    /** 启动备份文件：{data-root}\db\backup\terrascout-{yyyyMMddHHmmss}.mv.db（ddl-migration 2.5）。 */
+    /** 启动备份文件：{data-root}\db\backup\terrascout-{yyyyMMddHHmmss}.mv.db。 */
     public static Path backupFile(Path dataRoot, String timestamp) {
         Objects.requireNonNull(timestamp, "timestamp 不能为 null");
         if (timestamp.isBlank()) {
@@ -151,7 +151,7 @@ public final class PathConstants {
         return requireNonNull(dataRoot).resolve(DIR_DIAGNOSTICS);
     }
 
-    /** 项目隔离域：{projectRoot}\.devenv（D-004）。 */
+    /** 项目隔离域：{projectRoot}\.devenv。 */
     public static Path isolationRoot(Path projectRoot) {
         return requireNonNull(projectRoot).resolve(ISOLATION_DIR_NAME);
     }

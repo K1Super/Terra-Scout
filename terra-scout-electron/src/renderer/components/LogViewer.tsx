@@ -7,7 +7,7 @@ interface LogViewerProps {
 }
 
 /**
- * 任务日志查看器（spec §10.4 / §8.6.2）。
+ * 任务日志查看器。
  * aria-live="polite" 动态追加；日志追加而非替换。
  */
 export default function LogViewer({ lines, truncated }: LogViewerProps): React.JSX.Element {

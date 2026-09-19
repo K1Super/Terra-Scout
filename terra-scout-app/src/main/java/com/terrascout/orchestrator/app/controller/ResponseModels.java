@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 列表响应统一模型（rest-schema.md 3.6 分页：items / total / page / size）。
+ * 列表响应统一模型（分页：items / total / page / size）。
  */
 public final class ResponseModels {
 

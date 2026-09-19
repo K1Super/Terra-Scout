@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * 审计日志实体（ddl-migration.md 2.3 表 audit_log；hash 链防无意篡改，D-015）。
+ * 审计日志实体（表 audit_log；hash 链防无意篡改）。
  *
  * <p>hash 链规则：{@code hash = SHA-256(prev_hash + biz_id + action + result + created_at)}，
  * prev_hash 取上一条记录的 hash；biz_id 为普通索引（一个业务 ID 多条审计记录是常态）。

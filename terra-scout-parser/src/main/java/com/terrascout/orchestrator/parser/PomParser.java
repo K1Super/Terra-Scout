@@ -33,22 +33,22 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * pom.xml 解析器（pom-parser-algorithm.md 3.1~3.8）。
+ * pom.xml 解析器。
  *
  * <p>能力边界（P0）：
  * <ul>
- *   <li>版本约束提取按 7 级优先级（算法 3.2），值经标准化（算法 3.7：{@code 1.8→8}、{@code [17,18)→17}）</li>
- *   <li>属性占位符求值委托 {@link PropertyResolver}（算法 3.3）</li>
- *   <li>父 POM 递归合并：.m2 本地仓库 → ../pom.xml → 422003；最多 {@value #MAX_PARENT_DEPTH} 层，GAV 循环检测（算法 3.4）</li>
- *   <li>Profile 激活仅支持 activeByDefault / activation.jdk / activation.os.family（算法 3.5）</li>
- *   <li>多模块项目为 P0 冻结行为：直接抛 422001（算法 3.6）</li>
+ *   <li>版本约束提取按 7 级优先级，值经标准化（{@code 1.8→8}、{@code [17,18)→17}）</li>
+ *   <li>属性占位符求值委托 {@link PropertyResolver}</li>
+ *   <li>父 POM 递归合并：.m2 本地仓库 → ../pom.xml → 422003；最多 {@value #MAX_PARENT_DEPTH} 层，GAV 循环检测</li>
+ *   <li>Profile 激活仅支持 activeByDefault / activation.jdk / activation.os.family</li>
+ *   <li>多模块项目为 P0 冻结行为：直接抛 422001</li>
  * </ul>
  *
  * <p>线程安全：无共享可变状态，实例可并发使用（localRepository 只读）。
  */
 public final class PomParser {
 
-    /** 父 POM 递归深度上限（算法 3.4 步骤 e）。 */
+    /** 父 POM 递归深度上限。 */
     public static final int MAX_PARENT_DEPTH = 5;
 
     /** SpringBoot parent 的 groupId（用于优先级 5 版本推断）。 */
@@ -71,7 +71,7 @@ public final class PomParser {
     /** Maven 本地仓库（默认 %USERPROFILE%/.m2/repository，测试可注入）。 */
     private final Path localRepository;
 
-    /** 使用默认本地仓库（算法 3.4 步骤 b 路径约定）。 */
+    /** 使用默认本地仓库。 */
     public PomParser() {
         this(Paths.get(System.getProperty("user.home"), ".m2", "repository"));
     }
@@ -86,10 +86,10 @@ public final class PomParser {
     }
 
     /**
-     * 解析 pom.xml，产出 JAVA 版本约束（已按算法 3.7 标准化）。
+     * 解析 pom.xml，产出 JAVA 版本约束（已标准化）。
      *
      * <p>多模块聚合（{@code <modules>}）不再冻结拒绝：本方法解析单个 POM 本身，
-     * 模块遍历与约束合并由 {@link ConstraintExtractor} 驱动（裁决 R46）。
+     * 模块遍历与约束合并由 {@link ConstraintExtractor} 驱动。
      *
      * @param pomFile pom.xml 文件路径
      * @return 解析结果（javaVersion 为 null 表示未声明任何版本，不报错）
@@ -134,7 +134,7 @@ public final class PomParser {
     // ---------------------------------------------------------------- 层收集与父 POM 递归
 
     /**
-     * 收集自身与父链各层（算法 3.4），返回顺序：子在前、父在后。
+     * 收集自身与父链各层，返回顺序：子在前、父在后。
      */
     private List<Layer> collectLayers(Path pomFile, Document selfDom) {
         List<Layer> layers = new ArrayList<>();
@@ -168,7 +168,7 @@ public final class PomParser {
     }
 
     /**
-     * 定位父 POM：.m2 本地仓库优先，其次 ../pom.xml（算法 3.4 步骤 b/c），均未命中抛 422003。
+     * 定位父 POM：.m2 本地仓库优先，其次 ../pom.xml，均未命中抛 422003。
      */
     private Path locateParentPom(Layer layer, Path currentPom) {
         String groupPath = layer.parentGroupId.replace('.', '/');
@@ -204,7 +204,7 @@ public final class PomParser {
         }
     }
 
-    // ---------------------------------------------------------------- 版本提取（算法 3.2 七级优先级）
+    // ---------------------------------------------------------------- 版本提取（七级优先级）
 
     /**
      * 七级优先级提取原始版本声明。优先级 1~4 仅考虑 pom 已声明（declaredProps 中）的属性，
@@ -309,7 +309,7 @@ public final class PomParser {
         return rawValue != null && rawValue.contains("${") ? 0.9 : 1.0;
     }
 
-    // ---------------------------------------------------------------- 版本标准化（算法 3.7）
+    // ---------------------------------------------------------------- 版本标准化
 
     /**
      * 版本约束标准化：范围取左端点（{@code [17,18)→17}），历史版本 {@code 1.8→8}，其余原样。
@@ -333,7 +333,7 @@ public final class PomParser {
         return matcher.matches() ? matcher.group(1) : value;
     }
 
-    // ---------------------------------------------------------------- 属性与 Profile（算法 3.3 / 3.5）
+    // ---------------------------------------------------------------- 属性与 Profile
 
     /**
      * 提取单层属性：主 properties + 激活 profile 的 properties（profile 覆盖主，Maven 语义）。
@@ -373,7 +373,7 @@ public final class PomParser {
     }
 
     /**
-     * Profile 激活判定（算法 3.5）：activeByDefault=true / activation.jdk 匹配当前 JVM /
+     * Profile 激活判定：activeByDefault=true / activation.jdk 匹配当前 JVM /
      * activation.os.family 匹配 WINDOWS。property 激活与命令行 -P 为 P1。
      */
     private static boolean isProfileActive(Element profile) {
@@ -454,7 +454,7 @@ public final class PomParser {
         return System.getProperty("os.name", "").toLowerCase(Locale.ROOT).contains("windows");
     }
 
-    // ---------------------------------------------------------------- 多模块解析（裁决 R46）
+    // ---------------------------------------------------------------- 多模块解析
 
     /**
      * 解析聚合 POM 的 {@code <modules>} 列表，返回各子模块 pom.xml 绝对路径（按声明顺序去重）。
@@ -567,7 +567,7 @@ public final class PomParser {
 
     // ---------------------------------------------------------------- 内部模型
 
-    /** 版本声明来源（算法 3.2 七级优先级）。 */
+    /** 版本声明来源（七级优先级）。 */
     public enum VersionSource {
         /** 优先级 1：properties/maven.compiler.release。 */
         COMPILER_RELEASE,
@@ -606,7 +606,7 @@ public final class PomParser {
                     : Collections.unmodifiableMap(new LinkedHashMap<>(properties));
         }
 
-        /** 约束值（未声明时为字面量 UNKNOWN，rest-schema 3.4.1 constraint 字段语义）。 */
+        /** 约束值（未声明时为字面量 UNKNOWN）。 */
         public String javaVersionOrUnknown() {
             return javaVersion == null ? "UNKNOWN" : javaVersion;
         }

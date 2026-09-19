@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.dto;
 
 /**
- * SDK 版本候选（openapi SdkVersionCandidate；裁决 R48）。
+ * SDK 版本候选。
  *
  * <p>装配详情/预览计划中每个 SDK 安装项附带的候选版本表（首项 = 自动推荐），供前端以选择器
  * 让用户自行选配版本，execute 阶段把所选版本经 {@code versionOverrides} 回传覆盖。

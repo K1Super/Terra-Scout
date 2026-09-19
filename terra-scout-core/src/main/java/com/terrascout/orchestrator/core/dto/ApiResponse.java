@@ -5,9 +5,9 @@ import java.util.Map;
 import com.terrascout.orchestrator.core.error.TerraScoutError;
 
 /**
- * 统一响应结构（rest-schema.md 3.2；openapi ApiResponse）。
+ * 统一响应结构（ApiResponse）。
  *
- * <p>code = 200000 表示成功（D-002）；错误时 code 为 6 位错误码，
+ * <p>code = 200000 表示成功；错误时 code 为 6 位错误码，
  * HTTP 状态码由 app 层按 {@link TerraScoutError#getHttpStatus()} 渲染。
  * traceId 由 app 层 Web 过滤器注入。
  */
@@ -24,10 +24,10 @@ public class ApiResponse<T> {
 
     private long timestamp;
 
-    /** 结构化明细（openapi ErrorResponse.details），无则为 null。 */
+    /** 结构化明细（ErrorResponse.details），无则为 null。 */
     private Map<String, Object> details;
 
-    /** 成功响应工厂（message 固定 "success"，D-002）。 */
+    /** 成功响应工厂（message 固定 "success"）。 */
     public static <T> ApiResponse<T> ok(T data) {
         ApiResponse<T> response = new ApiResponse<>();
         response.code = TerraScoutError.SUCCESS.getCode();

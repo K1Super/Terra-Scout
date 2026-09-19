@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   terra-scout-task：任务引擎 / 状态机 / 心跳 / 锁 / 回滚
-  DoD（master-plan §7）：转移表全覆盖测试 + 心跳超时单测；覆盖率 ≥ 80%
+  DoD：转移表全覆盖测试 + 心跳超时单测；覆盖率 ≥ 80%
   错误码域：409001 项目锁 / 409005 终态冲突 / 409006 队列满 / 500003 心跳超时 / 500004 回滚失败
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -17,7 +17,7 @@
 
     <artifactId>terra-scout-task</artifactId>
     <name>Terra Scout Task</name>
-    <description>任务状态机（state-machine.md）/ 步骤引擎 / 心跳自报（D-007）/ 项目锁 / 回滚编排</description>
+    <description>任务状态机 / 步骤引擎 / 心跳自报 / 项目锁 / 回滚编排</description>
 
     <dependencies>
         <dependency>

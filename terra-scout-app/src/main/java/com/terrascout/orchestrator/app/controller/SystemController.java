@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 系统端点（rest-schema.md 3.4.16）：系统信息 / 备份 / 诊断包。
+ * 系统端点：系统信息 / 备份 / 诊断包。
  *
  * <p>本机桌面 UI 消费的路径字段返回<b>完整真实路径</b>（与 SDK 列表中
  * installedPath 的处理一致；展示对象是本机用户本人，无信息泄露面）。
@@ -55,7 +55,7 @@ public class SystemController {
         return ApiResponse.ok(data);
     }
 
-    /** 立即备份数据库（3.4.16）。 */
+    /** 立即备份数据库。 */
     @PostMapping("/backup")
     public ApiResponse<Map<String, Object>> backup() {
         Path backupFile = backupService.backup();
@@ -64,7 +64,7 @@ public class SystemController {
         return ApiResponse.ok(data);
     }
 
-    /** 导出诊断包（3.4.16；ZIP 内容由 DiagnosticService 脱敏，返回完整落盘路径）。 */
+    /** 导出诊断包（ZIP 内容由 DiagnosticService 脱敏，返回完整落盘路径）。 */
     @GetMapping("/diagnostic")
     public ApiResponse<Map<String, Object>> diagnostic() {
         Path zipPath = diagnosticService.create();

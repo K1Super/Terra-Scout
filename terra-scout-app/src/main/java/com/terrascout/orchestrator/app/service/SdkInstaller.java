@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * SDK 安装器：真实下载 + SHA-256 + 解压 + 写安装记录（D-004 全局仓库物理落位）。
+ * SDK 安装器：真实下载 + SHA-256 + 解压 + 写安装记录（全局仓库物理落位）。
  *
  * <p>幂等：同语言+版本已有 SUCCESS 记录直接复用；回滚仅删除本项目（PROJECT scope）记录与目录，
  * 避免误删全局共享 SDK。安装全程支持取消：监听方置取消信号后，安装器在下载块 /
@@ -74,7 +74,7 @@ public class SdkInstaller {
     }
 
     /** 幂等安装（自定义落位）：customHome 非空时安装到用户所选目录（服务端已校验绝对路径与可用性），
-     * null 时回落 D-004 标准仓库；成功解压后写落位票根文件，卸载物理删除凭此识别自装目录。 */
+     * null 时回落标准仓库；成功解压后写落位票根文件，卸载物理删除凭此识别自装目录。 */
     public SdkInstallRecord ensureInstalled(SdkVersion version, ScopeEnum scope, String projectId,
                                             Path customHome, SdkInstallListener listener) {
         SdkInstallListener safeListener = listener == null ? SdkInstallListener.NOOP : listener;

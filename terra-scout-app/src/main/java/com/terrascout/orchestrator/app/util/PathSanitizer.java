@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.app.util;
 
 /**
- * 日志 / 错误响应路径脱敏工具（security.md 6.10）：路径保留最后 2 级，前面替换为 {@code ***}。
+ * 日志 / 错误响应路径脱敏工具：路径保留最后 2 级，前面替换为 {@code ***}。
  */
 public final class PathSanitizer {
 

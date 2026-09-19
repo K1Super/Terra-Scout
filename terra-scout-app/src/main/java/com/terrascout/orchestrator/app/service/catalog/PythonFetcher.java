@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
  *       条目先行跳过，避免抢占正式版日期；如将来改回 DRF 分页形态则逐页兜底。</li>
  * </ol>
  *
- * <p>版本线策略（裁决 R49）：目录版本按 major.minor 归组为「版本线」；行级 EOL
+ * <p>版本线策略：目录版本按 major.minor 归组为「版本线」；行级 EOL
  * 静态表（官方 PEP 发布计划）排除已停维的行（表外行：新于表内最高行视为未来受支持行，
  * 旧于表内最低行视为已 EOL 排除）；每条受支持线按版本倒序至多探测
  * {@value #PROBE_PER_LINE} 个、最多保留 {@value #KEEP_PER_LINE} 个成功条目——

@@ -3,11 +3,11 @@ package com.terrascout.orchestrator.core.dto;
 import java.util.List;
 
 /**
- * 命令规格（openapi CommandSpec）。
+ * 命令规格。
  *
- * <p>命令执行铁律（安全红线 1 / D-008）：命令必须过白名单（mvn.cmd / npm.cmd / java.exe / node.exe），
+ * <p>命令执行铁律：命令必须过白名单（mvn.cmd / npm.cmd / java.exe / node.exe），
  * 参数逐个匹配白名单正则 {@code ^[A-Za-z0-9@+=:,._/\\-]+$}，禁止字符串拼接构造命令行。
- * {@code command} 取值（openapi）：{@code mvn} / {@code npm} / {@code node} / {@code java}（小写）。
+ * {@code command} 取值：{@code mvn} / {@code npm} / {@code node} / {@code java}（小写）。
  */
 public class CommandSpec {
 

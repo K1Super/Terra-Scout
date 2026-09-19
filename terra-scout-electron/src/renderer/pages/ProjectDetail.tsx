@@ -13,13 +13,13 @@ import styles from './pages.module.css';
  * 项目详情：项目画像 + 装配计划 + 确认装配。
  * 页头只放语境信息（项目名 + 类型 + 返回），右侧挂唯一主操作；
  * 信息区用「label(11px 大写) / value(深灰)」的清单式排版替代传统表格。
- * R48：SDK 安装行附版本下拉（候选表），所选版本随 execute 携带 versionOverrides。
+ * SDK 安装行附版本下拉（候选表），所选版本随 execute 携带 versionOverrides。
  */
 export default function ProjectDetailPage(): React.JSX.Element {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  /** 各语言已选版本（R48）：缺省取推荐版本（s.version）。 */
+  /** 各语言已选版本：缺省取推荐版本（s.version）。 */
   const [selectedVersions, setSelectedVersions] = useState<Record<string, string>>({});
 
   const detailQuery = useQuery({

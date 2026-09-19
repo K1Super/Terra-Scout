@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 项目端点（rest-schema.md 3.4.1-3.4.4）：导入分析 / 列表 / 详情 / 删除。
+ * 项目端点：导入分析 / 列表 / 详情 / 删除。
  *
- * <p>条目组装（含 type / constraints / plan，裁决 R47）统一委托
+ * <p>条目组装（含 type / constraints / plan）统一委托
  * {@link ProjectService#item(Project, boolean)} 与 {@link ProjectService#detailItem(String)}。
  */
 @RestController
@@ -36,13 +36,13 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    /** 导入分析（3.4.1）。 */
+    /** 导入分析。 */
     @PostMapping("/analyze")
     public ApiResponse<AnalyzeResponse> analyze(@RequestBody AnalyzeRequest request) {
         return ApiResponse.ok(projectService.analyze(request));
     }
 
-    /** 项目列表（3.4.2）。 */
+    /** 项目列表。 */
     @GetMapping
     public ApiResponse<Map<String, Object>> list(
             @RequestParam(defaultValue = "1") int page,
@@ -58,13 +58,13 @@ public class ProjectController {
         return ApiResponse.ok(data);
     }
 
-    /** 项目详情（3.4.3）：type / constraints / plan 完整画像。 */
+    /** 项目详情：type / constraints / plan 完整画像。 */
     @GetMapping("/{projectId}")
     public ApiResponse<Map<String, Object>> detail(@PathVariable String projectId) {
         return ApiResponse.ok(projectService.detailItem(projectId));
     }
 
-    /** 删除项目（3.4.4，仅删记录不触碰磁盘，D-014）。 */
+    /** 删除项目（仅删记录不触碰磁盘）。 */
     @DeleteMapping("/{projectId}")
     public ApiResponse<Void> delete(@PathVariable String projectId) {
         projectService.delete(projectId);

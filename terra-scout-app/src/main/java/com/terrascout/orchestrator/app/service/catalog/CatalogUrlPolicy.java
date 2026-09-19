@@ -5,7 +5,7 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * SDK 元数据下载地址白名单（security.md 6.6 官方源域名清单）。
+ * SDK 元数据下载地址白名单（官方源域名清单）。
  *
  * <p>官方源响应与本地元数据文件中的下载地址均为外部输入，入库存前必须同时满足：
  * <ol>

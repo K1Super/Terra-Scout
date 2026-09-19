@@ -1,4 +1,4 @@
-﻿# 打包桌面安装包（release.md 8.2/8.4）：
+# 打包桌面安装包：
 # 1) 构建 React 前端（进入 asar）
 # 2) 确保 resources/terrascout.jar 存在（无则提示先跑 build-jre.ps1 / mvn package）
 # 3) electron-builder --win nsis 生成安装包

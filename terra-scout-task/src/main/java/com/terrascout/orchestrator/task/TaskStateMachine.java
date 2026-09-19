@@ -7,7 +7,7 @@ import java.util.Objects;
 import com.terrascout.orchestrator.core.enums.TaskStatusEnum;
 
 /**
- * 任务状态机（state-machine.md 4.1~4.3 转移表全覆盖）。
+ * 任务状态机（状态转移表全覆盖）。
  *
  * <p>纯函数式：不影响任何持久层，仅表达状态事件转移的合法性。非法转移抛
  * {@link IllegalStateException}；管理方（{@link TaskEngine} / 上层 Controller）据此
@@ -18,7 +18,7 @@ import com.terrascout.orchestrator.core.enums.TaskStatusEnum;
  */
 public final class TaskStateMachine {
 
-    /** 状态机事件（state-machine.md 4.2）。 */
+    /** 状态机事件。 */
     public enum TaskEvent {
         ENQUEUE,
         START,

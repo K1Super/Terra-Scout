@@ -1,4 +1,4 @@
-# 裁剪 JRE（deployment-guide.md 构建流程，D-010）：
+# 裁剪 JRE（构建流程）：
 # 1) 仓库根构建后端 jar（mvn package -DskipTests）
 # 2) 清理旧 resources/jre（jlink 拒绝写入已存在目录）
 # 3) jlink 裁剪 12 模块到 resources/jre
@@ -9,7 +9,7 @@ $appDir = Join-Path $root 'terra-scout-app'
 $jar = Join-Path $appDir 'target\terra-scout-app-0.1.0-SNAPSHOT.jar'
 $jreOut = Join-Path $PSScriptRoot '..\resources\jre'
 
-# 裁剪模块基线（docs/deployment-guide.md 构建流程）。注意：不可用 jdeps 从 spring-boot fat-jar 推导——
+# 裁剪模块基线（构建流程）。注意：不可用 jdeps 从 spring-boot fat-jar 推导——
 # 依赖嵌在 BOOT-INF/lib 的嵌套 jar 中，jlink 模块系统读不到，jdeps 只会给出 java.base。
 # 故基线为硬编码清单；若新增第三方库导致运行期缺模块，报错后按错误提示补充。
 $baseline = @(

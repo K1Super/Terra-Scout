@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.enums;
 
 /**
- * 命令执行状态（ddl-migration.md 2.4 command_execution.status）。
+ * 命令执行状态（对应 command_execution.status）。
  */
 public enum CommandStatusEnum {
     /** 执行中。 */

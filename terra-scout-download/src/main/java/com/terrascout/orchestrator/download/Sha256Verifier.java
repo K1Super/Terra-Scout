@@ -15,7 +15,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * SHA-256 校验工具（security.md 6.6；校验失败 → 422009 CHECKSUM_MISMATCH）。
+ * SHA-256 校验工具（校验失败 → 422009 CHECKSUM_MISMATCH）。
  *
  * <p>输入为 64 位十六进制摘要字符串；判定大小写不敏感；输入非 64 位十六进制视为调用约定错误（IAE）。
  */

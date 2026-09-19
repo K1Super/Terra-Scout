@@ -91,7 +91,7 @@ public class AssemblySession {
         this.sdkPlan = sdkPlan;
     }
 
-    /** SDK 版本选配覆盖（裁决 R48，可能为 null 表示全部自动推荐）。 */
+    /** SDK 版本选配覆盖（可能为 null 表示全部自动推荐）。 */
     public List<VersionOverride> getVersionOverrides() {
         return versionOverrides;
     }

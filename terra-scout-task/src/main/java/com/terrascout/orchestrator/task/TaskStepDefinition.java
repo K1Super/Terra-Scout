@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 任务步骤的静态定义（task-step-definition.md 5.2 PROJECT_ASSEMBLE 步骤表）。
+ * 任务步骤的静态定义（PROJECT_ASSEMBLE 步骤表）。
  *
  * @param name            步骤名
  * @param timeoutSeconds  允许的最长执行时间（秒）
@@ -19,7 +19,7 @@ public record TaskStepDefinition(
         boolean retryable,
         boolean hasRollback) {
 
-    /** 步骤名常量（task-step-definition.md 5.2；裁决 R48 扩展四语言）。 */
+    /** 步骤名常量（扩展四语言）。 */
     public static final String DETECT_PROJECT = "DETECT_PROJECT";
     public static final String PARSE_MANIFEST = "PARSE_MANIFEST";
     public static final String MATCH_VERSION = "MATCH_VERSION";
@@ -32,13 +32,13 @@ public record TaskStepDefinition(
     public static final String BIND_ENV = "BIND_ENV";
     public static final String VERIFY_PROJECT = "VERIFY_PROJECT";
 
-    /** SDK 安装步骤超时 30 分钟（D-018）。 */
+    /** SDK 安装步骤超时 30 分钟。 */
     public static final int SDK_INSTALL_TIMEOUT_SECONDS = 30 * 60;
     /** 验证步骤超时 10 分钟。 */
     public static final int VERIFY_TIMEOUT_SECONDS = 10 * 60;
 
     /**
-     * PROJECT_ASSEMBLE 任务的完整步骤序列（task-step-definition.md 5.2；裁决 R48 四语言 11 步）。
+     * PROJECT_ASSEMBLE 任务的完整步骤序列（四语言共 11 步）。
      */
     public static List<TaskStepDefinition> projectAssemble() {
         return List.of(

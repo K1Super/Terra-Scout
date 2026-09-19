@@ -28,11 +28,11 @@ import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Web 集成测试（@SpringBootTest RANDOM_PORT，D-011 H2 原生内存模式）。
+ * Web 集成测试（@SpringBootTest RANDOM_PORT，H2 原生内存模式）。
  *
- * <p>覆盖（security.md 6.2 / rest-schema.md 3.2、3.4）：
+ * <p>覆盖：
  * <ul>
- *   <li>Token 鉴权：缺失 / 错误 → HTTP 401 + 业务码 401001（D-001 强一致）；正确 → 放行；</li>
+ *   <li>Token 鉴权：缺失 / 错误 → HTTP 401 + 业务码 401001；正确 → 放行；</li>
  *   <li>免鉴权白名单：GET /api/v1/health 无 Token 返回 200；</li>
  *   <li>全局异常：无效路径请求项目分析 → 400001 / 项目不存在 → 404001；</li>
  *   <li>项目导入分析持久化 + 审计 hash 链 chainValid=true。</li>
@@ -344,7 +344,7 @@ class WebIntegrationTest {
         if (items == null || items.isEmpty()) {
             return; // 本机无任何系统 SDK 时不产生条目，无可断言
         }
-        // R29：系统合成项（元数据未收录的系统已装版本）必须标记 installed=true，不受 catalog 内容影响
+        // 系统合成项：元数据未收录的系统已装版本必须标记 installed=true，不受 catalog 内容影响
         List<Map<String, Object>> systemEntries = items.stream()
                 .filter(item -> Boolean.TRUE.equals(item.get("systemInstalled")))
                 .collect(Collectors.toList());
@@ -364,7 +364,7 @@ class WebIntegrationTest {
         List<String> statuses = JsonPath.read(resp.getBody(), "$.data.sources[*].status");
         assertThat(statuses).containsOnly("SUCCESS");
 
-        // 外部文件写回（D-009）：schema + 假条目写入 {data-root}/config/sdk-metadata.json
+        // 外部文件写回：schema + 假条目写入 {data-root}/config/sdk-metadata.json
         Path metadata = PathConstants.sdkMetadata(dataRootDir);
         assertThat(metadata).isRegularFile();
         String file = Files.readString(metadata);

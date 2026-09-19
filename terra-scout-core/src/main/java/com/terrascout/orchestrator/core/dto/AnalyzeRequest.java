@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.dto;
 
 /**
- * 项目导入分析请求（rest-schema.md 3.4.1；openapi AnalyzeRequest）。
+ * 项目导入分析请求。
  *
  * <p>path 必须为 Windows 盘符绝对路径（pattern {@code ^[A-Za-z]:\\.*}，1-4096 字符），
  * 非法值在 app 层校验并返回 400001；idempotencyKey 为 UUID v4，格式非法返回 400004。

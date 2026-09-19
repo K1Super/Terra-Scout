@@ -1,10 +1,10 @@
 package com.terrascout.orchestrator.app.security;
 
 /**
- * 请求级 traceId 上下文（rest-schema.md 3.2，统一响应结构含 traceId）。
+ * 请求级 traceId 上下文（统一响应结构含 traceId）。
  *
  * <p>每次 HTTP 请求由拦截器生成一个 UUID 写入当前线程，响应体与异常响应均带同一 traceId，
- * 便于日志关联（exception-strategy.md 7.3 使用 MDC/上下文打印）。
+ * 便于日志关联（使用 MDC/上下文打印）。
  */
 public final class TraceContext {
 

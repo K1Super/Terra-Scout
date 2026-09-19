@@ -25,9 +25,9 @@ import com.terrascout.orchestrator.core.enums.LanguageEnum;
 import com.terrascout.orchestrator.env.ProcessExecutor;
 
 /**
- * 系统级已装 SDK 探测（SDK 管理 installed 语义补充，R29/R30）。
+ * 系统级已装 SDK 探测（SDK 管理 installed 语义补充）。
  *
- * <h2>平台约束（P1-4）</h2>
+ * <h2>平台约束</h2>
  * <p>本类当前实现仅面向 Windows（依赖 .exe 命名、Program Files、NVM_HOME、%APPDATA%、
  * Python Launcher 等）。在非 Windows 平台上 {@link #probeVersions()} 返回空 Map，
  * 并通过 {@link ProbeDiagnostics} 记录一次平台拒绝事件（WARN 级）。</p>
@@ -42,43 +42,43 @@ import com.terrascout.orchestrator.env.ProcessExecutor;
  *       末尾对已发现 home 的<b>父目录一层兄弟扫描</b>（凭 release + bin/java.exe 判定），
  *       覆盖「同一管理目录并列多版本」布局（如 D:\Deps\jdk-11.0.19 与 jdk-17.0.12 只有其一在 PATH）；
  *       另扫标准安装根（Program Files\Java / Eclipse Adoptium / Amazon Corretto / Microsoft /
- *       Program Files (x86)\Java / ~\.jdks，P1-5：64 位根优先取 ProgramW6432）；</li>
+ *       Program Files (x86)\Java / ~\.jdks，64 位根优先取 ProgramW6432）；</li>
  *   <li>NODE：PATH 中每个 node.exe —— 对<b>绝对路径 exe</b> 执行 {@code -p process.execPath} 解析真实 home
  *       （nvm 软链），{@code -p process.version} 取版本（v 前缀剔除），任一步失败回退 exe 目录；
- *       nvm 根目录（NVM_HOME 显式即权威，否则 %APPDATA%\nvm，P2-6）下每个 v* 目录含 node.exe
+ *       nvm 根目录（NVM_HOME 显式即权威，否则 %APPDATA%\nvm）下每个 v* 目录含 node.exe
  *       即一个版本（目录名即版本，零进程）；</li>
  *   <li>PYTHON：优先 {@code py -0p}（Python Launcher，一次列出全部解释器版本与路径，
  *       对 PATH 命中的 py.exe 逐绝对路径调用）；失败回退 PATH 中<b>每一个</b> python.exe 的
- *       {@code --version}（P0-4，版本精度 x.y.z，与 launcher 的 x.y 主次版本不同属环境固有差异）；</li>
+ *       {@code --version}（版本精度 x.y.z，与 launcher 的 x.y 主次版本不同属环境固有差异）；</li>
  *   <li>GO：PATH 中每个 go.exe —— GOROOT 取 exe 上两级，版本优先读 {@code {GOROOT}/VERSION}
  *       文件（零进程），否则对<b>绝对路径 exe</b> 执行 {@code go version} 解析；末尾对已发现
  *       GOROOT 的父目录一层兄弟扫描（VERSION + bin/go.exe 判定）覆盖多 GOROOT 并列；</li>
  *   <li>版本归一化：Java 去 {@code +build} 后缀；Node 去 {@code v} 前缀；Go 去 {@code go} 前缀。</li>
  * </ul>
  *
- * <h2>优先级与冲突策略（P2-4/P2-5）</h2>
+ * <h2>优先级与冲突策略</h2>
  * <ul>
  *   <li>版本键为归一化字符串；同一版本不同 home 时保留<b>先发现者</b>，并触发
  *       {@link ProbeDiagnostics#recordDuplicateVersion}。</li>
  *   <li>优先级顺序：JAVA_HOME / py -0p &gt; PATH 顺序 &gt; 兄弟扫描 / nvm 根 &gt; 标准安装根。</li>
- *   <li>返回 Map 使用 LinkedHashMap 保序（不可变视图，P0-2），展示层可直接依赖顺序。</li>
+ *   <li>返回 Map 使用 LinkedHashMap 保序（不可变视图），展示层可直接依赖顺序。</li>
  * </ul>
  *
  * <h2>性能与并发契约</h2>
  * <ul>
  *   <li>结果带 TTL 缓存（默认 {@link #DEFAULT_TTL_MS}）规避 2s 轮询反复拉起进程；
- *       P1-1：{@code synchronized} 重建闸门 + 双检 single-flight，缓存过期瞬间仅一个线程
+ *       {@code synchronized} 重建闸门 + 双检 single-flight，缓存过期瞬间仅一个线程
  *       执行探测，读取路径无锁；</li>
- *   <li>每次进程探测显式超时 {@link #PROBE_TIMEOUT_MS}（P1-2），禁止无限挂起；</li>
- *   <li>时钟为单调毫秒（{@code System.nanoTime} 折算，P2-7），负 elapsed（时钟回拨）判为过期；
- *       兄弟目录扫描有 {@code SCAN_LIMIT} 条目上限（P3-7）。</li>
+ *   <li>每次进程探测显式超时 {@link #PROBE_TIMEOUT_MS}，禁止无限挂起；</li>
+ *   <li>时钟为单调毫秒（{@code System.nanoTime} 折算），负 elapsed（时钟回拨）判为过期；
+ *       兄弟目录扫描有 {@code SCAN_LIMIT} 条目上限。</li>
  * </ul>
  *
- * <h2>可观测性（P1-3）</h2>
+ * <h2>可观测性</h2>
  * <p>每一处降级（进程异常 / IO 异常 / 扫描跳过 / 同版本冲突）均产生 {@link ProbeDiagnostics}
  * 事件；默认 NOOP，宿主经 {@link ProbeDiagnostics#slf4j()} 桥接 SLF4J。</p>
  *
- * <p>探测命令面（R30）与任务装配面（D-008）分离：本类仅调用
+ * <p>探测命令面与任务装配面分离：本类仅调用
  * {@link ProcessExecutor#executeProbe} 且命令与参数全部硬编码只读，装配命令面不受影响。</p>
  */
 public class SystemSdkProber {
@@ -90,10 +90,10 @@ public class SystemSdkProber {
     /** 探测缓存默认 TTL（毫秒）。 */
     public static final long DEFAULT_TTL_MS = 30_000L;
 
-    /** 单次 SDK 探测命令显式超时（P1-2）：超出即销毁进程并记失败。 */
+    /** 单次 SDK 探测命令显式超时：超出即销毁进程并记失败。 */
     static final long PROBE_TIMEOUT_MS = 2_000L;
 
-    /** 兄弟/根目录扫描条目上限（P3-7）：防病态目录拖垮探测。 */
+    /** 兄弟/根目录扫描条目上限：防病态目录拖垮探测。 */
     private static final int SCAN_LIMIT = 10_000;
 
     private static final Pattern RELEASE_JAVA_VERSION =
@@ -104,13 +104,13 @@ public class SystemSdkProber {
             Pattern.compile("^\\s*java\\.version\\s*=\\s*(.+?)\\s*$");
     private static final Pattern VERSION_BANNER_QUOTED = Pattern.compile("\"([0-9][^\"]*)\"");
     private static final Pattern LEADING_V = Pattern.compile("^v");
-    // P3-1：\- 在正则中与 - 等价，剔除无效转义
+    // \- 在正则中与 - 等价，剔除无效转义
     private static final Pattern PY_LAUNCHER_LINE = Pattern.compile("^-V:(\\S+)\\s+\\*?\\s+(.+)$");
     private static final Pattern PY_VERSION_OUT = Pattern.compile("Python\\s+(\\S+)");
     private static final Pattern GO_VERSION_FILE = Pattern.compile("^go(\\d\\S+)$");
     private static final Pattern GO_VERSION_BANNER = Pattern.compile("go version go(\\S+)");
 
-    /** 探测常量集中定义（P3-5）：可执行文件名 / 布局目录 / 环境与属性键。 */
+    /** 探测常量集中定义：可执行文件名 / 布局目录 / 环境与属性键。 */
     private static final class ProbeConstants {
         static final String EXE_JAVA = "java.exe";
         static final String EXE_NODE = "node.exe";
@@ -180,7 +180,7 @@ public class SystemSdkProber {
         this.env = Objects.requireNonNull(env, "env 不能为 null");
     }
 
-    /** P2-7：单调毫秒钟（nanoTime 折算，不受系统时钟回拨影响）。 */
+    /** 单调毫秒钟（nanoTime 折算，不受系统时钟回拨影响）。 */
     private static long monotonicMillis() {
         return System.nanoTime() / 1_000_000L;
     }
@@ -188,9 +188,9 @@ public class SystemSdkProber {
     /**
      * 探测本机系统级已装 SDK：language → version → home（保序不可变视图）。
      *
-     * <p>契约：P1-4 非 Windows 平台返回空 Map 并记录平台拒绝；P1-1 读取路径无锁，
+     * <p>契约：非 Windows 平台返回空 Map 并记录平台拒绝；读取路径无锁，
      * 过期时经 {@code synchronize(rebuildLock)} 双检 single-flight（同一时刻仅一个线程探测）；
-     * P2-7 负 elapsed（时钟回拨）判为过期而非永久命中。</p>
+     * 负 elapsed（时钟回拨）判为过期而非永久命中。</p>
      */
     public Map<LanguageEnum, Map<String, String>> probeVersions() {
         if (!isWindows()) {
@@ -216,13 +216,13 @@ public class SystemSdkProber {
         }
     }
 
-    /** 缓存新鲜判定（P2-7）：单调钟下 elapsed 恒非负；时钟回拨的负值判为过期。 */
+    /** 缓存新鲜判定：单调钟下 elapsed 恒非负；时钟回拨的负值判为过期。 */
     private boolean fresh(long now) {
         long elapsed = now - cachedAt;
         return elapsed >= 0 && elapsed < ttlMs;
     }
 
-    /** 全语言探测编排：PATH 仅解析一次（P3-3），每语言独立降级互不影响。 */
+    /** 全语言探测编排：PATH 仅解析一次，每语言独立降级互不影响。 */
     private Map<LanguageEnum, Map<String, String>> doProbe() {
         List<Path> pathDirs = pathDirs();
         Map<String, String> javaFound = probeJava(env.get(ProbeConstants.ENV_JAVA_HOME), pathDirs);
@@ -235,7 +235,7 @@ public class SystemSdkProber {
         return result;
     }
 
-    /** 有序不可变视图（P0-2）：保留探测插入顺序（优先级语义），屏蔽外部写入。 */
+    /** 有序不可变视图：保留探测插入顺序（优先级语义），屏蔽外部写入。 */
     private static <K, V> Map<K, V> orderedImmutable(Map<K, V> src) {
         @SuppressWarnings("unchecked")
         Map<K, V> ordered = (Map<K, V>) Collections.unmodifiableMap(new LinkedHashMap<>(src));
@@ -243,7 +243,7 @@ public class SystemSdkProber {
     }
 
     /**
-     * 版本-路径写入（P0-3）：同版本不同 home 保留先发现者，并记录冲突事件。
+     * 版本-路径写入：同版本不同 home 保留先发现者，并记录冲突事件。
      *
      * @param source 来源标识（JAVA_HOME / PATH / py-launcher / sibling / nvm-root …）用于诊断定位
      */
@@ -285,7 +285,7 @@ public class SystemSdkProber {
                 }
             }
             if (version == null) {
-                // javapath stub / 软链场景：整个探测周期只执行一次 -XshowSettings（P0-1：绑绝对路径）
+                // javapath stub / 软链场景：整个探测周期只执行一次 -XshowSettings（绑绝对路径）
                 LocatedSdk resolved = resolver.resolve(exe);
                 if (resolved != null) {
                     Path resolvedHome = safePath(resolved.home);
@@ -327,7 +327,7 @@ public class SystemSdkProber {
         if (probePythonViaLauncher(found, pathDirs)) {
             return found;
         }
-        // P0-4：Launcher 不可用时逐个探测 PATH 命中的 python.exe（绑绝对路径），多版本全收录；
+        // Launcher 不可用时逐个探测 PATH 命中的 python.exe（绑绝对路径），多版本全收录；
         // TTL 缓存 30s 摊薄进程成本，可接受
         for (Path dir : pathDirs) {
             Path exe = dir.resolve(ProbeConstants.EXE_PYTHON);
@@ -422,7 +422,7 @@ public class SystemSdkProber {
     }
 
     /**
-     * -XshowSettings 惰性执行守卫（P2-3）。
+     * -XshowSettings 惰性执行守卫。
      *
      * <p>语义：单个 {@link #probeJava} 探测周期内最多执行一次。失败结果（null）在本周期内被复用，
      * 不重试；下一缓存 TTL 到期重新探测时会重新尝试。</p>
@@ -520,7 +520,7 @@ public class SystemSdkProber {
         return any;
     }
 
-    /** 执行 {@code <exe> --version} 解析版本（输出 "Python 3.11.9"；P3-2 先判退出码再匹配）。 */
+    /** 执行 {@code <exe> --version} 解析版本（输出 "Python 3.11.9"；先判退出码再匹配）。 */
     private String versionOfPythonCommand(Path exe) {
         String exePath = displayPath(exe);
         String command = exePath + " --version";
@@ -562,7 +562,7 @@ public class SystemSdkProber {
         return matcher.find() ? matcher.group(1) : null;
     }
 
-    /** 读 JDK release 文件中的 JAVA_VERSION（无 release 文件 → null；release 为 ASCII，ISO_8859_1 足矣，P3-8）。 */
+    /** 读 JDK release 文件中的 JAVA_VERSION（无 release 文件 → null；release 为 ASCII，ISO_8859_1 足矣）。 */
     private String readJavaRelease(Path home) {
         Path release = home.resolve(ProbeConstants.FILE_RELEASE);
         if (!reader.isRegularFile(release)) {
@@ -605,7 +605,7 @@ public class SystemSdkProber {
     }
 
     private List<Path> standardJavaRoots() {
-        // P1-5：WOW64 下 32 位 JVM 读到的 ProgramFiles 是 (x86)，64 位标准目录优先取 ProgramW6432
+        // WOW64 下 32 位 JVM 读到的 ProgramFiles 是 (x86)，64 位标准目录优先取 ProgramW6432
         List<Path> roots = new ArrayList<>();
         String pf = programFilesRoot();
         addStandardRoot(roots, pf, ProbeConstants.DIR_JAVA);
@@ -696,7 +696,7 @@ public class SystemSdkProber {
         }
     }
 
-    /** 受条目上限保护的目录遍历（P3-7）：超过上限截断；IO 异常向上抛由调用方降级记录。 */
+    /** 受条目上限保护的目录遍历：超过上限截断；IO 异常向上抛由调用方降级记录。 */
     private static void scanLimited(Stream<Path> children, Consumer<Path> action) {
         Iterator<Path> it = children.iterator();
         int count = 0;
@@ -717,7 +717,7 @@ public class SystemSdkProber {
         return parents;
     }
 
-    /** nvm 根目录（P2-6）：显式设置 NVM_HOME 即权威，无效不回退；未设置才用 %APPDATA%\nvm。 */
+    /** nvm 根目录：显式设置 NVM_HOME 即权威，无效不回退；未设置才用 %APPDATA%\nvm。 */
     private Path nvmRoot() {
         String nvmHome = env.get(ProbeConstants.ENV_NVM_HOME);
         if (nvmHome != null && !nvmHome.isBlank()) {
@@ -733,7 +733,7 @@ public class SystemSdkProber {
         return appData == null ? null : appData.resolve(ProbeConstants.DIR_NVM);
     }
 
-    /** PATH 中首个存在的可执行文件（P0-1 前置：探测必须锚定具体 exe）。 */
+    /** PATH 中首个存在的可执行文件（探测必须锚定具体 exe）。 */
     private Path firstExecutable(String exeName, List<Path> pathDirs) {
         for (Path dir : pathDirs) {
             Path candidate = dir.resolve(exeName);
@@ -754,7 +754,7 @@ public class SystemSdkProber {
         return plus >= 0 ? trimmed.substring(0, plus) : trimmed;
     }
 
-    /** stdout 与 stderr 合并（探测命令输出流位置不可假设；P3-4 StringBuilder 拼接免冗余复制）。 */
+    /** stdout 与 stderr 合并（探测命令输出流位置不可假设；StringBuilder 拼接免冗余复制）。 */
     private static String merged(ProcessExecutor.Result result) {
         String out = result.stdout() == null ? "" : result.stdout();
         String err = result.stderr() == null ? "" : result.stderr();
@@ -788,7 +788,7 @@ public class SystemSdkProber {
     }
 
     /**
-     * 容错解析路径（P3-6）：剥离 Windows 长路径前缀 {@code \\?\} 后解析（保留超长路径支持），
+     * 容错解析路径：剥离 Windows 长路径前缀 {@code \\?\} 后解析（保留超长路径支持），
      * UNC 前缀还原为 {@code \\server\share}；非法字符解析失败按无效跳过。
      */
     private static Path safePath(String raw) {
@@ -809,12 +809,12 @@ public class SystemSdkProber {
         }
     }
 
-    /** P0-1：探测命令必须绑定 PATH 命中的具体可执行文件绝对路径。 */
+    /** 探测命令必须绑定 PATH 命中的具体可执行文件绝对路径。 */
     private static String displayPath(Path exe) {
         return exe.toAbsolutePath().toString();
     }
 
-    /** 平台守卫（P1-4）：os.name 以 windows 开头视为 Windows。 */
+    /** 平台守卫：os.name 以 windows 开头视为 Windows。 */
     private boolean isWindows() {
         String os = env.getProperty(ProbeConstants.PROP_OS_NAME);
         return os != null && os.toLowerCase(Locale.ROOT).startsWith("windows");

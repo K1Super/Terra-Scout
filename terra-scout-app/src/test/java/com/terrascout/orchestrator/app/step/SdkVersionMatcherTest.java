@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * SDK 版本匹配器单测（version-matcher-algorithm.md 4.2~4.6）。
+ * SDK 版本匹配器单测。
  */
 class SdkVersionMatcherTest {
 
@@ -104,7 +104,7 @@ class SdkVersionMatcherTest {
         assertThat(SdkVersionMatcher.mavenRangeMatches("17.0.0", "(17,18)")).isFalse();
     }
 
-    // ---- 裁决 R47：engines.node 范围表达式 ----
+    // ---- engines.node 范围表达式 ----
 
     @Test
     void comparatorRangesMatchByMajor() {
@@ -170,7 +170,7 @@ class SdkVersionMatcherTest {
         assertThat(SdkVersionMatcher.compareVersions("17", "17.0.0")).isZero();
     }
 
-    // ---- 裁决 R48：候选表与用户选配 ----
+    // ---- 候选表与用户选配 ----
 
     @Test
     void matchIncludesSortedCandidateList() {

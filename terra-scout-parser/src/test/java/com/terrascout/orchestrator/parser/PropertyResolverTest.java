@@ -12,7 +12,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * {@link PropertyResolver} 单元测试（pom-parser-algorithm.md 3.3）。
+ * {@link PropertyResolver} 单元测试。
  *
  * <p>覆盖：字面量、单级/链式引用、循环引用（含自引用）、未定义引用、空表。
  */

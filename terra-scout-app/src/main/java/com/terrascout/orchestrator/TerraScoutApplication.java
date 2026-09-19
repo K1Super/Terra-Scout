@@ -9,13 +9,13 @@ import com.terrascout.orchestrator.core.constant.PathConstants;
 /**
  * Terra Scout 内核启动入口（spring-boot-starter-web / data-jpa / flyway / h2）。
  *
- * <p>启动时序（ddl-migration.md 2.5 / 2.1）：
+ * <p>启动时序：
  * <ol>
  *   <li>归一化数据根覆盖：命令行 {@code --terrascout.data-dir=…} 同步进系统属性，保证
  *       {@link PathConstants#dataRoot()}（唯一路径口径）与 Spring 配置解析到同一目录；</li>
  *   <li>先执行数据库备份（尚无连接，文件一致性安全）；</li>
- *   <li>保证 {@code {data-root}} 目录树与 {@code db.properties} 就绪（D-006）；</li>
- *   <li>再启动 Spring 上下文，由 Flyway 校验迁移（D-005，失败即 500006 语义）。</li>
+ *   <li>保证 {@code {data-root}} 目录树与 {@code db.properties} 就绪；</li>
+ *   <li>再启动 Spring 上下文，由 Flyway 校验迁移（失败即 500006 语义）。</li>
  * </ol>
  */
 @SpringBootApplication

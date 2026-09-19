@@ -46,9 +46,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 项目服务：导入分析 / 列表 / 详情 / 删除（rest-schema.md 3.4.1-3.4.4）。
+ * 项目服务：导入分析 / 列表 / 详情 / 删除。
  *
- * <p>路径安全（security.md 安全红线 3）：外部输入路径先规范化（{@link Path#normalize()}）
+ * <p>路径安全（安全红线）：外部输入路径先规范化（{@link Path#normalize()}）
  * 并校验为已存在目录；项目根不存在 → 404001（项目路径不存在）。
  */
 @Service
@@ -56,7 +56,7 @@ public class ProjectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectService.class);
 
-    /** 422001 归一化提示（rest-schema 3.4.1 / 裁决 R46，R48 扩展四语言）。 */
+    /** 422001 归一化提示（扩展四语言）。 */
     private static final String HINT_UNRECOGNIZED =
             "请选择包含 pom.xml（Maven）、package.json（npm）、go.mod（Go）、"
                     + ".python-version 或 pyproject.toml（Python）的项目根目录；"
@@ -83,7 +83,7 @@ public class ProjectService {
         this.installRecordRepository = installRecordRepository;
     }
 
-    /** 导入分析：解析并持久化项目画像（rest-schema 3.4.1）。 */
+    /** 导入分析：解析并持久化项目画像。 */
     @Transactional
     public AnalyzeResponse analyze(AnalyzeRequest request) {
         String rawPath = request.getPath();
@@ -121,7 +121,7 @@ public class ProjectService {
         return buildResponse(project, type, constraints);
     }
 
-    /** 项目列表（分页，rest-schema 3.4.2）。 */
+    /** 项目列表（分页）。 */
     @Transactional(readOnly = true)
     public Page<Project> list(int page, int size) {
         int safePage = Math.max(1, page);
@@ -130,14 +130,14 @@ public class ProjectService {
                 Sort.by(Sort.Direction.DESC, "updatedAt")));
     }
 
-    /** 项目详情（rest-schema 3.4.3），不存在 → 404 等效回收（PLAN_NOT_FOUND）。 */
+    /** 项目详情，不存在 → 404 等效回收（PLAN_NOT_FOUND）。 */
     @Transactional(readOnly = true)
     public Project detail(String projectId) {
         return repository.findById(projectId)
                 .orElseThrow(() -> new TerraScoutException(TerraScoutError.PLAN_NOT_FOUND));
     }
 
-    /** 详情条目（3.4.3）：含 type / constraints / plan 的完整画像（裁决 R47）。 */
+    /** 详情条目：含 type / constraints / plan 的完整画像。 */
     @Transactional(readOnly = true)
     public Map<String, Object> detailItem(String projectId) {
         return item(detail(projectId), true);
@@ -161,7 +161,7 @@ public class ProjectService {
         return item;
     }
 
-    /** 删除项目：仅删数据库记录，不触碰磁盘 .devenv（D-014 / rest-schema 3.4.4）。 */
+    /** 删除项目：仅删数据库记录，不触碰磁盘 .devenv。 */
     @Transactional
     public void delete(String projectId) {
         Project project = detail(projectId);
@@ -170,7 +170,7 @@ public class ProjectService {
                 null, null, "SUCCESS");
     }
 
-    /** 规范化 + 校验路径为已存在目录（安全红线 3）。 */
+    /** 规范化 + 校验路径为已存在目录（安全红线约束）。 */
     private Path normalizeAndValidate(String rawPath) {
         Path normalized = Paths.get(rawPath).normalize().toAbsolutePath();
         if (!Files.isDirectory(normalized)) {
@@ -180,7 +180,7 @@ public class ProjectService {
     }
 
     /**
-     * 根目录无声明文件时解析有效项目根（裁决 R46，R48 扩展四语言声明文件）：直接子目录恰有一个含
+     * 根目录无声明文件时解析有效项目根（扩展四语言声明文件）：直接子目录恰有一个含
      * pom.xml / package.json / go.mod / .python-version / pyproject.toml 则采纳为项目根；
      * 否则抛 422001 并携带 selectedPath / candidates / hint 明细供前端呈现。
      */
@@ -209,7 +209,7 @@ public class ProjectService {
         }
     }
 
-    /** profile_json 结构（裁决 R47）：type + constraints 完整画像（旧版仅约束数组，读取时兼容回退）。 */
+    /** profile_json 结构：type + constraints 完整画像（旧版仅约束数组，读取时兼容回退）。 */
     private Map<String, Object> profileOf(ProjectTypeEnum type, List<ProjectConstraint> constraints) {
         Map<String, Object> profile = new LinkedHashMap<>();
         profile.put("type", type.name());
@@ -218,7 +218,7 @@ public class ProjectService {
     }
 
     /**
-     * 从 profile_json 反序列化画像（裁决 R47）。新版 {@code {type, constraints}}；旧版纯约束数组
+     * 从 profile_json 反序列化画像。新版 {@code {type, constraints}}；旧版纯约束数组
      * （升级前入库记录）则回退磁盘重检；解析失败同样回退（不阻断详情/列表）。
      */
     private Profile profileOf(Project project) {
@@ -257,7 +257,7 @@ public class ProjectService {
     }
 
     /**
-     * 预览装配计划（裁决 R47）：按约束实时匹配推荐 SDK 版本（与 execute 阶段 MatchVersionStep 同源），
+     * 预览装配计划：按约束实时匹配推荐 SDK 版本（与 execute 阶段 MatchVersionStep 同源），
      * 供详情页展示与确认装配入口使用；单条约束匹配失败仅跳过并告警，不阻断详情（authoritative
      * 校验仍在 execute 的 MatchVersionStep）。
      */

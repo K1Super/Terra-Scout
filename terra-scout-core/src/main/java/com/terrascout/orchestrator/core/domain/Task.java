@@ -11,9 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * 任务实体（ddl-migration.md 2.3 表 task）。
+ * 任务实体（表 task）。
  *
- * <p>心跳语义（D-007）：任务线程每 5s 自报 heartbeat_at，检测线程只扫描不更新，阈值 60s；
+ * <p>心跳语义：任务线程每 5s 自报 heartbeat_at，检测线程只扫描不更新，阈值 60s；
  * 超时判 500003。idempotency_key 唯一（uk_task_idempotency）：重复提交返回 200 + 首次结果。
  */
 @Entity

@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 /**
  * 装配编排器：把 TaskEngine 与 download/env 模块真实接入，驱动 11 步四语言装配并把状态落库。
  *
- * <p>由 {@link TaskService#execute} 在事务提交后异步调用（D-002 异步语义）；引擎仅同步阻塞，
+ * <p>由 {@link TaskService#execute} 在事务提交后异步调用（异步语义）；引擎仅同步阻塞，
  * 最终状态经 session.errorCode（正常失败）或 result.errorCode（回滚失败 500004）回写 task。
  */
 @Service
@@ -74,7 +74,7 @@ public class TaskAssemblyOrchestrator {
         this.envScriptGenerator = envScriptGenerator;
     }
 
-    /** 执行一条装配任务（异步线程调用；versionOverrides 为用户 SDK 选配，裁决 R48）。 */
+    /** 执行一条装配任务（异步线程调用；versionOverrides 为用户 SDK 选配）。 */
     public void run(String taskId, String projectId, List<VersionOverride> versionOverrides) {
         try {
             Project project = projectRepository.findById(projectId)

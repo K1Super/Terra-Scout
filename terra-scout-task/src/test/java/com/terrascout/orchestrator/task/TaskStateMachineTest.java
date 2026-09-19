@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import com.terrascout.orchestrator.core.enums.TaskStatusEnum;
 
 /**
- * 状态机转移表全覆盖测试（state-machine.md 4.3 全部行 + 非法/终态拒绝）。
+ * 状态机转移表全覆盖测试（转移表全部行 + 非法/终态拒绝）。
  */
 class TaskStateMachineTest {
 

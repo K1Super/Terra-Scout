@@ -15,11 +15,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * SDK 版本实体（ddl-migration.md 2.3 表 sdk_version；master-plan D-017 字段与
- * sdk-metadata-schema.json 的 sdkEntry 一一对应，camelCase → snake_case 直接映射）。
+ * SDK 版本实体（表 sdk_version；字段与 sdk-metadata-schema.json 的 sdkEntry
+ * 一一对应，camelCase → snake_case 直接映射）。
  *
  * <p>唯一键（language, version, os, arch）；lts / eol / cve_count / highest_cve_severity
- * 为版本匹配算法（version-matcher-algorithm.md）的决策依据。
+ * 为版本匹配算法的决策依据。
  */
 @Entity
 @Table(name = "sdk_version")

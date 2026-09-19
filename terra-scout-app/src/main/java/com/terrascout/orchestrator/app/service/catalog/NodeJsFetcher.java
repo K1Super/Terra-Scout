@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
  * 每个版本从同源 SHASUMS256.txt 提取 win-x64.zip 的真实 sha256（不信任列表页，
  * 与 Downloader 校验链路闭环）。
  *
- * <p>版本线策略（裁决 R49）：版本按 major 归组为「版本线」，行级支持性按官方
+ * <p>版本线策略：版本按 major 归组为「版本线」，行级支持性按官方
  * EOL 静态表裁决（官方发布计划的既有历史事实；index.json 不含 end 字段，不能
  * 从数据内取）：行内存在 LTS 条目时——表内 major 按 EOL 日期裁决（今天晚于 EOL
  * 即排除，如 18/20），大于表上界的未来 major 视为受支持线，表上界以下且不在
@@ -59,8 +59,8 @@ public class NodeJsFetcher implements LanguageCatalogFetcher {
 
     /**
      * 官方发布计划的行级 EOL 静态表（major → 维护终止日）。index.json 不含 end
-     * 字段（实测全量无该字段），故行级支持性不能在数据内裁决，只能依据官方既定
-     * 时间表；Clock 注入使测试固定「今天」后本表裁决完全确定。
+     * 字段（实测全量无该字段），故行级支持性不能在数据内裁决，只能以官方既定
+     * 时间表为准；Clock 注入使测试固定「今天」后本表裁决完全确定。
      */
     private static final Map<Long, LocalDate> LINE_EOL = Map.of(
             12L, LocalDate.of(2022, 4, 30),

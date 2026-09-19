@@ -10,7 +10,7 @@ export interface IpcContext {
 }
 
 /**
- * 注册 IPC 桥（module7 契约：preload 经 contextBridge 暴露 window.kernel，
+ * 注册 IPC 桥（契约：preload 经 contextBridge 暴露 window.kernel，
  * 渲染进程不接触 Node，只经 IPC 拿 token / 端口 / 事件）。
  */
 export function registerIpcHandlers(ctx: IpcContext): void {
@@ -37,7 +37,7 @@ export function registerIpcHandlers(ctx: IpcContext): void {
     return true;
   });
 
-  // 系统文件夹选择（项目导入，ui-pages 5.2）
+  // 系统文件夹选择（项目导入）
   ipcMain.handle('dialog:select-directory', async () => {
     const win = BrowserWindow.getFocusedWindow();
     const result = await dialog.showOpenDialog(win ?? (BrowserWindow.getAllWindows()[0] as BrowserWindow), {
@@ -50,7 +50,7 @@ export function registerIpcHandlers(ctx: IpcContext): void {
     return result.filePaths[0];
   });
 
-  // 用系统资源管理器打开已安装 SDK 目录（SDK 管理，3.4.10）：仅接受绝对路径
+  // 用系统资源管理器打开已安装 SDK 目录（SDK 管理）：仅接受绝对路径
   ipcMain.handle('sdk:open-path', async (_e, targetPath: unknown) => {
     const target = typeof targetPath === 'string' ? targetPath : '';
     if (!target || !isAbsolute(target)) {

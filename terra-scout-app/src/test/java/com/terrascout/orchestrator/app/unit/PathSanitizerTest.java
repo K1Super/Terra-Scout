@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * 路径脱敏单测（security.md 6.10 安全红线 7：保留最后 2 级，前面替换为 ***）。
+ * 路径脱敏单测（安全红线：保留最后 2 级，前面替换为 ***）。
  */
 class PathSanitizerTest {
 

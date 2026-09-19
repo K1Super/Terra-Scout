@@ -19,7 +19,7 @@ import com.terrascout.orchestrator.core.error.TerraScoutError;
 import com.terrascout.orchestrator.core.error.TerraScoutException;
 
 /**
- * {@link ConstraintExtractor} 单元测试（rest-schema 3.4.1；PomParser 契约见 progress 4.3~4.4）。
+ * {@link ConstraintExtractor} 单元测试。
  *
  * <p>覆盖：MAVEN / NPM / MIXED / UNKNOWN(→422001)、.nvmrc 去前导 v、.nvmrc 优先于 .node-version、
  * 无 Node 声明 → UNKNOWN、null 入参 → NPE。
@@ -161,7 +161,7 @@ class ConstraintExtractorTest {
         assertThat(constraints.get(0).getConstraint()).isEqualTo("UNKNOWN");
     }
 
-    // ---- 裁决 R47：package.json engines.node ----
+    // ---- package.json engines.node ----
 
     @Test
     void npmProjectEnginesNodeYieldsRangeConstraint() throws IOException {
@@ -249,7 +249,7 @@ class ConstraintExtractorTest {
                 });
     }
 
-    // ---- 裁决 R48：GO / PYTHON 约束提取 ----
+    // ---- GO / PYTHON 约束提取 ----
 
     @Test
     void goProjectYieldsGoConstraintNormalizedAsRange() throws IOException {

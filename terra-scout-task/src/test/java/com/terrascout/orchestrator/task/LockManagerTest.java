@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
 /**
- * 按项目分锁测试（concurrency-model.md 6.2）：同锁复用 / 跨线程互斥 / 幂等解锁。
+ * 按项目分锁测试：同锁复用 / 跨线程互斥 / 幂等解锁。
  */
 class LockManagerTest {
 

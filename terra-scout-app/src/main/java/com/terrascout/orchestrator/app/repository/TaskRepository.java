@@ -21,6 +21,6 @@ public interface TaskRepository extends JpaRepository<Task, String> {
     /** 按状态过滤分页。 */
     Page<Task> findByStatus(TaskStatusEnum status, Pageable pageable);
 
-    /** 查找需要启动恢复扫描的任务（非终态且 heartbeat 过期，D-007 recoverOnStartup）。 */
+    /** 查找需要启动恢复扫描的任务（非终态且 heartbeat 过期，recoverOnStartup）。 */
     List<Task> findByStatusInAndHeartbeatAtLessThan(List<TaskStatusEnum> statuses, long heartbeatBefore);
 }

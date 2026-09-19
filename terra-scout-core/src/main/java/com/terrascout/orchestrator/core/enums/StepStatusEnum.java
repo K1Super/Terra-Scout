@@ -1,7 +1,7 @@
 package com.terrascout.orchestrator.core.enums;
 
 /**
- * 任务步骤状态（ddl-migration.md 2.4 task_step.status）。
+ * 任务步骤状态（对应 task_step.status）。
  */
 public enum StepStatusEnum {
     /** 未开始。 */

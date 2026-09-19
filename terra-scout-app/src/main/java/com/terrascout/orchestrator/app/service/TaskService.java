@@ -34,9 +34,9 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * 任务服务：执行装配 / 列表 / 详情 / 操作（rest-schema.md 3.4.5-3.4.9）。
+ * 任务服务：执行装配 / 列表 / 详情 / 操作。
  *
- * <p>异步语义由 taskId + 轮询表达（D-002）：触发返回 HTTP 200 + QUEUED；planId 即 projectId
+ * <p>异步语义由 taskId + 轮询表达：触发返回 HTTP 200 + QUEUED；planId 即 projectId
  * （一个项目一个装配计划，计划不单独持久化），不存在 → 404003；幂等重放返回 200 + 首次结果。
  * 任务在事务提交后（afterCommit）提交到 taskExecutor 异步编排。
  */
@@ -114,7 +114,7 @@ public class TaskService {
         return toExecuteResponse(task);
     }
 
-    /** 任务列表（可浇 status 过滤，rest-schema 3.4.6）。 */
+    /** 任务列表（可按 status 过滤）。 */
     @Transactional(readOnly = true)
     public Page<Task> list(TaskStatusEnum status, int page, int size) {
         int safePage = Math.max(1, page);
@@ -124,7 +124,7 @@ public class TaskService {
         return status == null ? repository.findAll(pr) : repository.findByStatus(status, pr);
     }
 
-    /** 任务详情（rest-schema 3.4.7），不存在 → 404002。 */
+    /** 任务详情，不存在 → 404002。 */
     @Transactional(readOnly = true)
     public TaskResponse detail(String taskId) {
         Task task = repository.findById(taskId)
@@ -132,7 +132,7 @@ public class TaskService {
         return toTaskResponse(task);
     }
 
-    /** 任务步骤日志（rest-schema 3.4.8），不存在 → 404002。 */
+    /** 任务步骤日志，不存在 → 404002。 */
     @Transactional(readOnly = true)
     public Map<String, Object> logs(String taskId) {
         if (!repository.existsById(taskId)) {

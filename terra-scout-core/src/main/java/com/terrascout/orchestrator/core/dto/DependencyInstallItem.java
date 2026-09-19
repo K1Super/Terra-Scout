@@ -1,13 +1,13 @@
 package com.terrascout.orchestrator.core.dto;
 
 /**
- * 依赖隔离安装计划项（openapi DependencyInstallItem）。
+ * 依赖隔离安装计划项。
  *
- * <p>依赖按项目隔离（D-004）：Maven → {projectRoot}\.devenv\m2；npm → .devenv\npm-cache。
+ * <p>依赖按项目隔离：Maven → {projectRoot}\.devenv\m2；npm → .devenv\npm-cache。
  */
 public class DependencyInstallItem {
 
-    /** 生态标识（openapi 取值：{@code maven} / {@code npm} / {@code go} / {@code python}，小写字符串）。 */
+    /** 生态标识（取值：{@code maven} / {@code npm} / {@code go} / {@code python}，小写字符串）。 */
     public static final String ECOSYSTEM_MAVEN = "maven";
     /** 生态标识：npm。 */
     public static final String ECOSYSTEM_NPM = "npm";
